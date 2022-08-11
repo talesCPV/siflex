@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style/reset.css">
+    <link rel="stylesheet" href="style/modal.css">
+    <script src="sketchs/main.js"></script>
+    <script src="sketchs/validation.js"></script>    
+    <title>Siflex ver.2.0</title>
+</head>
+<body>
+    <div id="main-screen"></div>
+    <!-- The Modal -->
+    <div id="myModal" class="modal"></div> 
+
+</body>
+<script>
+    
+    if(localStorage.getItem('hash') != null){
+        openHTML('dashboard.html','main-screen')
+    }else{
+        openHTML('login.html','main-screen')
+    }
+
+</script>
+</html>

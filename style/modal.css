@@ -1,0 +1,66 @@
+/* MODAL WINDOW*/
+
+:root{
+    --white : #f3f2edfd;
+}
+
+.modal {
+    display: none; 
+    position: fixed; 
+    z-index: 1; 
+    padding: 10px;
+    padding-top: 100px; 
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgba(0,0,0,0.4); 
+  }
+  
+  .modal-content {
+    position: relative;
+/*    left: 20vw;*/
+    background-color: var(--white);
+    border-radius: 10px;
+    margin: 20px auto;
+    border: 1px solid #888;
+    width: auto;
+    max-width: 1200px ; 
+    height: auto;
+    padding: 10px;
+/*    opacity: 95%;    */
+  }
+  
+  .modal-title{
+      display: flex;
+      font-weight: 600;
+        border-bottom: solid 2px ;
+      color: black;
+      padding-left: 30px;
+      align-items: center;
+      width: 100%;
+      height: 40px;
+      align-items: center;       
+      justify-content: space-between;
+  }
+
+  .modal-text{
+      padding: 5px;
+  }
+
+  .close {
+    padding-right: 10px;
+    color: #acacac;
+    font-size: 28px;
+    font-weight: bold;
+  }
+  
+  .close:hover, .close:focus{
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+
+/* FIM MODAL */

@@ -1,0 +1,55 @@
+
+<template>
+    <style>
+        button{
+            width: 98%;
+        }
+    </style>
+  
+    <fieldset>
+        <legend>Unidades</legend>
+        <table id="tblUnd"></table>
+        <button id="btnUnd">Novo</button>
+    </fieldset>
+
+
+
+</template>
+<script>
+    
+    fillUnd()
+
+    function fillUnd(){
+        const tbl = document.getElementById('tblUnd')
+        tbl.innerHTML = ''
+        const params = new Object;
+            params.hash = localStorage.getItem('hash');
+
+        const myPromisse = queryDB(params,8);
+
+        myPromisse.then((resolve)=>{
+            if(resolve.trim() != ""){
+                const json = JSON.parse(resolve);
+                tbl.appendChild(makeHeader(['Nome','Sigla']))
+                for(let i=0; i<json.length;i++){
+                    tbl.appendChild(makeRow(json[i],['nome','sigla']))
+                }                
+            } 
+        })
+    }
+
+    document.querySelector('#tblUnd').addEventListener('click',(e)=>{
+        data = e.target.parentNode.data
+        data.mode = 'edit'
+        openHTML('viewUnd.html','pop-up','Editar Unidades',data,73)
+    })
+
+
+    document.querySelector('#btnUnd').addEventListener('click',()=>{
+        const data = new Object
+        data.mode = 'new'
+        openHTML('viewUnd.html','pop-up','Nova Unidade',data,73)
+
+    })
+
+</script>

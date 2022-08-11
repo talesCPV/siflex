@@ -1,0 +1,140 @@
+
+<template>
+    <style>
+        #btnSave{
+            width: 98%;
+        }
+
+        .frm{
+            padding: 10px;
+        }
+
+    </style>
+  
+    <fieldset class="frm" >
+        <legend>Produto</legend>
+        <div class="inline">
+            <label for="edtDesc">Descrição</label>
+            <input type="text" id="edtDesc">
+        </div>
+        <div class="inline">
+            <label for="cmbForn">Forn.</label>
+            <select id="cmbForn"></select>
+        </div>
+        <div class="inline">
+            <label for="cmbTipo">Tipo</label>
+            <select id="cmbTipo">
+                <option value="VENDA">Produto</option>
+                <option value="SERVICO">Serviço</option>
+                <option value="CONJ">Conjunto</option>
+                <option value="TINTA">Tinta</option>
+                <option value="PIGMTO">Pigmento</option>
+            </select>
+        </div>
+        <div class="inline">
+            <label for="cmbUnd">Und.</label>
+            <select id="cmbUnd"></select>
+            <label for="edtEtq">Estq.</label>
+            <input type="text" id="edtEtq" onkeyup="return number(this)">
+            <label for="edtEtqMin">Estq. Min.</label>
+            <input type="text" id="edtEtqMin" onkeyup="return number(this)">
+        </div>
+        <div  class="inline">
+            <label for="edtCodInt">Cod. Int.</label>
+            <input type="text" id="edtCodInt">    
+            <label for="edtCodFab">Cod. Fab.</label>
+            <input type="text" id="edtCodFab">
+            <label for="edtCodBar">Cod. Bar.</label>
+            <input type="text" id="edtCodBar">
+        </div>
+        <div class="inline">
+            <label for="edtComp">Compra R$</label>
+            <input type="text" id="edtComp" onkeyup="return number(this)">
+            <label for="edtMargem">Margem %</label>
+            <input type="text" id="edtMargem"  onkeyup="return number(this)">
+        </div>
+        <div class="inline">
+            <label for="edtNCM">NCM</label>
+            <input type="text" id="edtNCM"  onkeyup="return number(this,0)">
+            <label for="edtCFOP">CFOP</label>
+            <input type="text" id="edtCFOP"  onkeyup="return number(this,0)">
+        </div>
+        <button id="btnSave">Salvar</button>
+    </fieldset>
+
+
+</template>
+<script>
+  console.log(main_data)
+
+    const params = new Object;
+    params.hash = localStorage.getItem('hash');
+
+
+
+
+    fillCombo('cmbUnd',params,8,['sigla','nome'],typeof main_data === 'object' ? main_data.unidade :'' )
+    fillCombo('cmbForn',params,11,['id','cod_nome'],typeof main_data === 'object' ? main_data.id_emp :'' )
+
+
+
+    if (typeof main_data === 'object'){
+        document.querySelector('#edtDesc').value = main_data.descricao
+        document.querySelector('#edtEtq').value = main_data.estoque
+        document.querySelector('#edtCodFab').value = main_data.cod_bar
+        document.querySelector('#edtEtqMin').value = main_data.etq_min
+        document.querySelector('#edtCodInt').value = main_data.cod
+        document.querySelector('#edtCodBar').value = main_data.cod_bar
+        document.querySelector('#edtCFOP').value = main_data.CFOP
+        document.querySelector('#edtNCM').value = main_data.ncm
+        document.querySelector('#edtComp').value = main_data.preco_comp
+        document.querySelector('#edtMargem').value = main_data.margem
+        document.querySelector('#cmbTipo').value = main_data.tipo.toUpperCase()
+        document.querySelector('#edtCodFab').value = main_data.cod_cli
+        
+console.log(main_data.tipo)
+    }
+
+
+    function checkPerm(){
+        const params = new Object;
+            params.hash = localStorage.getItem('hash');
+
+        const myPromisse = queryDB(params,10);
+        myPromisse.then((resolve)=>{
+            const access = JSON.parse(resolve)
+            console.log(access)
+        })
+    }
+
+    document.querySelector('#btnSave').addEventListener('click',()=>{
+        const params = new Object;
+            params.id = typeof main_data === 'object' ? main_data.id : 'DEFAULT'
+            params.descricao = document.querySelector('#edtDesc').value.toUpperCase()
+            params.estoque = document.querySelector('#edtEtq').value
+            params.etq_min = document.querySelector('#edtEtqMin').value
+            params.unidade = document.querySelector('#cmbUnd').value
+            params.cod = document.querySelector('#edtCodInt').value
+            params.cod_bar = document.querySelector('#edtCodBar').value
+            params.cfop = document.querySelector('#edtCFOP').value
+            params.id_emp = document.querySelector('#cmbForn').value
+            params.ncm = document.querySelector('#edtNCM').value
+            params.preco_comp = document.querySelector('#edtComp').value
+            params.margem = document.querySelector('#edtMargem').value
+            params.tipo = document.querySelector('#cmbTipo').value
+            params.cod_cli = document.querySelector('#edtCodFab').value
+
+        const myPromisse = queryDB(params,12);
+        myPromisse.then((resolve)=>{
+            closeModal('all')
+        })
+
+
+
+        console.log(params)
+
+//        checkPerm()
+
+    })
+
+</script>

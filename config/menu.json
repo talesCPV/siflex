@@ -1,0 +1,88 @@
+{
+	"menu": [
+		{
+			"modulo" : "Agenda",
+			"script" : "javascript:openHTML('calendar.html','content-screen')",
+			"icone"  : "fa fa-home",
+			"access" : [1,2,3,4,5,6,7,8,9,10],
+			"itens"  : []
+		},
+		{
+			"modulo" : "Produtos",
+			"script" : "#",
+			"icone"  : "fa fa-home",
+			"access" : [1,2,3,4,5,6,7,8,9,10],
+			"itens"  : [
+				{
+					"modulo" : "Pesquisa",
+					"script" : "javascript:openHTML('produtos.html','content-screen')",
+					"access" : [10],
+					"icone"  : "fa fa-archive",
+					"itens"  : []
+				},
+				{
+					"modulo" : "Cadastro",
+					"script" : "javascript:openHTML('viewProd.html','pop-up','Cadastro de Produtos')",
+					"access" : [10],
+					"icone"  : "fa fa-archive",
+					"itens"  : []
+				}				
+			]
+		},
+
+
+		{
+			"modulo" : "Ferramentas",
+			"script" : "#",
+			"access" : [10],
+			"icone"  : "fa fa-edit",
+			"itens"  : [
+				{
+					"modulo" : "PCP",
+					"script" : "javascript:openHTML('pcp.html','content-screen')",
+					"access" : [10],
+					"icone"  : "fa fa-archive",
+					"itens"  : []
+				},
+				{
+					"modulo" : "Controles",
+					"script" : "javascript:openHTML('controles.html','content-screen')",
+					"access" : [10],
+					"icone"  : "fa fa-industry",
+					"itens"  : []
+				},
+				{
+					"modulo" : "Feriados",
+					"script" : "javascript:openHTML('feriados.html','content-screen')",
+					"access" : [10],
+					"icone"  : "fa fa-industry",
+					"itens"  : []
+				},
+				{
+					"modulo" : "Usuarios",
+					"script" : "javascript:openHTML('usuarios.html','pop-up','Cadastro de Usuários')",
+					"access" : [10],
+					"icone"  : "fa fa-industry",
+					"itens"  : []
+				},				
+				{
+					"modulo" : "Configuração",
+					"script" : "javascript:openHTML('config.html','pop-up','Configuração de Sistema')",
+					"access" : [10],
+					"icone"  : "fa fa-industry",
+					"itens"  : []
+				}				
+
+			]
+		},		
+		{
+			"modulo" : "Logout",
+			"script" : "javascript:localStorage.clear();this.location.reload(true);",
+			"access" : [1,2,3,4,5,6,7,8,9,10],
+			"icone"  : "fa fa-cogs",
+			"itens"  : []
+		}
+
+
+	]		
+}
