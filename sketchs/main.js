@@ -13,6 +13,15 @@ Date.prototype.getFormatDate = function(){
     return (`${this.getFullYear()}-${(this.getMonth()+1).toString().padStart(2,'0')}-${this.getDate().toString().padStart(2,'0')}`)
 }
 
+Date.prototype.getFormatBR = function(){
+    return (`${this.getDate().toString().padStart(2,'0')}/${(this.getMonth()+1).toString().padStart(2,'0')}/${this.getFullYear()}`)
+}
+
+Date.prototype.getCurrentWeek = function(){
+    return (`${this.getDate().toString().padStart(2,'0')}/${(this.getMonth()+1).toString().padStart(2,'0')}/${this.getFullYear()}`)
+}
+
+
 /* HASH */
 
 String.prototype.getHash = function(S){
@@ -132,7 +141,7 @@ async function openHTML(template,where="content-screen",label="", data="",y=100,
                 main_data = data;
                 eval(script.innerHTML);
                 resolve = body
-                
+                document.querySelector('#drop').checked = false // close menu
             }); 
         }); 
     }

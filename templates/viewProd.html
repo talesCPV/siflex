@@ -1,29 +1,60 @@
 
 <template>
     <style>
-        #btnSave{
-            width: 98%;
-        }
-
         .frm{
             padding: 10px;
         }
 
+        .frm button{
+            width: 98%;
+            display: none;
+        }
+
+        #frm-edit{
+            display: none;
+        }
+
+        #frm-view{
+            font-size: 3em;
+            color: brown;
+        }
+
+        #frm-view label{
+            width: 100%;
+            text-align: center;
+        }
+
+
+        @media all and (max-width : 768px) {
+
+            #frm-view label{
+                font-size: 0.6em;
+            }
+
+
+        }
+
+
     </style>
   
     <fieldset class="frm" >
+        <div class="inline" id="frm-view">
+            <label for="btnEtq" id="edtPreço"></label>
+            <button id="btnEtq">Etiqueta</button>
+        </div>
+
         <legend>Produto</legend>
         <div class="inline">
             <label for="edtDesc">Descrição</label>
-            <input type="text" id="edtDesc">
+            <input type="text" id="edtDesc" disabled>
         </div>
         <div class="inline">
             <label for="cmbForn">Forn.</label>
-            <select id="cmbForn"></select>
+            <select id="cmbForn" disabled></select>
         </div>
         <div class="inline">
             <label for="cmbTipo">Tipo</label>
-            <select id="cmbTipo">
+            <select id="cmbTipo" disabled>
                 <option value="VENDA">Produto</option>
                 <option value="SERVICO">Serviço</option>
                 <option value="CONJ">Conjunto</option>
@@ -33,79 +64,99 @@
         </div>
         <div class="inline">
             <label for="cmbUnd">Und.</label>
-            <select id="cmbUnd"></select>
+            <select id="cmbUnd" disabled></select>
             <label for="edtEtq">Estq.</label>
-            <input type="text" id="edtEtq" onkeyup="return number(this)">
+            <input type="text" id="edtEtq" onkeyup="return number(this)" disabled>
             <label for="edtEtqMin">Estq. Min.</label>
-            <input type="text" id="edtEtqMin" onkeyup="return number(this)">
+            <input type="text" id="edtEtqMin" onkeyup="return number(this)" disabled>
         </div>
         <div  class="inline">
             <label for="edtCodInt">Cod. Int.</label>
-            <input type="text" id="edtCodInt">    
+            <input type="text" id="edtCodInt" disabled>    
             <label for="edtCodFab">Cod. Fab.</label>
-            <input type="text" id="edtCodFab">
+            <input type="text" id="edtCodFab" disabled>
             <label for="edtCodBar">Cod. Bar.</label>
-            <input type="text" id="edtCodBar">
+            <input type="text" id="edtCodBar" disabled>
         </div>
-        <div class="inline">
+        <div class="inline" id="frm-edit">
             <label for="edtComp">Compra R$</label>
-            <input type="text" id="edtComp" onkeyup="return number(this)">
+            <input type="text" id="edtComp" onkeyup="return number(this)" disabled>
             <label for="edtMargem">Margem %</label>
-            <input type="text" id="edtMargem"  onkeyup="return number(this)">
+            <input type="text" id="edtMargem"  onkeyup="return number(this)" disabled>
         </div>
         <div class="inline">
             <label for="edtNCM">NCM</label>
-            <input type="text" id="edtNCM"  onkeyup="return number(this,0)">
+            <input type="text" id="edtNCM"  onkeyup="return number(this,0)" disabled>
             <label for="edtCFOP">CFOP</label>
-            <input type="text" id="edtCFOP"  onkeyup="return number(this,0)">
+            <input type="text" id="edtCFOP"  onkeyup="return number(this,0)" disabled>
         </div>
         <button id="btnSave">Salvar</button>
+        <button id="btnDel">Deletar</button>
+        <button id="btnEdit">Editar</button>
     </fieldset>
 
 
 </template>
 <script>
-  console.log(main_data)
+    
+    console.log(main_data)
+    pageBegin()
 
-    const params = new Object;
-    params.hash = localStorage.getItem('hash');
+ 
+    function pageBegin(){
 
-
-
-
-    fillCombo('cmbUnd',params,8,['sigla','nome'],typeof main_data === 'object' ? main_data.unidade :'' )
-    fillCombo('cmbForn',params,11,['id','cod_nome'],typeof main_data === 'object' ? main_data.id_emp :'' )
-
-
-
-    if (typeof main_data === 'object'){
-        document.querySelector('#edtDesc').value = main_data.descricao
-        document.querySelector('#edtEtq').value = main_data.estoque
-        document.querySelector('#edtCodFab').value = main_data.cod_bar
-        document.querySelector('#edtEtqMin').value = main_data.etq_min
-        document.querySelector('#edtCodInt').value = main_data.cod
-        document.querySelector('#edtCodBar').value = main_data.cod_bar
-        document.querySelector('#edtCFOP').value = main_data.CFOP
-        document.querySelector('#edtNCM').value = main_data.ncm
-        document.querySelector('#edtComp').value = main_data.preco_comp
-        document.querySelector('#edtMargem').value = main_data.margem
-        document.querySelector('#cmbTipo').value = main_data.tipo.toUpperCase()
-        document.querySelector('#edtCodFab').value = main_data.cod_cli
-        
-console.log(main_data.tipo)
-    }
-
-
-    function checkPerm(){
         const params = new Object;
             params.hash = localStorage.getItem('hash');
 
         const myPromisse = queryDB(params,10);
         myPromisse.then((resolve)=>{
-            const access = JSON.parse(resolve)
-            console.log(access)
+            const perm = JSON.parse(resolve)
+            document.querySelector('#btnEtq').style.display = 'block'
+
+            if(perm[0].access == '1'){
+                if (main_data != 'new'){
+                    document.querySelector('#btnEdit').style.display = 'block'                
+                }else{
+                    document.querySelector('#btnEdit').click()
+                    document.querySelector('#btnDel').style.display = 'none'
+                }
+            }
         })
+
+        fillCombo('cmbUnd',params,8,['sigla','nome'],typeof main_data === 'object' ? main_data.unidade :'' )
+        fillCombo('cmbForn',params,11,['id','cod_nome'],typeof main_data === 'object' ? main_data.id_emp :'' )
+
+        if (main_data != 'new'){
+            document.querySelector('#edtDesc').value = main_data.descricao
+            document.querySelector('#edtEtq').value = main_data.estoque
+            document.querySelector('#edtCodFab').value = main_data.cod_bar
+            document.querySelector('#edtEtqMin').value = main_data.etq_min
+            document.querySelector('#edtCodInt').value = main_data.cod
+            document.querySelector('#edtCodBar').value = main_data.cod_bar
+            document.querySelector('#edtCFOP').value = main_data.CFOP
+            document.querySelector('#edtNCM').value = main_data.ncm
+            document.querySelector('#edtComp').value = main_data.preco_comp
+            document.querySelector('#edtMargem').value = main_data.margem
+            document.querySelector('#cmbTipo').value = main_data.tipo.toUpperCase()
+            document.querySelector('#edtCodFab').value = main_data.cod_cli    
+            document.querySelector('#edtPreço').innerHTML = `Preço: ${main_data.preco_venda}`    
+        }
     }
+
+    document.querySelector('#btnEdit').addEventListener('click',()=>{
+        const inputs = document.querySelectorAll('.frm input,select')
+        for(let i=0; i<inputs.length; i++){
+            inputs[i].disabled = false
+        }
+        if (main_data == 'new'){
+            document.querySelector('#edtCodInt').disabled = true
+        }
+        document.querySelector('#btnEdit').style.display = 'none'
+        document.querySelector('#btnSave').style.display = 'block'
+        document.querySelector('#btnDel').style.display = 'block'
+        document.querySelector('#frm-view').style.display = 'none'
+        document.querySelector('#frm-edit').style.display = 'flex'
+    })
 
     document.querySelector('#btnSave').addEventListener('click',()=>{
         const params = new Object;
@@ -129,12 +180,28 @@ console.log(main_data.tipo)
             closeModal('all')
         })
 
+    })
 
 
-        console.log(params)
+    document.querySelector('#btnDel').addEventListener('click',()=>{
+        if (confirm('Deseja realmente deletar este produto?')) {
+            const params = new Object;
+                params.id = main_data.id
+                params.hash = localStorage.getItem('hash');
 
-//        checkPerm()
+            const myPromisse = queryDB(params,13);
+            myPromisse.then((resolve)=>{
+                closeModal('all')
+                document.querySelector('#btnBusca').click()
+            })
+        }
+    })
+
+    document.querySelector('#btnEtq').addEventListener('click',()=>{
+
+        print_etq(main_data)
 
     })
+
 
 </script>

@@ -1,0 +1,73 @@
+
+<template>
+    <style>
+
+        #btnPrint{
+            width: 98%;
+            display: none;
+        }
+
+
+    </style>
+  
+    <div class="form-base">
+        <h1>Planejamento e Controle de Produção</h1>
+        <fieldset>
+            <legend id="lgdSem">Semana</legend>
+
+            <div class="inline">
+                <label for="edtSem">Semana</label>
+                <input type="date" id="edtSem">
+                <button id="btnBusca">Buscar</button>
+
+            </div>
+            <table id="tblPCP"></table>
+            <button id="btnPrint">Imprimir</button>
+        </fieldset>
+
+    </div>
+
+</template>
+<script>
+    document.querySelector('#edtSem').value = today.getFormatDate()
+
+
+    document.querySelector('#btnBusca').addEventListener('click',()=>{
+
+        const week = new Date(document.querySelector('#edtSem').value)
+        // segunda feira
+        week.setDate(week.getDate() - week.getDay()+1);
+        week.start = week.getFormatDate()
+        document.querySelector('#lgdSem').innerHTML = `Semana de ${week.getFormatBR()}`
+        // domingo
+        week.setDate(week.getDate()+6)
+        week.end = week.getFormatDate()
+        document.querySelector('#lgdSem').innerHTML += ` a ${week.getFormatBR()}`
+
+
+        const tbl = document.getElementById('tblPCP')
+        tbl.innerHTML = ''
+        const params = new Object;
+            params.hash = localStorage.getItem('hash');
+            params.inicio = week.start
+            params.final = week.end
+
+        const myPromisse = queryDB(params,14);
+
+        myPromisse.then((resolve)=>{
+            const json = JSON.parse(resolve)
+
+            console.log(json)
+
+        })
+
+
+
+
+
+        console.log(week.start+'-'+week.end)
+
+    })
+
+
+</script>

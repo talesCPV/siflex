@@ -11,19 +11,19 @@
 			"modulo" : "Produtos",
 			"script" : "#",
 			"icone"  : "fa fa-home",
-			"access" : [1,2,3,4,5,6,7,8,9,10],
+			"access" : [3,4,10],
 			"itens"  : [
 				{
 					"modulo" : "Pesquisa",
 					"script" : "javascript:openHTML('produtos.html','content-screen')",
-					"access" : [10],
+					"access" : [10,4,3],
 					"icone"  : "fa fa-archive",
 					"itens"  : []
 				},
 				{
 					"modulo" : "Cadastro",
-					"script" : "javascript:openHTML('viewProd.html','pop-up','Cadastro de Produtos')",
-					"access" : [10],
+					"script" : "javascript:openHTML('viewProd.html','pop-up','Cadastro de Produtos','new')",
+					"access" : [10,4],
 					"icone"  : "fa fa-archive",
 					"itens"  : []
 				}				
