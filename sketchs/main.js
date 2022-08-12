@@ -21,6 +21,11 @@ Date.prototype.getCurrentWeek = function(){
     return (`${this.getDate().toString().padStart(2,'0')}/${(this.getMonth()+1).toString().padStart(2,'0')}/${this.getFullYear()}`)
 }
 
+Date.prototype.getWeekDay = function(){
+    const dia = ['Dom','Seg','Ter','Qua','Qui','Sex','Sab']
+    return dia[this.getDay()]
+}
+
 
 /* HASH */
 

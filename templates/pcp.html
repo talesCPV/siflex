@@ -8,6 +8,23 @@
         }
 
 
+        @media all and (max-width : 768px) {
+
+            td{
+                font-size: 0.6em;
+                max-width: 150px ;
+            }
+
+            tr{
+                white-space: nowrap;
+                overflow: scroll;
+                text-overflow: ellipsis;
+                max-height: 80px;
+            }
+
+
+        }        
+
     </style>
   
     <div class="form-base">
@@ -34,19 +51,31 @@
 
     document.querySelector('#btnBusca').addEventListener('click',()=>{
 
+        const dia = ['Seg','Ter','Qua','Qui','Sex','Sab','Dom']
         const week = new Date(document.querySelector('#edtSem').value)
-        // segunda feira
+        const tbl = document.getElementById('tblPCP')
+        tbl.innerHTML = ''
+        tbl.appendChild(makeHeader(['Dia','Eq. Frente','Eq. Suporte','Costura','Montegem']))
         week.setDate(week.getDate() - week.getDay()+1);
-        week.start = week.getFormatDate()
         document.querySelector('#lgdSem').innerHTML = `Semana de ${week.getFormatBR()}`
-        // domingo
-        week.setDate(week.getDate()+6)
+
+        week.start = week.getFormatDate()
+        for(let i=0; i<7; i++){
+            const row = document.createElement('tr')            
+            row.classList = 'd-'+week.getFormatDate()
+            row.id = dia[i]
+            for(let j=0; j<5; j++){
+                const td = document.createElement('td')
+                td.innerHTML = j==0 ? dia[i] : ''
+                row.appendChild(td)
+            }
+            tbl.appendChild(row)
+            week.setDate(week.getDate()+1)
+        }
+//        week.setDate(week.getDate()+6)
         week.end = week.getFormatDate()
         document.querySelector('#lgdSem').innerHTML += ` a ${week.getFormatBR()}`
 
-
-        const tbl = document.getElementById('tblPCP')
-        tbl.innerHTML = ''
         const params = new Object;
             params.hash = localStorage.getItem('hash');
             params.inicio = week.start
@@ -55,9 +84,23 @@
         const myPromisse = queryDB(params,14);
 
         myPromisse.then((resolve)=>{
-            const json = JSON.parse(resolve)
 
-            console.log(json)
+            if(resolve.trim() != ""){
+                const json = JSON.parse(resolve);
+console.log(json)
+                for(let i=0; i<json.length;i++){
+                    looking = document.querySelector('.d-'+json[i].data_serv)
+                    if(looking != undefined ){
+                        looking.cells[1].innerHTML = json[i].frente
+                        looking.cells[2].innerHTML = json[i].suporte
+                        looking.cells[3].innerHTML = json[i].costura
+                        looking.cells[4].innerHTML = json[i].montagem
+                    }
+                }                
+            }        
+
+
+
 
         })
 
