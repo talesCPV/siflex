@@ -6,7 +6,6 @@
         }
 
         .frm button{
-            width: 98%;
             display: none;
         }
 
@@ -124,6 +123,7 @@
         })
 
         fillCombo('cmbUnd',params,8,['sigla','nome'],typeof main_data === 'object' ? main_data.unidade :'' )
+        params.tipo = 'FOR'
         fillCombo('cmbForn',params,11,['id','cod_nome'],typeof main_data === 'object' ? main_data.id_emp :'' )
 
         if (main_data != 'new'){

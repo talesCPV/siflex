@@ -1,0 +1,85 @@
+
+<template>
+    <style>
+
+
+    </style>
+
+    <div class="form-base">
+        <h1>Análise de Frota</h1>
+
+        <fieldset>
+            <legend>Busca Por:</legend>
+            <div class="inline">
+                <select id="cmbBusca">
+                    <option value="true" signal="="  val="true">Todos</option>
+                    <option value="e.nome" signal="LIKE">Cliente</option>
+                    <option value="e.id" signal="=">Código do Cliente</option>
+                    <option value="a.num_carro" signal="LIKE">Num. do Carro</option>
+                    <option value="a.id" signal="=">Cod.</option>
+                </select>
+                <select id="cmbExec">
+                    <option value="1">Todos</option>
+                    <option value="2">Executados</option>
+                    <option value="3" selected>Não Executados</option>
+                </select>
+                <input type="text" id="edtBusca">
+                <button id="btnBusca">Busca</button>
+            </div>
+            <div class="inline">
+                <label for="ckbData">Por data</label>
+                <input type="checkbox" id="ckbData" checked>
+                <input type="date" id="edtIni">
+                <input type="date" id="edtFin">
+            </div>
+
+
+        </fieldset>
+
+        <table id="tblAnaFrota"></table>
+
+
+    </div>
+
+</template>
+<script>
+    document.querySelector('#edtIni').value = today.getFormatDate()
+    document.querySelector('#edtFin').value = today.getFormatDate()
+
+    document.querySelector('#btnBusca').addEventListener('click',()=>{
+
+        const sel = document.querySelector('#cmbBusca')
+        const field = sel.value
+        const signal = sel.options[sel.selectedIndex].getAttribute('signal')
+        const ckb = document.querySelector('#ckbData').checked
+        let value = sel.options[sel.selectedIndex].hasAttribute('val') ? sel.options[sel.selectedIndex].getAttribute('val') : document.querySelector('#edtBusca').value.trim()
+        value = signal=='LIKE' ? `"%${value}%"` : sel=='true'? value : `"${value}"`
+
+        const tbl = document.getElementById('tblAnaFrota')
+        tbl.innerHTML = ''
+        const params = new Object;
+            params.field = field
+            params.signal = signal
+            params.value = value
+            params.ini = ckb ? document.querySelector('#edtIni').value : '2000-01-01';
+            params.fin = ckb ? document.querySelector('#edtFin').value : '2100-12-31';
+
+        const myPromisse = queryDB(params,18);
+
+        myPromisse.then((resolve)=>{
+            if(resolve.trim() != ""){
+                const json = JSON.parse(resolve);
+                console.log(json)
+//                tbl.appendChild(makeHeader(['Cod.|mobHide','Desc.','Und|mobHide','Estq.|mobHide','Cod. Prod.|mobHide', 'Forn.|mobHide','R$','Img.|mobHide']))
+//                for(let i=0; i<json.length;i++){
+//                    tbl.appendChild(makeRow(json[i],['cod|mobHide','descricao','unidade|mobHide','estoque|mobHide','cod_bar|mobHide','nome|mobHide','preco_venda','img_path|mobHide|{"else":"@","":"x"}']))
+//                }                
+            }        
+        });
+
+
+    })
+
+
+
+</script>

@@ -9,7 +9,12 @@
         box-sizing: border-box;
     }
     
-    input, select{
+    input[type=checkbox]{
+        width: auto !important;
+        margin: auto;
+    }
+
+    input, select, textarea{
         padding: 10px;
         margin: 10px;
         min-width: 30px;;
@@ -75,6 +80,9 @@
         font-family: 'Bree Serif', 'serif';
         }
 
+    fieldset button{
+        width: 98%;
+    }
 
     /* CLASSES */
 
@@ -83,7 +91,7 @@
         padding: 10px;
     }
 
-    .inline input, select{
+    .inline input, select, textarea{
         width: 97%;
     }
 

@@ -26,6 +26,10 @@ Date.prototype.getWeekDay = function(){
     return dia[this.getDay()]
 }
 
+Date.prototype.change = function(N=1){
+   this.setDate(this.getDate()+N)
+}
+
 
 /* HASH */
 

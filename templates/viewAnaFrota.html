@@ -1,0 +1,84 @@
+
+<template>
+    <style>
+
+        .inline label{
+            min-width: 200px;
+            flex-basis: 2;
+        }
+
+    </style>
+  
+    <fieldset>
+        <legend>Carro</legend>
+        <div class="inline">
+            <label for="cmbCli">Cliente</label>
+            <select id="cmbCli"></select>
+        </div>
+        <div class="inline">
+            <label for="edtData">Data</label>
+            <input type="date" id="edtData">
+        </div>
+        <div class="inline">
+            <label for="edtNumCarro">Num. do Carro*</label>
+            <input type="text" id="edtNumCarro">
+        </div>
+        <div class="inline">
+            <label for="cmbLocal">Local de Execução</label>
+            <select id="cmbLocal">
+                <option value="No Cliente">No Cliente</option>
+                <option value="Na Flexibus">Na Fábrica</option>
+            </select>
+        </div>
+        <div class="inline">
+            <label for="edtDetal">Detalhamento *</label>
+            <textarea id="edtDetal" cols="30" rows="10"></textarea>
+        </div>
+        <div class="inline">
+            <label for="edtTecnico">Técnico Responsável *</label>
+            <input type="text" id="edtTecnico" value="Bruno Mathias">
+        </div>
+        <div class="inline">
+            <label for="edtValor">Valor R$</label>
+            <input type="text" id="edtValor" value="0" onkeyup="return number(this)">
+        </div>
+
+        <button id="btnCad">Cadastrar</button>
+
+    </fieldset>
+
+
+</template>
+<script>
+
+    document.querySelector('#edtData').value = today.getFormatDate()
+
+    const params = new Object;
+        params.hash = localStorage.getItem('hash');
+        params.tipo = 'CLI'
+
+
+    fillCombo('cmbCli',params,11,['id','cod_nome'],typeof main_data === 'object' ? main_data.id_emp :'' )
+
+
+
+    document.querySelector('#btnCad').addEventListener('click',()=>{
+
+        const params = new Object;
+            params.id = typeof main_data === 'object' ? main_data.id :'DEFAULT' 
+            params.id_emp = document.querySelector('#cmbCli').value
+            params.data_analise = document.querySelector('#edtData').value.trim()
+            params.num_carro = document.querySelector('#edtNumCarro').value.trim()
+            params.func = document.querySelector('#edtTecnico').value.trim()
+            params.local = document.querySelector('#cmbLocal').value
+            params.valor = document.querySelector('#edtValor').value.trim()
+            params.obs = document.querySelector('#edtDetal').value.trim()
+
+        const myPromisse = queryDB(params,17);
+        myPromisse.then((resolve)=>{
+            closeModal('all')
+        })
+
+    })
+
+</script>

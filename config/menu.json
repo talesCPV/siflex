@@ -45,18 +45,48 @@
 					"itens"  : []
 				},
 				{
-					"modulo" : "Controles",
-					"script" : "javascript:openHTML('controles.html','content-screen')",
+					"modulo" : "Análise Frota",
+					"script" : "#",
 					"access" : [10],
 					"icone"  : "fa fa-industry",
-					"itens"  : []
+					"itens"  : [
+						{
+							"modulo" : "Cadastro",
+							"script" : "javascript:openHTML('viewAnaFrota.html','pop-up','Análise de Frota')",
+							"access" : [10],
+							"icone"  : "fa fa-archive",
+							"itens"  : []
+						},
+						{
+							"modulo" : "Pesquisa",
+							"script" : "javascript:openHTML('anafrota.html','content-screen')",
+							"access" : [10],
+							"icone"  : "fa fa-archive",
+							"itens"  : []
+						}
+					]
 				},
 				{
-					"modulo" : "Feriados",
+					"modulo" : "Serviços Exec.",
 					"script" : "javascript:openHTML('feriados.html','content-screen')",
 					"access" : [10],
 					"icone"  : "fa fa-industry",
-					"itens"  : []
+					"itens"  : [
+						{
+							"modulo" : "Cadastro",
+							"script" : "javascript:openHTML('anaFrota.html','content-screen')",
+							"access" : [10],
+							"icone"  : "fa fa-archive",
+							"itens"  : []
+						},
+						{
+							"modulo" : "Pesquisa",
+							"script" : "javascript:openHTML('pcp.html','content-screen')",
+							"access" : [10],
+							"icone"  : "fa fa-archive",
+							"itens"  : []
+						}						
+					]
 				},
 				{
 					"modulo" : "Usuarios",

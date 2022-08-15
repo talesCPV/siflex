@@ -1,0 +1,77 @@
+
+<template>
+    <style>
+        .inline textarea{
+            width: 97%;
+            font-size: 1.4em;
+        }
+
+        #btnSave{
+            width: 97%;
+        }
+
+    </style>
+  
+    <fieldset>
+        <legend id="lgdPCP"></legend>
+
+        <div class="inline">
+            <label for="edtFrente">Eq. Frente</label>
+            <textarea id="edtFrente" cols="30" rows="10"></textarea>
+        </div>
+        <div class="inline">
+            <label for="edtSuporte">Eq. Suporte</label>
+            <textarea id="edtSuporte" cols="30" rows="10"></textarea>
+        </div>
+        <div class="inline">
+            <label for="edtCostura">Costura</label>
+            <textarea id="edtCostura" cols="30" rows="10"></textarea>
+        </div>
+        <div class="inline">
+            <label for="edtMontagem">Montagem</label>
+            <textarea id="edtMontagem" cols="30" rows="10"></textarea>
+        </div> 
+        <button id="btnSave">Salvar</button>       
+    </fieldset>
+
+
+
+</template>
+<script>
+  
+    document.querySelector('#lgdPCP').innerHTML = `${main_data.dayweek} - ${main_data.day.getFormatBR()}`
+    document.querySelector('#edtFrente').innerHTML = main_data.frente != undefined ? main_data.frente : ''
+    document.querySelector('#edtSuporte').innerHTML = main_data.suporte != undefined ? main_data.suporte : ''
+    document.querySelector('#edtCostura').innerHTML = main_data.costura != undefined ? main_data.costura : ''
+    document.querySelector('#edtMontagem').innerHTML = main_data.montagem != undefined ? main_data.montagem : ''
+
+    document.querySelector('#btnSave').addEventListener('click',()=>{
+
+        const frente = document.querySelector('#edtFrente').value.toUpperCase().trim()
+        const suporte = document.querySelector('#edtSuporte').value.toUpperCase().trim()
+        const costura = document.querySelector('#edtCostura').value.toUpperCase().trim()
+        const montagem = document.querySelector('#edtMontagem').value.toUpperCase().trim()        
+
+        let myPromisse
+        const params = new Object;
+            params.id = main_data.id == undefined ? 'DEFAULT' : main_data.id
+
+        if(frente == ''&& suporte == ''&& costura == ''&& montagem == ''){            
+            params.hash = localStorage.getItem('hash');
+            myPromisse = queryDB(params,16);
+        }else{
+            params.data = main_data.day.getFormatDate()
+            params.suporte = suporte
+            params.frente = frente
+            params.costura = costura
+            params.montagem = montagem
+            myPromisse = queryDB(params,15);
+        }
+
+        myPromisse.then((resolve)=>{
+                closeModal('all')
+                openHTML('pcp.html','content-screen')
+            })
+    })
+
+</script>
