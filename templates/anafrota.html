@@ -11,6 +11,7 @@
         <fieldset>
             <legend>Busca Por:</legend>
             <div class="inline">
+                <input type="text" id="edtBusca"placeholder="Digite sua Busca" >
                 <select id="cmbBusca">
                     <option value="true" signal="="  val="true">Todos</option>
                     <option value="e.nome" signal="LIKE">Cliente</option>
@@ -23,14 +24,13 @@
                     <option value="2">Executados</option>
                     <option value="3" selected>Não Executados</option>
                 </select>
-                <input type="text" id="edtBusca">
                 <button id="btnBusca">Busca</button>
             </div>
             <div class="inline">
                 <label for="ckbData">Por data</label>
                 <input type="checkbox" id="ckbData" checked>
-                <input type="date" id="edtIni">
-                <input type="date" id="edtFin">
+                <input type="date" id="edtIni" onkeypress="return getEnter(event, 'btnBusca')">
+                <input type="date" id="edtFin" onkeypress="return getEnter(event, 'btnBusca')">
             </div>
 
 
@@ -53,10 +53,9 @@
         const signal = sel.options[sel.selectedIndex].getAttribute('signal')
         const ckb = document.querySelector('#ckbData').checked
         let value = sel.options[sel.selectedIndex].hasAttribute('val') ? sel.options[sel.selectedIndex].getAttribute('val') : document.querySelector('#edtBusca').value.trim()
-        value = signal=='LIKE' ? `"%${value}%"` : sel=='true'? value : `"${value}"`
+        value = signal=='LIKE' ? `"%${value}%"` : sel.value=='true'? sel.value : `"${value}"`
 
         const tbl = document.getElementById('tblAnaFrota')
-        tbl.innerHTML = ''
         const params = new Object;
             params.field = field
             params.signal = signal
@@ -69,17 +68,20 @@
         myPromisse.then((resolve)=>{
             if(resolve.trim() != ""){
                 const json = JSON.parse(resolve);
-                console.log(json)
-//                tbl.appendChild(makeHeader(['Cod.|mobHide','Desc.','Und|mobHide','Estq.|mobHide','Cod. Prod.|mobHide', 'Forn.|mobHide','R$','Img.|mobHide']))
-//                for(let i=0; i<json.length;i++){
-//                    tbl.appendChild(makeRow(json[i],['cod|mobHide','descricao','unidade|mobHide','estoque|mobHide','cod_bar|mobHide','nome|mobHide','preco_venda','img_path|mobHide|{"else":"@","":"x"}']))
-//                }                
+                tbl.head('Cod.|mobHide,Cliente,Carro,Visita.,Exec.|mobHide,Valor R$|mobHide')                                             
+                for(let i=0; i<json.length;i++){
+                    tbl.plot(json[i],'id|mobHide,fantasia,num_carro,data_analise,exec|mobHide,valor|mobHide','int,Upp,str,date,change 0=NÃO 1=SIM .=,R$.')
+                }                               
             }        
-        });
-
-
+        })
     })
 
+    document.querySelector('#tblAnaFrota').addEventListener('click',(e)=>{
+        data = e.target.parentNode.data
+        data.mode = 'edit'
+        openHTML('viewAnaFrota.html','pop-up','Editar Análise de Frota',data,73)
+
+    })
 
 
 </script>

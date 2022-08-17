@@ -38,10 +38,10 @@
                 const json = JSON.parse(resolve);
 
                 document.querySelector('#fdsUser').style.display = json.length > 0 ? 'block' : 'none'
-                tbl.appendChild(makeHeader(['Usuário','Nome']))
-
+                tbl.head('Usuário,Nome,Email')
                 for(let i=0; i<json.length;i++){
-                    tbl.appendChild(makeRow(json[i],['user','nome']))
+                    console.log(json[i])
+                    tbl.plot(json[i],'nome,user,email','str,Upp,str')
                 }
             }        
 

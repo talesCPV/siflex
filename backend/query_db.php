@@ -32,7 +32,7 @@
          "17" => 'INSERT INTO tb_analise_frota (id, id_emp, data_analise, num_carro, func, local, valor, obs) 
             VALUES ("x00","x01", "x02", "x03", "x04", "x05", "x06", "x07", "x08") ON DUPLICATE KEY UPDATE 
             id_emp="x01", data_analise="x02", num_carro="x03", func="x04", local="x05", valor="x06", obs="x07";',
-         "18" => 'SELECT A.id, E.fantasia, A.num_carro, A.data_analise, A.func, A.exec, A.obs, E.id, A.valor 
+         "18" => 'SELECT A.*, E.fantasia, E.id AS id_emp 
             FROM tb_analise_frota as A INNER JOIN tb_empresa as E 
             ON x00 x01 x02 AND A.id_emp = E.id AND A.data_analise >= "x03" AND A.data_analise <= "x04";'
 

@@ -29,7 +29,76 @@ Date.prototype.getWeekDay = function(){
 Date.prototype.change = function(N=1){
    this.setDate(this.getDate()+N)
 }
+// 'id|mobHide,fantasia,num_carro|mobHide,data_analise|mobHide,exec|mobHide,valor|mobHide'
+// 'int,UPP,str,date,change 0=NÃO 1=SIM .=X,R$.'
+HTMLTableElement.prototype.plot = function(obj, fields,type=''){
+    fields = fields.split(',')
+    type = type=='' ? '' : type.split(',')
+    const tr = document.createElement('tr')
+    for(let i=0; i<fields.length; i++){
+        const td = document.createElement('td')
+        const arr = fields[i].split('|')
+        if(arr.length > 1){
+            td.classList = arr[1]
+        }
+        let html
+        if(type.length > 0 && i<type.length){
+            switch (type[i].substring(0,3)) {
+                case 'int':
+                  html = parseInt(obj[arr[0]])
+                  break;
+                case 'Upp':
+                    html = obj[arr[0]].toUpperCase()
+                    break
+                case 'str':
+                    html = obj[arr[0]]
+                  break;
+                case 'dat':
+                    html = obj[arr[0]].substring(8,10)+'/'+ obj[arr[0]].substring(5,7)+'/'+obj[arr[0]].substring(0,4)
+                    break                 
+                case 'Low':
+                    html = obj[arr[0]].toLowerCase()
+                    break;
+                case 'R$.':
+                    html = 'R$'+ parseFloat(obj[arr[0]]).toFixed(2)
+                    break;             
+                case 'cha':
+                    let op = type[i].split(' ')
+                    html = ''
+                    for(let j=1; j<op.length; j++){
+                        if((obj[arr[0]] == op[j].split('=')[0])||(j==op.length-1 && html=='')||obj[arr[0]] == null ){
+                            html = op[j].split('=')[1]
+                        }
+                    }
+                    break;                         
+                default:
+                  html = obj[arr[0]]
+            }            
+        }else{
+            html = obj[fields[i]]
+        }
+        td.innerHTML = html
+        tr.appendChild(td)
+    }
+    tr.data = obj
+    this.appendChild(tr)
+}
 
+HTMLTableElement.prototype.head = function(hd){
+    this.innerHTML = ''
+    hd = hd.split(',')
+    const tr = document.createElement('tr')
+    for(let i=0; i<hd.length; i++){
+        const th = document.createElement('th')
+        const arr = hd[i].split('|')
+        if(arr.length > 1){
+            th.classList = arr[1]
+        }
+        th.innerHTML = arr[0]
+        tr.appendChild(th)
+    }
+    this.appendChild(tr)
+}
 
 /* HASH */
 
@@ -250,20 +319,6 @@ function openMenu(){
 
 /*  FILL TABLES  */
 
-function makeHeader(hd){
-    const tr = document.createElement('tr')
-    for(let i=0; i<hd.length; i++){
-        const th = document.createElement('th')
-        const arr = hd[i].split('|')
-        if(arr.length > 1){
-            th.classList = arr[1]
-        }
-        th.innerHTML = arr[0]
-        tr.appendChild(th)
-    }
-    return tr
-}
-
 /*  
     fields: array de strings
     adicionar classes: "valor da string| nome da classe"
@@ -271,7 +326,7 @@ function makeHeader(hd){
     obj (exemp.): {"else":"valor padrão", "valor x":"valor q irá substituir x"}
     PS: se quiser um valor padrão, sempre começar com else, senão caso nao encontre o valor x ele mantem o valor original
 */
-
+/*
 function makeRow(obj, fields){
     const tr = document.createElement('tr')
     for(let i=0; i<fields.length; i++){
@@ -294,7 +349,7 @@ function makeRow(obj, fields){
     tr.data = obj
     return tr
 }
-
+*/
 
 /*  FILL COMBOS  */
 

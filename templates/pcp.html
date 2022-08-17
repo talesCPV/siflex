@@ -65,7 +65,7 @@
         const week = new Date(document.querySelector('#edtSem').value)
         const tbl = document.getElementById('tblPCP')
         tbl.innerHTML = ''
-        tbl.appendChild(makeHeader(['Dia','Eq. Frente','Eq. Suporte','Costura','Montagem']))
+        tbl.head('Dia,Eq. Frente,Eq. Suporte,Costura,Montagem')
         week.change(-week.getDay()+1)
         document.querySelector('#lgdSem').innerHTML = `Semana de ${week.getFormatBR()}`
 

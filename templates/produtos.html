@@ -61,9 +61,9 @@
         myPromisse.then((resolve)=>{
             if(resolve.trim() != ""){
                 const json = JSON.parse(resolve);
-                tbl.appendChild(makeHeader(['Cod.|mobHide','Desc.','Und|mobHide','Estq.|mobHide','Cod. Prod.|mobHide', 'Forn.|mobHide','R$','Img.|mobHide']))
+                tbl.head('Cod.|mobHide,Desc.,Und|mobHide,Estq.|mobHide,Cod. Prod.|mobHide,Forn.|mobHide,R$')
                 for(let i=0; i<json.length;i++){
-                    tbl.appendChild(makeRow(json[i],['cod|mobHide','descricao','unidade|mobHide','estoque|mobHide','cod_bar|mobHide','nome|mobHide','preco_venda','img_path|mobHide|{"else":"@","":"x"}']))
+                    tbl.plot(json[i],'cod|mobHide,descricao,unidade|mobHide,estoque|mobHide,cod_bar|mobHide,nome|mobHide,preco_venda','int,Upp,str,str,str,Upp,str')
                 }                
             }        
         });

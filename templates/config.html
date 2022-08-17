@@ -30,9 +30,9 @@
         myPromisse.then((resolve)=>{
             if(resolve.trim() != ""){
                 const json = JSON.parse(resolve);
-                tbl.appendChild(makeHeader(['Nome','Sigla']))
+                tbl.head('Nome,Sigla')
                 for(let i=0; i<json.length;i++){
-                    tbl.appendChild(makeRow(json[i],['nome','sigla']))
+                    tbl.plot(json[i],'nome,sigla')
                 }                
             } 
         })

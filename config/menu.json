@@ -59,7 +59,7 @@
 						},
 						{
 							"modulo" : "Pesquisa",
-							"script" : "javascript:openHTML('anafrota.html','content-screen')",
+							"script" : "javascript:openHTML('anafrota.html','content-screen','CADASTRO',0)",
 							"access" : [10],
 							"icone"  : "fa fa-archive",
 							"itens"  : []
