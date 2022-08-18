@@ -177,6 +177,7 @@
 
         const myPromisse = queryDB(params,12);
         myPromisse.then((resolve)=>{
+            document.querySelector('#btnBusca').click()
             closeModal('all')
         })
 
@@ -191,8 +192,8 @@
 
             const myPromisse = queryDB(params,13);
             myPromisse.then((resolve)=>{
-                closeModal('all')
                 document.querySelector('#btnBusca').click()
+                closeModal('all')                
             })
         }
     })

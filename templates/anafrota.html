@@ -1,7 +1,19 @@
 
 <template>
     <style>
+        button{
+            width: 100%;
+        }
 
+        #btnControl{
+            display: none;
+            width: 100%;
+            justify-content: center;
+        }
+
+        table tr{  
+           width: 100%;
+        }
 
     </style>
 
@@ -11,13 +23,13 @@
         <fieldset>
             <legend>Busca Por:</legend>
             <div class="inline">
-                <input type="text" id="edtBusca"placeholder="Digite sua Busca" >
+                <input type="text" id="edtBusca"placeholder="Digite sua Busca" onkeypress="return getEnter(event, 'btnBusca')">
                 <select id="cmbBusca">
                     <option value="true" signal="="  val="true">Todos</option>
-                    <option value="e.nome" signal="LIKE">Cliente</option>
-                    <option value="e.id" signal="=">Código do Cliente</option>
-                    <option value="a.num_carro" signal="LIKE">Num. do Carro</option>
-                    <option value="a.id" signal="=">Cod.</option>
+                    <option value="E.nome" signal="LIKE">Cliente</option>
+                    <option value="E.id" signal="=">Código do Cliente</option>
+                    <option value="A.num_carro" signal="LIKE">Num. do Carro</option>
+                    <option value="A.id" signal="=">Cod.</option>
                 </select>
                 <select id="cmbExec">
                     <option value="1">Todos</option>
@@ -37,14 +49,17 @@
         </fieldset>
 
         <table id="tblAnaFrota"></table>
-
+        <div class="inline" id="btnControl">
+            <button id="btnRelat">Reltório</button>
+            <button id="btnOrc">Orçamento</button>
+        </div>
 
     </div>
 
 </template>
 <script>
-    document.querySelector('#edtIni').value = today.getFormatDate()
-    document.querySelector('#edtFin').value = today.getFormatDate()
+    document.querySelector('#edtIni').value = today.getFormatDate(-7)
+    document.querySelector('#edtFin').value = today.getFormatDate(7)
 
     document.querySelector('#btnBusca').addEventListener('click',()=>{
 
@@ -67,7 +82,8 @@
 
         myPromisse.then((resolve)=>{
             if(resolve.trim() != ""){
-                const json = JSON.parse(resolve);
+                const json = JSON.parse(resolve);                
+                document.querySelector('#btnControl').style.display = json.length > 0 ? 'flex' : 'none'
                 tbl.head('Cod.|mobHide,Cliente,Carro,Visita.,Exec.|mobHide,Valor R$|mobHide')                                             
                 for(let i=0; i<json.length;i++){
                     tbl.plot(json[i],'id|mobHide,fantasia,num_carro,data_analise,exec|mobHide,valor|mobHide','int,Upp,str,date,change 0=NÃO 1=SIM .=,R$.')
@@ -81,6 +97,14 @@
         data.mode = 'edit'
         openHTML('viewAnaFrota.html','pop-up','Editar Análise de Frota',data,73)
 
+    })
+
+    document.querySelector('#btnRelat').addEventListener('click',()=>{
+        anaFrotaRelat(document.getElementById('tblAnaFrota'))
+    })
+
+    document.querySelector('#btnOrc').addEventListener('click',()=>{
+        anaFrotaOrc(document.getElementById('tblAnaFrota'))
     })
 
 

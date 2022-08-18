@@ -29,17 +29,19 @@
          "15" => 'INSERT INTO tb_pcp (id, data_serv, suporte, frente, costura, montagem) VALUES(x00,"x01","x02","x03","x04","x05")
             ON DUPLICATE KEY UPDATE suporte="x02", frente="x03", costura="x04", montagem="x05";',
          "16" => 'DELETE FROM tb_pcp WHERE id="x00" AND (SELECT U.class FROM tb_usuario AS U WHERE hash="x01") IN (10,4);',
-         "17" => 'INSERT INTO tb_analise_frota (id, id_emp, data_analise, num_carro, func, local, valor, obs) 
+         "17" => 'INSERT INTO tb_analise_frota (id, id_emp, data_analise, num_carro, func, local, valor, obs, exec) 
             VALUES ("x00","x01", "x02", "x03", "x04", "x05", "x06", "x07", "x08") ON DUPLICATE KEY UPDATE 
-            id_emp="x01", data_analise="x02", num_carro="x03", func="x04", local="x05", valor="x06", obs="x07";',
-         "18" => 'SELECT A.*, E.fantasia, E.id AS id_emp 
+            id_emp="x01", data_analise="x02", num_carro="x03", func="x04", local="x05", valor="x06", obs="x07", exec="x08";',
+         "18" => 'SELECT A.*, E.fantasia, E.id AS id_emp, E.cnpj, E.endereco, E.num, E.cidade, E.estado 
             FROM tb_analise_frota as A INNER JOIN tb_empresa as E 
-            ON x00 x01 x02 AND A.id_emp = E.id AND A.data_analise >= "x03" AND A.data_analise <= "x04";'
+            ON x00 x01 x02 AND A.id_emp = E.id AND A.data_analise >= "x03" AND A.data_analise <= "x04" ORDER BY A.data_analise DESC;',
+         "19" => 'DELETE FROM tb_analise_frota WHERE id="x00" AND (SELECT U.class FROM tb_usuario AS U WHERE hash="x01") IN (10,4);',
+         "20" => 'SELECT * FROM tb_financeiro WHERE x00 x01 x02 AND data_pg >= "x03" AND data_pg <= "x04" ORDER BY data_pg DESC; ',
 
 
     );
 
-    if (IsSet($_POST["cod"]) && IsSet($_POST["params"])  ){       
+    if (IsSet($_POST["cod"]) && IsSet($_POST["params"])){       
 
         $cod = $_POST["cod"];
         $params = json_decode($_POST["params"],true); 

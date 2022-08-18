@@ -1,0 +1,90 @@
+
+<template>
+    <style>
+
+    </style>
+
+
+    <div class="form-base">
+        <h1>Financeiro</h1>
+        <fieldset>
+            <legend>Fluxo de Caixa</legend>
+    
+            <div class="inline">
+                <label for="cmbBusca">Busca Por:</label>
+                <select id="cmbBusca">
+                    <optgroup label="Geral">
+                        <option value="true" signal="=" val="true">Todos</option>                        
+                        <option value="tipo" signal="=" val="ENTRADA">Entradas</option>
+                        <option value="tipo" signal="=" val="SAIDA">Saídas</option>
+                        <option value="emp" signal="LIKE">Cliente/Fornecedor</option>
+                        <option value="ref" signal="LIKE">Referência/NF</option>
+                        </optgroup>
+                    <optgroup label="Saídas">
+                        <option value="origem" signal="=" val="COM">Compras</option>
+                        <option value="origem" signal="=" val="IMP">Impostos</option>
+                        <option value="origem" signal="=" val="PGT">Pgto Funcionários</option>
+                        <option value="origem" signal="=" val="FIX">Custo Fixo</option>    
+                    </optgroup>
+                </select>
+                <input type="text" id="edtBusca" placeholder="Digite sua Busca">
+                <button id="btnBusca">OK</button>
+            </div>
+            <div class="inline">
+                <label for="ckbData">Início/Final</label>
+                <input type="checkbox" id="ckbData" checked>
+                <input type="date" id="edtIni">
+                <input type="date" id="edtFin">
+            </div>
+    
+        </fieldset>
+        <table id="tblFinan"></table>
+        <div class="inline" id="btnControl">
+            <button id="btnRelat">Reltório</button>
+        </div>        
+    </div>
+
+    
+
+</template>
+<script>
+    document.querySelector('#edtIni').value =  today.iniMonth()
+    document.querySelector('#edtFin').value =  today.finMonth()
+
+    document.querySelector('#btnBusca').addEventListener('click',()=>{
+
+        const sel = document.querySelector('#cmbBusca')
+        const field = sel.value
+        const signal = sel.options[sel.selectedIndex].getAttribute('signal')
+        const ckb = document.querySelector('#ckbData').checked
+        let value = sel.options[sel.selectedIndex].hasAttribute('val') ? sel.options[sel.selectedIndex].getAttribute('val') : document.querySelector('#edtBusca').value.trim()
+        value = signal=='LIKE' ? `"%${value}%"` : sel.value=='true'? sel.value : `"${value}"`
+
+        const tbl = document.getElementById('tblFinan')
+        const params = new Object;
+            params.field = field
+            params.signal = signal
+            params.value = value
+            params.ini = ckb ? document.querySelector('#edtIni').value : '2000-01-01';
+            params.fin = ckb ? document.querySelector('#edtFin').value : '2100-12-31';        
+
+        const myPromisse = queryDB(params,20);
+
+        myPromisse.then((resolve)=>{
+            if(resolve.trim() != ""){
+                const json = JSON.parse(resolve);      
+console.log(json)                   
+                       
+                document.querySelector('#btnControl').style.display = json.length > 0 ? 'flex' : 'none'
+                tbl.head('Cod.|mobHide,Tipo|mobHide,|mobHide,Ref./NF,Sacado|mobHide,Vencimento, Pgto.|mobHide, Valor R$|mobHide')                                             
+                for(let i=0; i<json.length;i++){
+                    tbl.plot(json[i],'id|mobHide,tipo|mobHide,origem|mobHide,ref,emp|mobHide,data_pg,pgto|mobHide,preco|mobHide','int,str,str,Upp,Upp,date,change 15=SIS .=**,R$.')
+                }                               
+                
+            }        
+        })
+
+    })
+
+
+</script>

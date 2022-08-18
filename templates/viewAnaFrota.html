@@ -22,17 +22,8 @@
         <div class="inline">
             <label for="edtData">Data *</label>
             <input type="date" id="edtData">
-        </div>
-        <div class="inline">
             <label for="edtNumCarro">Num. do Carro*</label>
-            <input type="text" id="edtNumCarro">
-        </div>
-        <div class="inline">
-            <label for="cmbLocal">Local de Execução</label>
-            <select id="cmbLocal">
-                <option value="No Cliente">No Cliente</option>
-                <option value="Na Flexibus">Na Fábrica</option>
-            </select>
+            <input type="text" id="edtNumCarro">           
         </div>
         <div class="inline">
             <label for="edtDetal">Detalhamento *</label>
@@ -41,10 +32,20 @@
         <div class="inline">
             <label for="edtTecnico">Técnico Responsável *</label>
             <input type="text" id="edtTecnico" value="Bruno Mathias">
-        </div>
+            <label for="cmbLocal">Local de Execução</label>
+            <select id="cmbLocal">
+                <option value="No Cliente">No Cliente</option>
+                <option value="Na Flexibus">Na Fábrica</option>
+            </select>             
+        </div>     
         <div class="inline">
             <label for="edtValor">Valor R$</label>
             <input type="text" id="edtValor" value="0" onkeyup="return number(this)">
+            <label for="cmbExe">Executado</label>
+            <select id="cmbExe">
+                <option value="0">NÃO</option>
+                <option value="1">SIM</option>
+            </select>
         </div>
 
         <button id="btnCad">Cadastrar</button>
@@ -74,11 +75,11 @@
         document.querySelector('#cmbLocal').value = main_data.local
         document.querySelector('#edtValor').value = parseFloat(main_data.valor).toFixed(2)
         document.querySelector('#edtDetal').value = main_data.obs
+        document.querySelector('#cmbExe').value = main_data.exec
         document.querySelector('#btnDel').style.display = 'block'
         document.querySelector('#btnCad').innerHTML = 'Salvar'
+     
     }
-
-
 
     document.querySelector('#btnCad').addEventListener('click',()=>{
 
@@ -92,14 +93,31 @@
                 params.local = document.querySelector('#cmbLocal').value
                 params.valor = document.querySelector('#edtValor').value.trim()
                 params.obs = document.querySelector('#edtDetal').value.trim()
-
+                params.exec = document.querySelector('#cmbExe').value
             const myPromisse = queryDB(params,17);
             myPromisse.then((resolve)=>{
+                document.querySelector('#btnBusca').click()
                 closeModal('all')
             })
-
         }
-
     })
+
+    document.querySelector('#btnDel').addEventListener('click',()=>{
+        if (confirm('Deseja realmente deletar este Registro?')) {
+            const params = new Object;
+                params.id = main_data.id
+                params.hash = localStorage.getItem('hash')
+
+            const myPromisse = queryDB(params,19);
+
+            myPromisse.then((resolve)=>{
+                document.querySelector('#btnBusca').click()
+                closeModal('all')                
+            })
+
+
+        }        
+    })
+
 
 </script>

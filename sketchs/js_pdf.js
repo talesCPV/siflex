@@ -10,6 +10,7 @@ var txt = new Object
     txt.lineHeigth = 5
     txt.x = 10
     txt.y = 10
+    txt.page = 1
     txt.width = doc.internal.pageSize.getWidth() - txt.x
     txt.text
     txt.dim = [90,80] 
@@ -18,6 +19,15 @@ var imgData = new Image()
     imgData.src = 'assets/logo.png'
 
 /* FUNCTIONS */
+
+function addPage(Y,margin=10){
+    doc.text(txt.page.toString().padStart('0',2), doc.internal.pageSize.getWidth()-margin,doc.internal.pageSize.getHeight()-margin);
+    txt.page++
+    doc.addPage();
+    frame()
+    header_pdf()    
+    txt.y = Y 
+}
 
 function getBarcode(N, pos=[txt.dim[0]-41,txt.dim[1]-30, 36, 25] ){
     const bar = newBarcode(N,70)    
@@ -31,12 +41,12 @@ function clearTxt(y=10,x=10,dim=[90,80]){
         txt.lineHeigth = 5
         txt.x = x
         txt.y = y
+        txt.page = 1
         txt.width = doc.internal.pageSize.getWidth() - txt.x
         txt.text = ''
         txt.dim = dim 
 
 }
-
 
 function frame(margin=5){
     doc.rect(margin,margin,txt.dim[0]-margin*2,txt.dim[1]-margin*2)
@@ -56,39 +66,49 @@ function logo(pos = [14,7,36,25]){
     doc.addImage(imgData, 'png', pos[0], pos[1], pos[2], pos[3]);
 }
 
-function addLine(N=1){
+function addLine(N=1, botton=20, top=46){
     txt.y += txt.lineHeigth * N
-}
-
-function box(text,x,y,w){
-    const h = doc.getTextDimensions(text).h * 0.8       
-    text = text.split(' ')
-    let lin = ''
-    for(let i=0; i<text.length; i++){            
-        if(doc.getTextDimensions(lin+text[i]+' ').w < w ){
-            lin +=  text[i] + ' '
-        }else{
-            doc.text(lin, x,y);
-            size = lin.split('\n').length
-            y += lin.includes('\n')? h * size : h
-            lin =  text[i] + ' '                
-        }
-
+    if(txt.y >= doc.internal.pageSize.getHeight() - botton){
+        addPage(top)
+        return false
     }
-    doc.text(lin, x,y);
+    return true
+}
+
+function box(text,x,y,w,lh=0.8){
+    const h = txt.lineHeigth * lh   
+    text = text.trim().split('\n')
+    for(let i=0; i<text.length; i++){
+        const txt = text[i].trim().split(' ')
+        let lin = ''
+        for(let j=0; j<txt.length; j++){
+            if(doc.getTextDimensions(lin+txt[j]+' ').w < w ){
+                lin +=  txt[j] + ' '
+            }else{
+                console.log(lin)
+                doc.text(lin.trim(),x,y);
+                y += h
+                lin =  txt[j] + ' '
+                addLine()
+            }
+
+        }
+        lin.trim() != '' ? doc.text(lin,x,y): '';
+        y += h
+        addLine()
+    }    
 }
 
 
-function center_text(T='',box=[txt.y,0,doc.internal.pageSize.getWidth()]){
+function center_text(T='',box=[0,doc.internal.pageSize.getWidth()]){
     const text = T==''? txt.text : T
-    const text_size = doc.internal.getFontSize() * text.length 
-    const xOffset = (box[2] - box[1] - text_size) /2;
+    const w = doc.getTextDimensions(text).w
+    const xOffset = (box[2] - box[1] - w) /2;
     console.log(box)
-    console.log(text_size)
+    console.log(w)
     console.log(xOffset)
-    console.log(doc.getTextDimensions(text).w)
-
-    doc.text(text.toUpperCase(), xOffset, box[0]);
+   
+    doc.text(T, box[0] + xOffset, txt.y);
     addLine()
 }
 
@@ -104,10 +124,7 @@ function block_text(T=''){
         addLine()
         line = ''
         if (txt.y >= txt.dim[1]){
-            doc.addPage();
-            frame()
-            logo()
-            txt.y = 46 
+            addPage(46)
         }                
     }
 
@@ -127,6 +144,19 @@ function block_text(T=''){
     }
     print()
 }
+
+function header_pdf(){
+    logo([14,15,45,10])
+    //  CABEÇALHO
+    doc.setFontSize(12)
+    doc.setFont(undefined, 'bold')
+    doc.text('Av. Dr. Rosalvo de Almeida Telles, 2070', 95,13);
+    doc.text('Nova Cacapava - Cacapava-SP - CEP 12.283-020', 88,17);
+    doc.text('comercial@flexibus.com.br | (12) 3653-2230', 93,21);
+    doc.text('CNPJ 00.519.547/0001-06', 108,25);    
+
+}
+
 
 /*  RELATORIES  */
 
@@ -178,7 +208,7 @@ function print_pcp(tbl){
 
     doc = new jsPDF({
         orientation: '2',
-        unit: 'pt',
+        unit: 'mm',
         format: [297,210]
     })  
 
@@ -188,38 +218,164 @@ function print_pcp(tbl){
     logo([14,15,45,10])
 
 //  CABEÇALHO
-    doc.setFontSize(3)
+    doc.setFontSize(12)
     doc.setFont(undefined, 'bold')
     doc.text('Av. Dr. Rosalvo de Almeida Telles, 2070', 85,13);
-    doc.text('Nova Cacapava - Cacapava-SP - CEP 12.283-020', 78,17);
-    doc.text('comercial@flexibus.com.br | (12) 3653-2230', 83,21);
-    doc.text('CNPJ 00.519.547/0001-06', 98,25);
-    doc.setFontSize(20)
+    doc.text('Nova Cacapava - Cacapava-SP - CEP 12.283-020', 78,18);
+    doc.text('comercial@flexibus.com.br | (12) 3653-2230', 83,23);
+    doc.text('CNPJ 00.519.547/0001-06', 98,28);
+    doc.setFontSize(45)
     doc.text('PCP', 200,23);
-    doc.setFontSize(5)
+    doc.setFontSize(12)
     doc.text(`de ${tbl[1].data.day.getFormatBR()} a ${tbl[7].data.day.getFormatBR()}`, 186,28);
   
  // TEXT
     const x = [12,30,95,160,225]
     const y = [20,40.6,74.2,107.8,141.4,175]
     let y_
-    doc.setFontSize(3)
+    doc.setFontSize(12)
     doc.setFont(undefined, 'normal')
-    for(let row=0; row<tbl.length-2; row++){ 
+    for(let row=0; row<tbl.length-2; row++){
+        txt.y = 10 
         for(let cel=0; cel<tbl[row].cells.length;cel++){
             if(row == 0||cel == 0){
                 doc.setFont(undefined, 'bold')
-                doc.setFontSize(5)
+                doc.setFontSize(12)
                 y_ = 15
             }else{
                 doc.setFont(undefined, 'normal')
-                doc.setFontSize(3)
+                doc.setFontSize(8)
                 y_ = 0
             }
-            box(tbl[row].cells[cel].innerHTML, x[cel],y[row]+y_,65)
+            box(tbl[row].cells[cel].innerHTML, x[cel],y[row]+y_,170,0.8)
         }
     }
 
-
     doc.save('pcp.pdf')
+}
+
+function anaFrotaRelat(obj){
+
+    function postCli(data){
+        doc.setFont(undefined, 'bold')
+        line(txt.y)
+        addLine()
+        doc.text('Cliente: '+data.fantasia, txt.x,txt.y);
+        doc.text('CNPJ: '+getCNPJ(data.cnpj), txt.x+135,txt.y);
+        addLine()
+        doc.text('End.: '+data.endereco.trim()+','+data.num+'   '+data.cidade.trim()+'-'+data.estado, txt.x,txt.y);
+        addLine()
+        addLine()
+    }
+
+    doc = new jsPDF({
+        orientation: '2',
+        unit: 'mm',
+        format: [210,297]
+    })  
+
+    clearTxt(37,10,[210,297])
+    frame()
+    header_pdf()
+    doc.setFontSize(23)
+    doc.setFont(undefined, 'bold')
+    doc.text('ANÁLISE DE FROTA', txt.x+ 50,txt.y);
+    addLine()
+    doc.setFont(undefined, 'normal')
+    doc.setFontSize(12)
+    let lastEmp
+    let tot = 0
+    let subTot = 0
+    for(let i=1; i< obj.rows.length;i++){
+        const data = obj.rows[i].data
+
+        if(data.id_emp != lastEmp){
+            lastEmp = data.id_emp
+            postCli(data)
+        }
+        doc.setFont(undefined, 'normal')
+        doc.text(dataBR(data.data_analise) + '  Carro-'+data.num_carro, txt.x,txt.y);
+        doc.text('Executado: '+(data.exec=='1'?'SIM':'NÃO'), txt.x+ 70,txt.y);
+        doc.text('R$ '+parseFloat(data.valor).toFixed(2), txt.x+ 110,txt.y);
+        addLine()
+        subTot += parseFloat(data.valor)
+        if(i+1 == obj.rows.length || obj.rows[i+1].data.id_emp != lastEmp){
+            doc.setFont(undefined, 'bold')
+            doc.text(' Total', txt.x+ 90,txt.y);
+            doc.text('R$ '+subTot.toFixed(2), txt.x+ 110,txt.y);
+            doc.setFont(undefined, 'normal')
+            tot += subTot
+            subTot = 0
+            addLine()
+        }
+    }
+
+    doc.save('RelAnaFrot.pdf')
+
+}
+
+function anaFrotaOrc(obj){
+
+    function postCli(data){
+        doc.setFont(undefined, 'bold')
+        line(txt.y)
+        addLine(3)
+        doc.text(today.getFormatBR() +'  Cliente: '+data.fantasia, txt.x,txt.y);
+        doc.text('CNPJ: '+getCNPJ(data.cnpj), txt.x+135,txt.y);
+        addLine()
+        doc.text('End.: '+data.endereco.trim()+','+data.num+'   '+data.cidade.trim()+'-'+data.estado, txt.x,txt.y);
+        addLine(2)
+
+    }
+
+    doc = new jsPDF({
+        orientation: '2',
+        unit: 'mm',
+        format: [210,297]
+    })  
+
+    clearTxt(37,10,[210,297])
+    frame()
+    header_pdf()
+    doc.setFontSize(23)
+    doc.setFont(undefined, 'bold')
+    doc.text('ORÇAMENTO', txt.x+ 65,txt.y);
+    addLine()
+    doc.setFont(undefined, 'normal')
+    doc.setFontSize(12)
+    let lastEmp
+    let tot = 0
+    let subTot = 0
+    for(let i=1; i< obj.rows.length;i++){
+        const data = obj.rows[i].data
+console.log(data)
+        if(data.id_emp != lastEmp){
+            lastEmp = data.id_emp
+            postCli(data)
+        }
+
+        doc.setFont(undefined, 'bold')
+        doc.text('Carro-'+data.num_carro, txt.x,txt.y);
+        doc.text('Local de Execução: '+data.local, txt.x+ 40,txt.y);
+        addLine()
+        doc.text('Serviço:', txt.x,txt.y);
+        addLine()
+        doc.setFont(undefined, 'normal')
+        box(data.obs,txt.x,txt.y,800,1)
+        doc.text('Valor R$'+parseFloat(data.valor).toFixed(2), txt.x,txt.y);
+        addLine(2)
+
+        subTot += parseFloat(data.valor)
+        if(i+1 == obj.rows.length || obj.rows[i+1].data.id_emp != lastEmp){
+            doc.setFont(undefined, 'bold')
+            doc.text('Valor Total R$ '+subTot.toFixed(2), txt.x,txt.y);
+            doc.setFont(undefined, 'normal')
+            tot += subTot
+            subTot = 0
+            addLine()
+        }
+    }
+
+    doc.save('RelAnaFrot.pdf')
+
 }

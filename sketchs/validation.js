@@ -69,7 +69,7 @@ function number(campo,dec=2){
 }  
 
 function valCPF(edt){
-    let ok_chr = ['1','2','3','4','5','6','7','8','9','0'];
+    const ok_chr = ['1','2','3','4','5','6','7','8','9','0'];
     var num = edt.value;
     var count = 0;
     var out = '';
@@ -88,6 +88,28 @@ function valCPF(edt){
 		
     }
     edt.value = out;
+}
+
+function getCNPJ(V){
+    const ok_chr = ['1','2','3','4','5','6','7','8','9','0'];
+    let out = ''
+    for(let i=0; i< V.length; i++){
+        if(ok_chr.includes(V[i])){
+            out+=V[i]
+            if(i==1 || i==4){
+                out+='.'
+            }else if(i==7){
+                out+='/'
+            }else if(i==11){
+                out+='-'
+            }
+        }
+    }
+    return out
+}
+
+function dataBR(V){
+    return V.substring(8,10)+'/'+V.substring(5,7)+'/'+V.substring(0,4)
 }
 
 function horario(edt){

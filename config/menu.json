@@ -34,58 +34,36 @@
 		{
 			"modulo" : "Ferramentas",
 			"script" : "#",
-			"access" : [10],
+			"access" : [10,4,3],
 			"icone"  : "fa fa-edit",
 			"itens"  : [
 				{
 					"modulo" : "PCP",
 					"script" : "javascript:openHTML('pcp.html','content-screen')",
-					"access" : [10],
+					"access" : [10,4,3],
 					"icone"  : "fa fa-archive",
 					"itens"  : []
 				},
 				{
 					"modulo" : "Análise Frota",
 					"script" : "#",
-					"access" : [10],
+					"access" : [10,4,3],
 					"icone"  : "fa fa-industry",
 					"itens"  : [
 						{
 							"modulo" : "Cadastro",
 							"script" : "javascript:openHTML('viewAnaFrota.html','pop-up','Análise de Frota')",
-							"access" : [10],
+							"access" : [10,4,3],
 							"icone"  : "fa fa-archive",
 							"itens"  : []
 						},
 						{
 							"modulo" : "Pesquisa",
 							"script" : "javascript:openHTML('anafrota.html','content-screen','CADASTRO',0)",
-							"access" : [10],
+							"access" : [10,4,3],
 							"icone"  : "fa fa-archive",
 							"itens"  : []
 						}
-					]
-				},
-				{
-					"modulo" : "Serviços Exec.",
-					"script" : "javascript:openHTML('feriados.html','content-screen')",
-					"access" : [10],
-					"icone"  : "fa fa-industry",
-					"itens"  : [
-						{
-							"modulo" : "Cadastro",
-							"script" : "javascript:openHTML('anaFrota.html','content-screen')",
-							"access" : [10],
-							"icone"  : "fa fa-archive",
-							"itens"  : []
-						},
-						{
-							"modulo" : "Pesquisa",
-							"script" : "javascript:openHTML('pcp.html','content-screen')",
-							"access" : [10],
-							"icone"  : "fa fa-archive",
-							"itens"  : []
-						}						
 					]
 				},
 				{
@@ -106,12 +84,34 @@
 			]
 		},		
 		{
+			"modulo" : "Financeiro",
+			"script" : "#",
+			"access" : [10,4],
+			"icone"  : "fa fa-cogs",
+			"itens"  : [
+				{
+					"modulo" : "Lançamentos",
+					"script" : "javascript:openHTML('viewFinan.html','pop-up','Financeiro',0)",
+					"access" : [10,4],
+					"icone"  : "fa fa-archive",
+					"itens"  : []
+				},
+				{
+					"modulo" : "Análise",
+					"script" : "javascript:openHTML('financeiro.html','content-screen','CADASTRO',0)",
+					"access" : [10],
+					"icone"  : "fa fa-archive",
+					"itens"  : []
+				}				
+			]
+		},
+		{
 			"modulo" : "Logout",
 			"script" : "javascript:localStorage.clear();this.location.reload(true);",
 			"access" : [1,2,3,4,5,6,7,8,9,10],
 			"icone"  : "fa fa-cogs",
 			"itens"  : []
-		}
+		}		
 
 
 	]		

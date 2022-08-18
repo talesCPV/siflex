@@ -40,15 +40,12 @@
                 document.querySelector('#fdsUser').style.display = json.length > 0 ? 'block' : 'none'
                 tbl.head('Usuário,Nome,Email')
                 for(let i=0; i<json.length;i++){
-                    console.log(json[i])
                     tbl.plot(json[i],'nome,user,email','str,Upp,str')
                 }
             }        
 
         });
-
     }
-
 
     document.querySelector('#tblUser').addEventListener('click',(e)=>{
         data = e.target.parentNode.data

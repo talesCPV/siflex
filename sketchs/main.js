@@ -9,8 +9,35 @@ var meses = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho'
 
 /* GET FULL DATE FORMAT  */
 
-Date.prototype.getFormatDate = function(){
-    return (`${this.getFullYear()}-${(this.getMonth()+1).toString().padStart(2,'0')}-${this.getDate().toString().padStart(2,'0')}`)
+Date.prototype.change = function(N=1){
+    this.setDate(this.getDate()+N)
+ }
+ 
+Date.prototype.iniMonth = function(){
+    const day = this.getDate() -1
+    this.change(-day)
+    const out = this.getFormatDate()
+    this.change (day)
+    return out
+}
+
+Date.prototype.finMonth = function(){
+    const day = this.getDate() -1
+    this.change(30-day)
+    const out = this.getFormatDate()
+    this.change (-30+day)
+    return out
+}
+
+Date.prototype.getFormatDate = function(N=''){
+    if(N==''){
+        return (`${this.getFullYear()}-${(this.getMonth()+1).toString().padStart(2,'0')}-${this.getDate().toString().padStart(2,'0')}`)
+    }else{
+        this.change(N)
+        const out = `${this.getFullYear()}-${(this.getMonth()+1).toString().padStart(2,'0')}-${this.getDate().toString().padStart(2,'0')}`
+        this.change(-N)
+        return out
+    }
 }
 
 Date.prototype.getFormatBR = function(){
@@ -26,11 +53,6 @@ Date.prototype.getWeekDay = function(){
     return dia[this.getDay()]
 }
 
-Date.prototype.change = function(N=1){
-   this.setDate(this.getDate()+N)
-}
-// 'id|mobHide,fantasia,num_carro|mobHide,data_analise|mobHide,exec|mobHide,valor|mobHide'
-// 'int,UPP,str,date,change 0=NÃO 1=SIM .=X,R$.'
 HTMLTableElement.prototype.plot = function(obj, fields,type=''){
     fields = fields.split(',')
     type = type=='' ? '' : type.split(',')
@@ -41,7 +63,7 @@ HTMLTableElement.prototype.plot = function(obj, fields,type=''){
         if(arr.length > 1){
             td.classList = arr[1]
         }
-        let html
+        let html 
         if(type.length > 0 && i<type.length){
             switch (type[i].substring(0,3)) {
                 case 'int':
@@ -67,7 +89,7 @@ HTMLTableElement.prototype.plot = function(obj, fields,type=''){
                     html = ''
                     for(let j=1; j<op.length; j++){
                         if((obj[arr[0]] == op[j].split('=')[0])||(j==op.length-1 && html=='')||obj[arr[0]] == null ){
-                            html = op[j].split('=')[1]
+                            html = op[j].split('=')[1] == '**' ? obj[arr[0]] : op[j].split('=')[1]
                         }
                     }
                     break;                         
@@ -75,7 +97,7 @@ HTMLTableElement.prototype.plot = function(obj, fields,type=''){
                   html = obj[arr[0]]
             }            
         }else{
-            html = obj[fields[i]]
+            html = obj[fields[i].split('|')[0]]
         }
         td.innerHTML = html
         tr.appendChild(td)

@@ -1,0 +1,91 @@
+
+<template>
+    <style>
+        #btnDel{
+            display: none;
+        }
+
+    </style>
+
+        <fieldset>
+            <legend>Lançamentos</legend>
+            <div class="inline">
+                <label for="edtRef">Ref./NF *</label>
+                <input type="text" id="edtRef">
+                <label for="cmbEntSai">Ent/Sai</label>
+                <select id="cmbEntSai">
+                    <option value="1">A Receber</option>
+                    <option value="2">A Pagar</option>
+                </select>
+            </div>
+            <div class="inline">
+                <label for="edtSac">Sacado *</label>
+                <input type="text" id="edtSac">
+            </div>
+            <div class="inline">
+                <label for="edtValor">Valor R$ *</label>
+                <input type="text" id="edtValor" onkeyup="number(this)">
+                <label for="edtVenc">Data Venc.</label>
+                <input type="date" id="edtVenc">
+                <label for="cmbTipoPgto">Tipo Pgto.</label>
+                <select id="cmbTipoPgto">
+                    <option value="1" selected>Boleto</option>
+                    <option value="2">Cartão de Crédito</option>
+                    <option value="3">Cartão de Débto</option>
+                    <option value="4">Cheque</option>
+                    <option value="5">Dinheiro</option>
+                    <option value="6">Depósito</option>
+                    <option value="7">Pix</option>
+                    <option value="8">TED/DOC</option>
+                    <option value="9">Deb. Automático</option>
+                </select>
+
+            </div>
+            <div class="inline">
+                <label for="edtFunc">Cad. por</label>
+                <input type="text" id="edtFunc" readonly>
+                <label for="edtDataCad">em</label>
+                <input type="date" id="edtDataCad" readonly>
+            </div>
+
+
+            <button id="btnCad">Cadastrar</button>
+            <button id="btnDel">Deletar</button>
+        </fieldset>
+
+
+</template>
+<script>
+
+    if(main_data.mode == 'edit'){
+        document.querySelector('#edtRef').value = main_data.user
+        document.querySelector('#cmbEntSai').value = main_data.nome
+        document.querySelector('#edtSac').value = main_data.cel
+        document.querySelector('#edtValor').value = main_data.email
+        document.querySelector('#edtVenc').value = main_data.class
+        document.querySelector('#cmbTipoPgto').value = main_data.class
+        document.querySelector('#edtFunc').value = main_data.class
+        document.querySelector('#edtDataCad').value = main_data.class
+        document.querySelector('#btnDel').style.display = 'block'
+    }else{
+        document.querySelector('#btnDel').style.display = 'none'
+        document.querySelector('#btnCad').innerHTML = 'Salvar'
+        document.querySelector('#edtVenc').value = today.getFormatDate(7)
+        document.querySelector('#edtDataCad').value = today.getFormatDate()
+        document.querySelector('#edtFunc').value = localStorage.getItem('nome')
+    }
+
+
+    document.querySelector('#btnCad').addEventListener('click',()=>{
+        if(checkField(['edtRef','edtSac','edtValor'])){
+
+
+        }
+
+
+    })
+
+
+  
+
+</script>
