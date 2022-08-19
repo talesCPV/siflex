@@ -1,3 +1,8 @@
+/*  IMPORTS  */
+
+
+
+
 /*  VARIABLES  */
 
 var doc = new jsPDF({
@@ -162,11 +167,7 @@ function header_pdf(){
 
 function print_etq(data){
     
-    doc = new jsPDF({
-        orientation: '1',
-        unit: 'mm',
-        format: [90,80]
-    })  
+    doc = new jsPDF()  
 
     clearTxt()
     frame()
@@ -207,9 +208,8 @@ function print_pcp(tbl){
     }
 
     doc = new jsPDF({
-        orientation: '2',
-        unit: 'mm',
-        format: [297,210]
+        orientation: 'landscape',
+        format: 'a4'
     })  
 
     clearTxt(10,10,[297,210])
@@ -247,7 +247,7 @@ function print_pcp(tbl){
                 doc.setFontSize(8)
                 y_ = 0
             }
-            box(tbl[row].cells[cel].innerHTML, x[cel],y[row]+y_,170,0.8)
+            box(tbl[row].cells[cel].innerHTML, x[cel],y[row]+y_,60,0.8)
         }
     }
 
@@ -268,11 +268,7 @@ function anaFrotaRelat(obj){
         addLine()
     }
 
-    doc = new jsPDF({
-        orientation: '2',
-        unit: 'mm',
-        format: [210,297]
-    })  
+    doc = new jsPDF()  
 
     clearTxt(37,10,[210,297])
     frame()
@@ -328,11 +324,7 @@ function anaFrotaOrc(obj){
 
     }
 
-    doc = new jsPDF({
-        orientation: '2',
-        unit: 'mm',
-        format: [210,297]
-    })  
+    doc = new jsPDF()  
 
     clearTxt(37,10,[210,297])
     frame()
@@ -377,5 +369,78 @@ console.log(data)
     }
 
     doc.save('RelAnaFrot.pdf')
+
+}
+
+function print_finan(obj){
+  
+    let tbl_body = []
+    let total = 0
+    for(let i=1; i< obj.rows.length;i++){
+        const data = obj.rows[i].data
+        tbl_body.push([data.id,data.tipo,data.origem,data.ref.toUpperCase(),data.emp.toUpperCase(),dataBR(data.data_pg),data.pgto,moneyBR(data.preco)])
+        total += data.tipo =='ENTRADA' ? parseFloat(data.preco) : -parseFloat(data.preco) 
+
+    }
+
+
+    doc = new jsPDF();
+    
+    clearTxt(37,10,[210,297])
+    frame()
+    header_pdf()
+    line(txt.y)
+    addLine()
+    doc.autoTable({
+        head: [["Cod", "Tipo", "",'Referência','Sacado','Vencimento','Pgto','Valor']],
+        body: tbl_body,
+        startY: txt.y
+    });
+
+    txt.y = doc.previousAutoTable.finalY
+
+    addLine()
+
+    doc.text('Total   '+moneyBR(total), 155,txt.y);
+
+
+//    autoTable(doc, { html: '#tblFinan' })
+
+
+
+
+/*
+    doc = new jsPDF({
+        orientation: '2',
+        unit: 'mm',
+        format: [210,297]
+    })  
+
+    clearTxt(37,10,[210,297])
+    frame()
+    header_pdf()
+    line(txt.y)
+
+
+//    autoTable(doc, { html: '#my-table' })
+
+    // Or use javascript directly:
+    autoTable(doc, {
+      head: [['Name', 'Email', 'Country']],
+      body: [
+        ['David', 'david@example.com', 'Sweden'],
+        ['Castille', 'castille@example.com', 'Spain'],
+        // ...
+      ],
+    })
+
+
+    for(let i=1; i< obj.rows.length;i++){
+        const data = obj.rows[i].data
+        console.log(data)
+
+    }
+*/
+    doc.save('RelFinan.pdf')
 
 }

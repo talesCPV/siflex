@@ -25,10 +25,14 @@ nav {
 	display: block;
 	padding: 0 30px;
 	float: left;
-	font-size:20px;
-	line-height: 60px;
+	font-size:14px;
+	line-height: 50px;
+	margin: 10px;
 }
 
+#logo img{
+	width: 150px;
+}
 /* Since we'll have the "ul li" "float:left"
  * we need to add a clear after the container. */
 
@@ -66,7 +70,7 @@ nav a {
 	display:block;
 	padding:14px 20px;	
 	color:#FFF;
-	font-size:17px;
+	font-size:14px;
 	text-decoration:none;
 }
 
@@ -147,7 +151,7 @@ li > a:only-child:after { content: ''; }
 		background-color: #254441;
 		padding:14px 20px;	
 		color:#FFF;
-		font-size:17px;
+		font-size:14px;
 		text-decoration:none;
 		border:none;
 	}
@@ -186,7 +190,7 @@ li > a:only-child:after { content: ''; }
   nav ul ul ul a{
 		padding:14px 20px;	
 		color:#FFF;
-		font-size:17px; 
+		font-size:14px; 
 	}
   
   

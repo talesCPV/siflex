@@ -104,6 +104,14 @@
         padding: 10px;
     }
 
+    .ckBOX{
+        display: flex;   
+        align-items: flex-start;         
+    }
+    .ckBOX label{
+        width: auto !important;
+    }
+
     .form-base{
         border-radius: 20px;
         background-color: cornsilk;

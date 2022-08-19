@@ -38,9 +38,9 @@
                 const json = JSON.parse(resolve);
 
                 document.querySelector('#fdsUser').style.display = json.length > 0 ? 'block' : 'none'
-                tbl.head('Usuário,Nome,Email')
+                tbl.head('Usuário,Nome,Email|mobHide')
                 for(let i=0; i<json.length;i++){
-                    tbl.plot(json[i],'nome,user,email','str,Upp,str')
+                    tbl.plot(json[i],'nome,user,email|mobHide','str,Upp,str')
                 }
             }        
 

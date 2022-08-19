@@ -4,20 +4,35 @@
         button{
             width: 98%;
         }
+
     </style>
   
-    <fieldset>
-        <legend>Unidades</legend>
-        <table id="tblUnd"></table>
-        <button id="btnUnd">Novo</button>
-    </fieldset>
-
-
+    <div class="form-base">
+        <h1>Configurações</h1>
+        <fieldset>
+            <legend>Centro de Custo</legend>
+            <div class="inline">
+                <input type="text" id="edtCusto" onkeyup="number(this)">
+                <button id="btnCusto">Salvar</button>
+            </div>
+        </fieldset>
+        <fieldset>
+            <legend>Unidades</legend>
+            <table id="tblUnd"></table>
+            <button id="btnUnd">Novo</button>
+        </fieldset>   
+        
+    </div>
 
 </template>
 <script>
     
     fillUnd()
+
+    getConfig('config').then((txt)=>{
+        const json =  JSON.parse(txt)
+        document.querySelector('#edtCusto').value = parseFloat(json.centro_custo).toFixed(2)
+    })
 
     function fillUnd(){
         const tbl = document.getElementById('tblUnd')
@@ -44,12 +59,16 @@
         openHTML('viewUnd.html','pop-up','Editar Unidades',data,73)
     })
 
-
     document.querySelector('#btnUnd').addEventListener('click',()=>{
         const data = new Object
         data.mode = 'new'
         openHTML('viewUnd.html','pop-up','Nova Unidade',data,73)
 
+    })
+
+    document.querySelector('#btnCusto').addEventListener('click',()=>{
+        const custo = document.querySelector('#edtCusto')
+        getConfig('config',custo.value,'centro_custo')
     })
 
 </script>

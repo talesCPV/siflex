@@ -75,7 +75,7 @@
 				},				
 				{
 					"modulo" : "Configuração",
-					"script" : "javascript:openHTML('config.html','pop-up','Configuração de Sistema')",
+					"script" : "javascript:openHTML('config.html','content-screen','Configuração de Sistema')",
 					"access" : [10],
 					"icone"  : "fa fa-industry",
 					"itens"  : []

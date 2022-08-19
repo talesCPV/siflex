@@ -14,8 +14,8 @@
                 <input type="text" id="edtRef">
                 <label for="cmbEntSai">Ent/Sai</label>
                 <select id="cmbEntSai">
-                    <option value="1">A Receber</option>
-                    <option value="2">A Pagar</option>
+                    <option value="ENTRADA">A Receber</option>
+                    <option value="SAIDA">A Pagar</option>
                 </select>
             </div>
             <div class="inline">
@@ -29,15 +29,15 @@
                 <input type="date" id="edtVenc">
                 <label for="cmbTipoPgto">Tipo Pgto.</label>
                 <select id="cmbTipoPgto">
-                    <option value="1" selected>Boleto</option>
-                    <option value="2">Cartão de Crédito</option>
-                    <option value="3">Cartão de Débto</option>
-                    <option value="4">Cheque</option>
-                    <option value="5">Dinheiro</option>
-                    <option value="6">Depósito</option>
-                    <option value="7">Pix</option>
-                    <option value="8">TED/DOC</option>
-                    <option value="9">Deb. Automático</option>
+                    <option value="BOL" selected>Boleto</option>
+                    <option value="CRD">Cartão de Crédito</option>
+                    <option value="DEB">Cartão de Débto</option>
+                    <option value="CHQ">Cheque</option>
+                    <option value="DIN">Dinheiro</option>
+                    <option value="DEP">Depósito</option>
+                    <option value="PIX">Pix</option>
+                    <option value="TED">TED/DOC</option>
+                    <option value="AUT">Deb. Automático</option>
                 </select>
 
             </div>
@@ -48,7 +48,6 @@
                 <input type="date" id="edtDataCad" readonly>
             </div>
 
-
             <button id="btnCad">Cadastrar</button>
             <button id="btnDel">Deletar</button>
         </fieldset>
@@ -57,15 +56,16 @@
 </template>
 <script>
 
+console.log(main_data)
     if(main_data.mode == 'edit'){
-        document.querySelector('#edtRef').value = main_data.user
-        document.querySelector('#cmbEntSai').value = main_data.nome
-        document.querySelector('#edtSac').value = main_data.cel
-        document.querySelector('#edtValor').value = main_data.email
-        document.querySelector('#edtVenc').value = main_data.class
-        document.querySelector('#cmbTipoPgto').value = main_data.class
-        document.querySelector('#edtFunc').value = main_data.class
-        document.querySelector('#edtDataCad').value = main_data.class
+        document.querySelector('#edtRef').value = main_data.ref
+        document.querySelector('#cmbEntSai').value = main_data.tipo.substring(0,2) == 'SA' ? 'SAIDA' : main_data.tipo 
+        document.querySelector('#edtSac').value = main_data.emp.toUpperCase()
+        document.querySelector('#edtValor').value = parseFloat(main_data.preco).toFixed(2)
+        document.querySelector('#edtVenc').value = main_data.data_pg
+        document.querySelector('#cmbTipoPgto').value = main_data.pgto
+        document.querySelector('#edtFunc').value = main_data.resp
+        document.querySelector('#edtDataCad').value = main_data.data_ini
         document.querySelector('#btnDel').style.display = 'block'
     }else{
         document.querySelector('#btnDel').style.display = 'none'
@@ -75,17 +75,43 @@
         document.querySelector('#edtFunc').value = localStorage.getItem('nome')
     }
 
-
     document.querySelector('#btnCad').addEventListener('click',()=>{
         if(checkField(['edtRef','edtSac','edtValor'])){
+            const params = new Object;
+                params.id = main_data.mode == 'edit' ? main_data.id : 'DEFAULT'
+                params.tipo = document.querySelector('#cmbEntSai').value
+                params.data_ini = document.querySelector('#edtDataCad').value 
+                params.data_pg = document.querySelector('#edtVenc').value
+                params.preco = document.querySelector('#edtValor').value
+                params.ref = document.querySelector('#edtRef').value.toUpperCase()
+                params.resp = document.querySelector('#edtFunc').value.toUpperCase()
+                params.emp = document.querySelector('#edtSac').value.toUpperCase()
+                params.origem = 'SAN'
+                params.pgto = document.querySelector('#cmbTipoPgto').value
 
+            const myPromisse = queryDB(params,21);
 
+            myPromisse.then((resolve)=>{
+                document.querySelector('#btnBusca').click()
+                closeModal('all')                
+            })
         }
-
-
     })
 
+    document.querySelector('#btnDel').addEventListener('click',()=>{
+        if (confirm('Deseja realmente deletar este Registro?')) {
+            const params = new Object;
+                params.id = main_data.id
+                params.hash = localStorage.getItem('hash')
 
+            const myPromisse = queryDB(params,22);
+
+            myPromisse.then((resolve)=>{
+                document.querySelector('#btnBusca').click()
+                closeModal('all')                
+            })
+        }        
+    })
   
 
 </script>

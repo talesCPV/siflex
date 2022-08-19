@@ -269,6 +269,29 @@ function queryDB(params,cod){
         });
     });      
 }
+
+function getConfig(field,value=0,order='read'){
+    const data = new URLSearchParams();        
+        data.append("order", order);
+        data.append("field", field);
+        data.append("value", value);
+
+    const myRequest = new Request("backend/getConfig.php",{
+        method : "POST",
+        body : data
+    });
+
+    return new Promise((resolve,reject) =>{
+        fetch(myRequest)
+        .then(function (response){
+            if (response.status === 200) { 
+                resolve(response.text());                    
+            } else { 
+                reject(new Error("Houve algum erro na comunicação com o servidor"));                    
+            } 
+        });
+    }); 
+}
  /*  MENU  */ 
 function openMenu(){        
     var drop = 0
@@ -338,40 +361,6 @@ function openMenu(){
         }
     }
 }
-
-/*  FILL TABLES  */
-
-/*  
-    fields: array de strings
-    adicionar classes: "valor da string| nome da classe"
-    alterar valor da string por lista: "valor da string | classe | {obj}"
-    obj (exemp.): {"else":"valor padrão", "valor x":"valor q irá substituir x"}
-    PS: se quiser um valor padrão, sempre começar com else, senão caso nao encontre o valor x ele mantem o valor original
-*/
-/*
-function makeRow(obj, fields){
-    const tr = document.createElement('tr')
-    for(let i=0; i<fields.length; i++){
-        const td = document.createElement('td')
-        const arr = fields[i].split('|')
-        let html = obj[arr[0]]
-        if(arr.length > 1){
-            td.classList = arr[1]
-        }
-        if(arr.length > 2){
-            const json = Object.entries(JSON.parse(arr[2]))
-            for(let i=0; i<json.length; i++){
-                html = json[i][0]=='else' ? json[i][1] : obj[arr[0]] == json[i][0] ? html = json[i][1] : html
-            }
-
-        }
-        td.innerHTML = html.toUpperCase()
-        tr.appendChild(td)
-    }
-    tr.data = obj
-    return tr
-}
-*/
 
 /*  FILL COMBOS  */
 

@@ -8,7 +8,7 @@
         }
 
         .inline label{
-            width:  120px;
+            width: auto;
         }
 
         .inline select{
@@ -17,17 +17,19 @@
             margin: 10px;
         }
 
+        @media all and (max-width : 768px) {
+        .inline label{
+            width: 100%;
+        }
+        }        
 
     </style>
   
     <fieldset class="frm">
         <legend>Unidades</legend>
-
         <div class="inline">
             <label for="edtNome">Nome:*</label>
             <input type="text" id="edtNome" placeholder="Nome" maxlength="20">
-        </div>
-        <div class="inline">
             <label for="edtSigla">Sigla:*</label>
             <input type="text" id="edtSigla" placeholder="Sigla" maxlength="5">
         </div>

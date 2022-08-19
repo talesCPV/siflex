@@ -37,7 +37,10 @@
             ON x00 x01 x02 AND A.id_emp = E.id AND A.data_analise >= "x03" AND A.data_analise <= "x04" ORDER BY A.data_analise DESC;',
          "19" => 'DELETE FROM tb_analise_frota WHERE id="x00" AND (SELECT U.class FROM tb_usuario AS U WHERE hash="x01") IN (10,4);',
          "20" => 'SELECT * FROM tb_financeiro WHERE x00 x01 x02 AND data_pg >= "x03" AND data_pg <= "x04" ORDER BY data_pg DESC; ',
-
+         "21" => 'INSERT INTO tb_financeiro (id, tipo, data_ini, data_pg, preco, ref, resp, emp, origem, pgto) 
+            VALUES ("x00","x01", "x02", "x03", "x04", "x05", "x06", "x07", "x08", "x09") ON DUPLICATE KEY UPDATE 
+            tipo="x01", data_ini="x02", data_pg="x03", preco="x04", ref="x05", resp="x06", emp="x07", origem="x08", pgto="x09";',
+         "22" => 'DELETE FROM tb_financeiro WHERE id="x00" AND (SELECT U.class FROM tb_usuario AS U WHERE hash="x01") IN (10,4);',
 
     );
 

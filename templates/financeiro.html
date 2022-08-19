@@ -1,9 +1,23 @@
 
 <template>
     <style>
+        #lbl{
+            font-weight: bolder;
+            font-size: 1em;
+            padding: 20px;
+            display: none;
+            width: 100%;
+        }
+        #lbl p{
+            text-align: right;
+        }
+
+        #btnRelat{
+            width: 98%;
+            display: none;
+        }
 
     </style>
-
 
     <div class="form-base">
         <h1>Financeiro</h1>
@@ -31,28 +45,41 @@
                 <button id="btnBusca">OK</button>
             </div>
             <div class="inline">
-                <label for="ckbData">Início/Final</label>
-                <input type="checkbox" id="ckbData" checked>
+                <div class="ckBOX">
+                    <label for="ckbData">Início/Final</label>
+                    <input type="checkbox" id="ckbData" checked>
+                </div>
                 <input type="date" id="edtIni">
                 <input type="date" id="edtFin">
             </div>
     
         </fieldset>
         <table id="tblFinan"></table>
-        <div class="inline" id="btnControl">
-            <button id="btnRelat">Reltório</button>
-        </div>        
+        <div class="inline" id="lbl">
+            <p id="lblTotal"></p>
+            <p id="lblOrc"></p>
+            <p id="lblSaldo"></p>
+        </div>
+
+        <button id="btnRelat">Reltório</button>
+          
     </div>
 
     
 
 </template>
 <script>
+
+    let centro_custo = 0
+    getConfig('config').then((txt)=>{
+        const json =  JSON.parse(txt)
+        centro_custo = parseFloat(json.centro_custo)
+    })
+
     document.querySelector('#edtIni').value =  today.iniMonth()
     document.querySelector('#edtFin').value =  today.finMonth()
 
     document.querySelector('#btnBusca').addEventListener('click',()=>{
-
         const sel = document.querySelector('#cmbBusca')
         const field = sel.value
         const signal = sel.options[sel.selectedIndex].getAttribute('signal')
@@ -72,18 +99,39 @@
 
         myPromisse.then((resolve)=>{
             if(resolve.trim() != ""){
-                const json = JSON.parse(resolve);      
-console.log(json)                   
-                       
-                document.querySelector('#btnControl').style.display = json.length > 0 ? 'flex' : 'none'
-                tbl.head('Cod.|mobHide,Tipo|mobHide,|mobHide,Ref./NF,Sacado|mobHide,Vencimento, Pgto.|mobHide, Valor R$|mobHide')                                             
+                const json = JSON.parse(resolve);
+                let total = 0
+                tbl.innerHTML=''
+                document.querySelector('#btnRelat').style.display = json.length > 0 ? 'block' : 'none'
+                document.querySelector('#lbl').style.display = json.length > 0 ? 'block' : 'none'
+                json.length > 0 ? tbl.head('Cod.|mobHide,Tipo|mobHide,|mobHide,Ref./NF,Sacado|mobHide,Vencimento, Pgto.|mobHide, Valor R$|mobHide') :0
                 for(let i=0; i<json.length;i++){
+                    total += json[i].tipo =='ENTRADA' ? parseFloat(json[i].preco) : -parseFloat(json[i].preco) 
                     tbl.plot(json[i],'id|mobHide,tipo|mobHide,origem|mobHide,ref,emp|mobHide,data_pg,pgto|mobHide,preco|mobHide','int,str,str,Upp,Upp,date,change 15=SIS .=**,R$.')
-                }                               
+                }
                 
+                if(value=='"COM"'){
+                    document.querySelector('#lblOrc').innerHTML = `Orçamento Mensal R$${centro_custo.toFixed(2)}`
+                    document.querySelector('#lblSaldo').innerHTML = `Saldo Atual R$${(centro_custo+total).toFixed(2)}`
+                }else{
+                    document.querySelector('#lblOrc').innerHTML = ''
+                    document.querySelector('#lblSaldo').innerHTML = ''
+                }
+                document.querySelector('#lblTotal').innerHTML =  'Total R$'+total.toFixed(2)
+      
             }        
         })
 
+    })
+
+    document.querySelector('#tblFinan').addEventListener('click',(e)=>{
+        data = e.target.parentNode.data
+        data.mode = 'edit'
+        openHTML('viewFinan.html','pop-up','Editar Usuario',data,73)
+    })
+
+    document.querySelector('#btnRelat').addEventListener('click',()=>{
+        print_finan(document.getElementById('tblFinan'))
     })
 
 
