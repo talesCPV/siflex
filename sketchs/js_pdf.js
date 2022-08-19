@@ -374,6 +374,12 @@ console.log(data)
 
 function print_finan(obj){
   
+
+    jsPDF.autoTableSetDefaults({
+        headStyles: { fillColor: [37, 68, 65] },
+    })
+
+
     let tbl_body = []
     let total = 0
     for(let i=1; i< obj.rows.length;i++){
@@ -383,7 +389,6 @@ function print_finan(obj){
 
     }
 
-
     doc = new jsPDF();
     
     clearTxt(37,10,[210,297])
@@ -391,10 +396,15 @@ function print_finan(obj){
     header_pdf()
     line(txt.y)
     addLine()
+
+    doc.text('Relatório Financeiro', 80,txt.y);
+    addLine()
+
+
     doc.autoTable({
         head: [["Cod", "Tipo", "",'Referência','Sacado','Vencimento','Pgto','Valor']],
         body: tbl_body,
-        startY: txt.y
+        startY: txt.y      
     });
 
     txt.y = doc.previousAutoTable.finalY
@@ -403,44 +413,6 @@ function print_finan(obj){
 
     doc.text('Total   '+moneyBR(total), 155,txt.y);
 
-
-//    autoTable(doc, { html: '#tblFinan' })
-
-
-
-
-/*
-    doc = new jsPDF({
-        orientation: '2',
-        unit: 'mm',
-        format: [210,297]
-    })  
-
-    clearTxt(37,10,[210,297])
-    frame()
-    header_pdf()
-    line(txt.y)
-
-
-//    autoTable(doc, { html: '#my-table' })
-
-    // Or use javascript directly:
-    autoTable(doc, {
-      head: [['Name', 'Email', 'Country']],
-      body: [
-        ['David', 'david@example.com', 'Sweden'],
-        ['Castille', 'castille@example.com', 'Spain'],
-        // ...
-      ],
-    })
-
-
-    for(let i=1; i< obj.rows.length;i++){
-        const data = obj.rows[i].data
-        console.log(data)
-
-    }
-*/
     doc.save('RelFinan.pdf')
 
 }

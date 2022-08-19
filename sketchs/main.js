@@ -7,6 +7,17 @@ var meses = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho'
 
 /*  PROTOTYPES  */
 
+String.prototype.maxWidth = function(N=0){
+
+    if(N>0){
+        while (this.length > N){
+            this.splice(this.length-1)
+        }    
+    }
+
+}
+
+
 /* GET FULL DATE FORMAT  */
 
 Date.prototype.change = function(N=1){
