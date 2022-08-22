@@ -38,7 +38,7 @@
                 </select>
                 <button id="btnBusca">Busca</button>
             </div>
-            <div class="inline">
+            <div class="inline center-itens">
                 <div class="ckBOX">
                     <label for="ckbData">Por data</label>
                     <input type="checkbox" id="ckbData" checked>
@@ -97,7 +97,7 @@
     document.querySelector('#tblAnaFrota').addEventListener('click',(e)=>{
         data = e.target.parentNode.data
         data.mode = 'edit'
-        openHTML('viewAnaFrota.html','pop-up','Editar Análise de Frota',data,73)
+        openHTML('viewAnaFrota.html','pop-up','Editar Análise de Frota',data)
 
     })
 

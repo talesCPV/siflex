@@ -10,7 +10,7 @@
     <div class="form-base">
         <h1>Configurações</h1>
         <fieldset>
-            <legend>Centro de Custo</legend>
+            <legend>Centro de Custo R$</legend>
             <div class="inline">
                 <input type="text" id="edtCusto" onkeyup="number(this)">
                 <button id="btnCusto">Salvar</button>
@@ -56,13 +56,13 @@
     document.querySelector('#tblUnd').addEventListener('click',(e)=>{
         data = e.target.parentNode.data
         data.mode = 'edit'
-        openHTML('viewUnd.html','pop-up','Editar Unidades',data,73)
+        openHTML('viewUnd.html','pop-up','Editar Unidades',data)
     })
 
     document.querySelector('#btnUnd').addEventListener('click',()=>{
         const data = new Object
         data.mode = 'new'
-        openHTML('viewUnd.html','pop-up','Nova Unidade',data,73)
+        openHTML('viewUnd.html','pop-up','Nova Unidade',data)
 
     })
 

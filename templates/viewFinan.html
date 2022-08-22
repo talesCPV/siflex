@@ -13,9 +13,15 @@
                 <label for="edtRef">Ref./NF *</label>
                 <input type="text" id="edtRef">
                 <label for="cmbEntSai">Ent/Sai</label>
-                <select id="cmbEntSai">
-                    <option value="ENTRADA">A Receber</option>
+                <select id="cmbEntSai" onchange="hideOrig()">
+                    <option value="ENTRADA" selected>A Receber</option>
                     <option value="SAIDA">A Pagar</option>
+                </select>
+                <select id="cmbOrigem" disabled>
+                    <option value="COM">Compras</option>
+                    <option value="IMP">Impostos</option>
+                    <option value="FIX">Fixo</option>
+                    <option value="PGT">Pgto. Funcionário</option>
                 </select>
             </div>
             <div class="inline">
@@ -24,7 +30,7 @@
             </div>
             <div class="inline">
                 <label for="edtValor">Valor R$ *</label>
-                <input type="text" id="edtValor" onkeyup="number(this)">
+                <input type="text" id="edtValor" onkeyup="valFloat(this)">
                 <label for="edtVenc">Data Venc.</label>
                 <input type="date" id="edtVenc">
                 <label for="cmbTipoPgto">Tipo Pgto.</label>
@@ -48,15 +54,17 @@
                 <input type="date" id="edtDataCad" readonly>
             </div>
 
-            <button id="btnCad">Cadastrar</button>
+            <button id="btnCad">Salvar</button>
             <button id="btnDel">Deletar</button>
         </fieldset>
 
 
 </template>
 <script>
+    console.log(main_data)
 
-console.log(main_data)
+    hideOrig()
+
     if(main_data.mode == 'edit'){
         document.querySelector('#edtRef').value = main_data.ref
         document.querySelector('#cmbEntSai').value = main_data.tipo.substring(0,2) == 'SA' ? 'SAIDA' : main_data.tipo 
@@ -64,12 +72,12 @@ console.log(main_data)
         document.querySelector('#edtValor').value = parseFloat(main_data.preco).toFixed(2)
         document.querySelector('#edtVenc').value = main_data.data_pg
         document.querySelector('#cmbTipoPgto').value = main_data.pgto
+        document.querySelector('#cmbOrigem').value = main_data.origem
         document.querySelector('#edtFunc').value = main_data.resp
         document.querySelector('#edtDataCad').value = main_data.data_ini
         document.querySelector('#btnDel').style.display = 'block'
     }else{
         document.querySelector('#btnDel').style.display = 'none'
-        document.querySelector('#btnCad').innerHTML = 'Salvar'
         document.querySelector('#edtVenc').value = today.getFormatDate(7)
         document.querySelector('#edtDataCad').value = today.getFormatDate()
         document.querySelector('#edtFunc').value = localStorage.getItem('nome')
@@ -86,7 +94,7 @@ console.log(main_data)
                 params.ref = document.querySelector('#edtRef').value.toUpperCase()
                 params.resp = document.querySelector('#edtFunc').value.toUpperCase()
                 params.emp = document.querySelector('#edtSac').value.toUpperCase()
-                params.origem = 'SAN'
+                params.origem = document.querySelector('#cmbEntSai').value == 'ENTRADA' ? 'SAN' : document.querySelector('#cmbOrigem').value
                 params.pgto = document.querySelector('#cmbTipoPgto').value
 
             const myPromisse = queryDB(params,21);

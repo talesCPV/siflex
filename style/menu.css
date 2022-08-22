@@ -9,6 +9,10 @@ p {
 	text-align: center;
 }
 
+.hideMenu{
+	display: none;
+}
+
 .toggle,
 [id^=drop] {
 	display: none;
@@ -26,13 +30,28 @@ nav {
 	padding: 0 30px;
 	float: left;
 	font-size:14px;
-	line-height: 50px;
-	margin: 10px;
+	line-height: 40px;
+	margin-top: 10px;
 }
 
 #logo img{
 	width: 150px;
 }
+
+.usr-menu{
+	float: right;
+}
+
+#usr-name{
+	padding: 14px 20px;
+	color: aliceblue;
+	cursor: pointer;
+}
+
+#usr-name:hover{
+	background-color: black;
+}
+
 /* Since we'll have the "ul li" "float:left"
  * we need to add a clear after the container. */
 
@@ -126,12 +145,21 @@ li > a:only-child:after { content: ''; }
 
 @media all and (max-width : 768px) {
 
+	.hideMenu{
+		display: block;
+	}
+
 	#logo {
 		display: block;
 		padding: 10px 0;
 		width: 100%;
 		text-align: center;
 		float: none;
+		height: 45px;
+	}
+
+	#usr-name{
+		display: none;
 	}
 
 	nav {

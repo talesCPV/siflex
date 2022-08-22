@@ -10,8 +10,6 @@ function getEnter(e, button = ''){
     if(keynum == 13){
         document.querySelector('#'+button).click()
     }
-
-
 }
 
 function checkField(fields){
@@ -38,35 +36,9 @@ function checkRepass(fields){
     return true
 }
 
-
-function number(campo,dec=2){
-    var ok_chr = new Array('1','2','3','4','5','6','7','8','9','0');
-    var text = campo.value;
-    var after_dot = 0;
-    var out_text = '';
-    for(var i = 0; i<text.length; i++){
-
-        if(after_dot > 0){ // conta quantas casas depois da virgula
-            after_dot = after_dot + 1;
-        }
-
-        if (after_dot < (dec+2) ){ // se não passou de 2 casas depois da virgula ( conta o ponto + 2 digitos)
-
-            if(ok_chr.includes(text.charAt(i))){
-                out_text = out_text + text.charAt(i)
-
-            }
-            if((text.charAt(i) == ',' || text.charAt(i) == '.') && after_dot == 0){
-                out_text = out_text + '.';
-                after_dot = after_dot + 1;
-            }
-        }
-
-
-    }     
-
-    campo.value = out_text ;
-}  
+function valFloat(edt,dec=2){
+    edt.value = getFloat(edt.value,dec)
+}
 
 function valCPF(edt){
     const ok_chr = ['1','2','3','4','5','6','7','8','9','0'];
@@ -90,19 +62,94 @@ function valCPF(edt){
     edt.value = out;
 }
 
-function getCNPJ(V){
+function valCEP(edt){
+    edt.value = getCEP(getNum(edt.value))
+}
+
+function valCNPJ(edt){
+    edt.value = getCNPJ(getNum(edt.value))
+}
+
+function valIE(edt){
+    edt.value = getIE(getNum(edt.value))
+}
+
+function getFloat(text,dec=2){
+    const ok_chr = ['1','2','3','4','5','6','7','8','9','0']
+    let before_dot = '0';
+    let after_dot = '';
+    let dot =  '';
+    for(var i = 0; i<text.length; i++){
+        if(dot.length == 0){
+            if(['.',','].includes(text[i])){
+                dot = '.'
+            }else{                
+                before_dot +=  ok_chr.includes(text[i]) ? text[i] : ''
+                before_dot = parseInt(before_dot).toString()
+            }
+        }else{
+            if(after_dot.length < dec){
+                after_dot +=  ok_chr.includes(text[i]) ? text[i] : ''
+            }
+        }
+    }     
+    return before_dot+dot+after_dot;
+}
+
+function getNum(V){
     const ok_chr = ['1','2','3','4','5','6','7','8','9','0'];
     let out = ''
     for(let i=0; i< V.length; i++){
         if(ok_chr.includes(V[i])){
             out+=V[i]
-            if(i==1 || i==4){
+        }
+    }
+    return out
+}
+
+function getCNPJ(V){
+    const ok_chr = ['1','2','3','4','5','6','7','8','9','0'];
+    let out = ''
+    for(let i=0; i< V.length; i++){
+        if(ok_chr.includes(V[i])){
+            if(i==2 || i==5){
                 out+='.'
-            }else if(i==7){
+            }else if(i==8){
                 out+='/'
-            }else if(i==11){
+            }else if(i==12){
                 out+='-'
             }
+            out+=V[i]            
+        }
+    }
+    return out
+}
+
+function getIE(V){
+    const ok_chr = ['1','2','3','4','5','6','7','8','9','0'];
+    let out = ''
+    for(let i=0; i< V.length; i++){
+        if(ok_chr.includes(V[i])){
+            if(i==3 || i==6 || i==9){
+                out+='.'
+            }
+            out+=V[i]
+        }
+    }    
+    return out
+}
+
+function getCEP(V){
+    const ok_chr = ['1','2','3','4','5','6','7','8','9','0'];
+    let out = ''
+    for(let i=0; i< V.length; i++){
+        if(ok_chr.includes(V[i])){
+            if(i==2){
+                out+='.'
+            }else if(i==5){
+                out+='-'
+            }
+            out+=V[i]            
         }
     }
     return out
@@ -115,7 +162,6 @@ function dataBR(V){
 function moneyBR(V){
     return 'R$'+ parseFloat(V).toFixed(2)
 }
-
 
 function horario(edt){
     let ok_chr = ['1','2','3','4','5','6','7','8','9','0'];
@@ -173,4 +219,12 @@ function phone(param){ // formata a string no padrão TELEFONE
     }
 
     param.value = out;
+}
+
+function hideOrig(){
+    if(document.querySelector('#cmbEntSai').value == 'ENTRADA'){
+        document.querySelector('#cmbOrigem').disabled = true
+    }else{
+        document.querySelector('#cmbOrigem').disabled = false
+    }
 }

@@ -25,9 +25,7 @@ var imgData = new Image()
 
 /* FUNCTIONS */
 
-function addPage(Y,margin=10){
-    doc.text(txt.page.toString().padStart('0',2), doc.internal.pageSize.getWidth()-margin,doc.internal.pageSize.getHeight()-margin);
-    txt.page++
+function addPage(Y=46,margin=10){
     doc.addPage();
     frame()
     header_pdf()    
@@ -90,7 +88,6 @@ function box(text,x,y,w,lh=0.8){
             if(doc.getTextDimensions(lin+txt[j]+' ').w < w ){
                 lin +=  txt[j] + ' '
             }else{
-                console.log(lin)
                 doc.text(lin.trim(),x,y);
                 y += h
                 lin =  txt[j] + ' '
@@ -108,11 +105,7 @@ function box(text,x,y,w,lh=0.8){
 function center_text(T='',box=[0,doc.internal.pageSize.getWidth()]){
     const text = T==''? txt.text : T
     const w = doc.getTextDimensions(text).w
-    const xOffset = (box[2] - box[1] - w) /2;
-    console.log(box)
-    console.log(w)
-    console.log(xOffset)
-   
+    const xOffset = (box[2] - box[1] - w) /2;   
     doc.text(T, box[0] + xOffset, txt.y);
     addLine()
 }
@@ -154,11 +147,11 @@ function header_pdf(){
     logo([14,15,45,10])
     //  CABEÇALHO
     doc.setFontSize(12)
-    doc.setFont(undefined, 'bold')
-    doc.text('Av. Dr. Rosalvo de Almeida Telles, 2070', 95,13);
-    doc.text('Nova Cacapava - Cacapava-SP - CEP 12.283-020', 88,17);
-    doc.text('comercial@flexibus.com.br | (12) 3653-2230', 93,21);
-    doc.text('CNPJ 00.519.547/0001-06', 108,25);    
+    doc.setFont(undefined, 'normal')
+    doc.text('Av. Dr. Rosalvo de Almeida Telles, 2070', 97,13);
+    doc.text('Nova Cacapava - Cacapava-SP - CEP 12.283-020', 88,18);
+    doc.text('comercial@flexibus.com.br | (12) 3653-2230', 93,23);
+    doc.text('CNPJ 00.519.547/0001-06', 111,28);    
 
 }
 
@@ -258,54 +251,83 @@ function anaFrotaRelat(obj){
 
     function postCli(data){
         doc.setFont(undefined, 'bold')
-        line(txt.y)
         addLine()
-        doc.text('Cliente: '+data.fantasia, txt.x,txt.y);
+        doc.text('Cliente: '+data.fantasia, txt.x+5,txt.y);
         doc.text('CNPJ: '+getCNPJ(data.cnpj), txt.x+135,txt.y);
         addLine()
-        doc.text('End.: '+data.endereco.trim()+','+data.num+'   '+data.cidade.trim()+'-'+data.estado, txt.x,txt.y);
-        addLine()
-        addLine()
+        doc.text('End.: '+data.endereco.trim()+','+data.num+'   '+data.cidade.trim()+'-'+data.estado, txt.x+5,txt.y);
+        addLine(2)
     }
+
+    function postTable(){
+
+        function pushTot(title,value,color=[37, 68, 65],font=[255]){
+            tbl_body.push([{
+                content: title,
+                colSpan: 3,
+                styles: { halign: 'right', fillColor: color, textColor:font},
+              },
+              {
+                content: moneyBR(value), 
+                styles: { halign: 'left', fillColor: color, textColor:font },         
+              }])
+        }
+
+        pushTot('Subtotal',subTot)
+
+        doc.autoTable({
+            head: [["Data", "Carro", "Exec.",'Valor']],
+            body: tbl_body,
+            startY: txt.y      
+        }); 
+        txt.y = doc.previousAutoTable.finalY
+        tbl_body = []
+        addLine()
+        total += subTot
+        subTot=0  
+    }
+
+    jsPDF.autoTableSetDefaults({
+        headStyles: { fillColor: [37, 68, 65] },
+    })
 
     doc = new jsPDF()  
 
     clearTxt(37,10,[210,297])
     frame()
     header_pdf()
-    doc.setFontSize(23)
+    doc.setFontSize(21)
     doc.setFont(undefined, 'bold')
-    doc.text('ANÁLISE DE FROTA', txt.x+ 50,txt.y);
+    addLine()
+    doc.text('ANÁLISE DE FROTA', txt.x+ 55,txt.y);
     addLine()
     doc.setFont(undefined, 'normal')
     doc.setFontSize(12)
     let lastEmp
-    let tot = 0
+    let tbl_body = []
     let subTot = 0
+    let total = 0    
     for(let i=1; i< obj.rows.length;i++){
         const data = obj.rows[i].data
-
         if(data.id_emp != lastEmp){
             lastEmp = data.id_emp
+            if(i!= 1){
+                postTable()
+            }         
             postCli(data)
         }
-        doc.setFont(undefined, 'normal')
-        doc.text(dataBR(data.data_analise) + '  Carro-'+data.num_carro, txt.x,txt.y);
-        doc.text('Executado: '+(data.exec=='1'?'SIM':'NÃO'), txt.x+ 70,txt.y);
-        doc.text('R$ '+parseFloat(data.valor).toFixed(2), txt.x+ 110,txt.y);
-        addLine()
+
+        tbl_body.push([dataBR(data.data_analise),data.num_carro,data.exec=='1'?'SIM':'NÃO',moneyBR(data.valor)])
         subTot += parseFloat(data.valor)
-        if(i+1 == obj.rows.length || obj.rows[i+1].data.id_emp != lastEmp){
-            doc.setFont(undefined, 'bold')
-            doc.text(' Total', txt.x+ 90,txt.y);
-            doc.text('R$ '+subTot.toFixed(2), txt.x+ 110,txt.y);
-            doc.setFont(undefined, 'normal')
-            tot += subTot
-            subTot = 0
-            addLine()
-        }
+       
     }
 
+
+    postTable()
+    addLine()
+    doc.text('TOTAL   '+moneyBR(total), 155,txt.y);
+    addLine()
+    line(txt.y)
     doc.save('RelAnaFrot.pdf')
 
 }
@@ -340,7 +362,6 @@ function anaFrotaOrc(obj){
     let subTot = 0
     for(let i=1; i< obj.rows.length;i++){
         const data = obj.rows[i].data
-console.log(data)
         if(data.id_emp != lastEmp){
             lastEmp = data.id_emp
             postCli(data)
@@ -384,7 +405,7 @@ function print_finan(obj){
     let total = 0
     for(let i=1; i< obj.rows.length;i++){
         const data = obj.rows[i].data
-        tbl_body.push([data.id,data.tipo,data.origem,data.ref.toUpperCase(),data.emp.toUpperCase(),dataBR(data.data_pg),data.pgto,moneyBR(data.preco)])
+        tbl_body.push([data.id,data.tipo,data.origem,data.ref.maxWidth(15).toUpperCase(),data.emp.maxWidth(15).toUpperCase(),dataBR(data.data_pg),data.pgto,moneyBR(data.preco)])
         total += data.tipo =='ENTRADA' ? parseFloat(data.preco) : -parseFloat(data.preco) 
 
     }
@@ -395,14 +416,21 @@ function print_finan(obj){
     frame()
     header_pdf()
     line(txt.y)
+    addLine(2)
+    doc.setFontSize(23)
+    doc.text('Relatório Financeiro', 70,txt.y);
     addLine()
-
-    doc.text('Relatório Financeiro', 80,txt.y);
-    addLine()
-
+    if(document.querySelector('#ckbData').checked){
+        const gap = 'de '+dataBR(document.querySelector('#edtIni').value)+' até '+dataBR(document.querySelector('#edtFin').value)
+        doc.setFontSize(12)
+        doc.text(gap, 80,txt.y);
+        addLine()
+    }
+    
+    doc.setFontSize(12)
 
     doc.autoTable({
-        head: [["Cod", "Tipo", "",'Referência','Sacado','Vencimento','Pgto','Valor']],
+        head: [["Cod", "Tipo", "Orig.",'Referência','Sacado','Venc.','Pgto','Valor']],
         body: tbl_body,
         startY: txt.y      
     });
@@ -411,8 +439,46 @@ function print_finan(obj){
 
     addLine()
 
-    doc.text('Total   '+moneyBR(total), 155,txt.y);
+    doc.text('Total    '+moneyBR(total), 155,txt.y);
 
     doc.save('RelFinan.pdf')
+
+}
+
+function print_prod(obj){
+   
+    jsPDF.autoTableSetDefaults({
+        headStyles: { fillColor: [37, 68, 65] },
+    })
+
+
+    let tbl_body = []
+    let total = 0
+    for(let i=1; i< obj.rows.length;i++){
+        const data = obj.rows[i].data
+        tbl_body.push([data.id,data.descricao.maxWidth(25).toUpperCase(),data.tipo,data.nome.maxWidth(15).toUpperCase(),data.cod_bar,data.estoque,data.unidade])
+    }
+
+    doc = new jsPDF();
+    
+    clearTxt(37,10,[210,297])
+    frame()
+    header_pdf()
+    line(txt.y)
+    addLine(2)
+    doc.setFontSize(23)
+    doc.text('Lista de Produtos', 70,txt.y);
+    addLine()
+    doc.setFontSize(12)
+
+    doc.autoTable({
+        head: [["Cod","Descrição",'Tipo.','Fornecedor',"Cod. Forn.",'Estq.', "Und."]],
+        body: tbl_body,
+        startY: txt.y      
+    });
+
+    txt.y = doc.previousAutoTable.finalY
+
+    doc.save('relatProd.pdf')
 
 }

@@ -4,115 +4,185 @@
 			"modulo" : "Agenda",
 			"script" : "javascript:openHTML('calendar.html','content-screen')",
 			"icone"  : "fa fa-home",
+			"class"  : "",
 			"access" : [1,2,3,4,5,6,7,8,9,10],
 			"itens"  : []
 		},
 		{
-			"modulo" : "Produtos",
+			"modulo" : "Cadastros",
 			"script" : "#",
+			"class"  : "",
 			"icone"  : "fa fa-home",
 			"access" : [3,4,10],
 			"itens"  : [
 				{
-					"modulo" : "Pesquisa",
-					"script" : "javascript:openHTML('produtos.html','content-screen')",
-					"access" : [10,4,3],
-					"icone"  : "fa fa-archive",
-					"itens"  : []
+					"modulo" : "Produtos",
+					"script" : "#",
+					"class"  : "",
+					"icone"  : "fa fa-home",
+					"access" : [3,4,10],
+					"itens"  : [
+						{
+							"modulo" : "Pesquisa",
+							"script" : "javascript:openHTML('produtos.html','content-screen')",
+							"access" : [10,4,3],
+							"class"  : "",
+							"icone"  : "fa fa-archive",
+							"itens"  : []
+						},
+						{
+							"modulo" : "Novo",
+							"script" : "javascript:openHTML('viewProd.html','pop-up','Cadastro de Produtos','new')",
+							"access" : [10,4],
+							"class"  : "",
+							"icone"  : "fa fa-archive",
+							"itens"  : []
+						}				
+					]
 				},
 				{
-					"modulo" : "Cadastro",
-					"script" : "javascript:openHTML('viewProd.html','pop-up','Cadastro de Produtos','new')",
-					"access" : [10,4],
-					"icone"  : "fa fa-archive",
-					"itens"  : []
+					"modulo" : "Empresas",
+					"script" : "#",
+					"class"  : "",
+					"icone"  : "fa fa-home",
+					"access" : [3,4,10],
+					"itens"  : [
+						{
+							"modulo" : "Pesquisa",
+							"script" : "javascript:openHTML('empresas.html','content-screen')",
+							"access" : [10,4,3],
+							"class"  : "",
+							"icone"  : "fa fa-archive",
+							"itens"  : []
+						},
+						{
+							"modulo" : "Novo",
+							"script" : "javascript:openHTML('viewEmp.html','pop-up','Cadastro de Empresas','new')",
+							"access" : [10,4],
+							"class"  : "",
+							"icone"  : "fa fa-archive",
+							"itens"  : []
+						}				
+					]
+				},
+				{
+					"modulo" : "Análise Frota",
+					"script" : "#",
+					"access" : [10,4,3],
+					"class"  : "",
+					"icone"  : "fa fa-industry",
+					"itens"  : [
+						{
+							"modulo" : "Pesquisa",
+							"script" : "javascript:openHTML('anafrota.html','content-screen','CADASTRO',0)",
+							"access" : [10,4,3],
+							"class"  : "",
+							"icone"  : "fa fa-archive",
+							"itens"  : []
+						},
+						{
+							"modulo" : "Novo",
+							"script" : "javascript:openHTML('viewAnaFrota.html','pop-up','Análise de Frota')",
+							"access" : [10,4,3],
+							"class"  : "",
+							"icone"  : "fa fa-archive",
+							"itens"  : []
+						}
+					]
 				}				
 			]
-		},
-
+		},		
 
 		{
 			"modulo" : "Ferramentas",
 			"script" : "#",
 			"access" : [10,4,3],
+			"class"  : "",
 			"icone"  : "fa fa-edit",
 			"itens"  : [
 				{
 					"modulo" : "PCP",
 					"script" : "javascript:openHTML('pcp.html','content-screen')",
 					"access" : [10,4,3],
+					"class"  : "",
 					"icone"  : "fa fa-archive",
 					"itens"  : []
 				},
 				{
-					"modulo" : "Análise Frota",
+					"modulo" : "Financeiro",
 					"script" : "#",
-					"access" : [10,4,3],
-					"icone"  : "fa fa-industry",
+					"access" : [10,4],
+					"class"  : "",
+					"icone"  : "fa fa-cogs",
 					"itens"  : [
 						{
-							"modulo" : "Cadastro",
-							"script" : "javascript:openHTML('viewAnaFrota.html','pop-up','Análise de Frota')",
-							"access" : [10,4,3],
+							"modulo" : "Lançamentos",
+							"script" : "javascript:openHTML('viewFinan.html','pop-up','Financeiro',0)",
+							"access" : [10,4],
+							"class"  : "",
 							"icone"  : "fa fa-archive",
 							"itens"  : []
 						},
 						{
-							"modulo" : "Pesquisa",
-							"script" : "javascript:openHTML('anafrota.html','content-screen','CADASTRO',0)",
-							"access" : [10,4,3],
+							"modulo" : "Análise",
+							"script" : "javascript:openHTML('financeiro.html','content-screen','CADASTRO',0)",
+							"access" : [10,4],
+							"class"  : "",
 							"icone"  : "fa fa-archive",
 							"itens"  : []
-						}
+						}				
 					]
-				},
+				},				
 				{
 					"modulo" : "Usuarios",
 					"script" : "javascript:openHTML('usuarios.html','pop-up','Cadastro de Usuários')",
 					"access" : [10],
+					"class"  : "",
 					"icone"  : "fa fa-industry",
 					"itens"  : []
 				},				
 				{
 					"modulo" : "Configuração",
 					"script" : "javascript:openHTML('config.html','content-screen','Configuração de Sistema')",
-					"access" : [10],
+					"access" : [10,4],
+					"class"  : "",
 					"icone"  : "fa fa-industry",
 					"itens"  : []
-				}				
-
+				}			
 			]
-		},		
+		},
 		{
-			"modulo" : "Financeiro",
+			"modulo" : "Cotações",
 			"script" : "#",
 			"access" : [10,4],
+			"class"  : "",
 			"icone"  : "fa fa-cogs",
 			"itens"  : [
 				{
-					"modulo" : "Lançamentos",
-					"script" : "javascript:openHTML('viewFinan.html','pop-up','Financeiro',0)",
-					"access" : [10,4],
+					"modulo" : "Pesquisa",
+					"script" : "javascript:openHTML('cotacoes.html','content-screen','Cotações e Pedidos')",
+					"access" : [10,4,3],
+					"class"  : "",
 					"icone"  : "fa fa-archive",
 					"itens"  : []
 				},
 				{
-					"modulo" : "Análise",
-					"script" : "javascript:openHTML('financeiro.html','content-screen','CADASTRO',0)",
-					"access" : [10],
+					"modulo" : "Nova",
+					"script" : "javascript:openHTML('newCot.html','pop-up','Nova Cotação','new')",
+					"access" : [10,4,3],
+					"class"  : "",
 					"icone"  : "fa fa-archive",
 					"itens"  : []
 				}				
 			]
-		},
+		},		
 		{
 			"modulo" : "Logout",
 			"script" : "javascript:localStorage.clear();this.location.reload(true);",
-			"access" : [1,2,3,4,5,6,7,8,9,10],
-			"icone"  : "fa fa-cogs",
+			"access" : [10,4],
+			"class"  : "hideMenu",
+			"icone"  : "fa fa-industry",
 			"itens"  : []
-		}		
-
-
+		}						
 	]		
 }

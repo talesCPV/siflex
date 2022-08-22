@@ -50,14 +50,14 @@
     document.querySelector('#tblUser').addEventListener('click',(e)=>{
         data = e.target.parentNode.data
         data.mode = 'edit'
-        openHTML('viewUser.html','pop-up','Editar Usuario',data,73)
+        openHTML('viewUser.html','pop-up','Editar Usuario',data)
     })
 
 
     document.querySelector('#btnNovoUser').addEventListener('click',()=>{
         const data = new Object
         data.mode = 'new'
-        openHTML('viewUser.html','pop-up','Novo Usuario',data,73)
+        openHTML('viewUser.html','pop-up','Novo Usuario',data)
     })
 
 </script>

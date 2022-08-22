@@ -1,7 +1,7 @@
 <template>
 
     <style>
-        @import url("style/menu.css");     
+        @import url("style/menu.css");          
     </style>
     
     <nav>
@@ -9,6 +9,20 @@
         <label for="drop" class="toggle">&#9776;</label>
         <input type="checkbox" id="drop" />
         <ul class="menu"></ul>
+        <ul class="usr-menu">
+            <li>
+                <p id="usr-name"></p>
+                <ul>
+                    <li> <a href="javascript:openHTML('viewUser.html','pop-up','Dados do Usuário',{'mode':'user','id':localStorage.getItem('id'),'user':localStorage.getItem('username'),'email':localStorage.getItem('email'),'nome':localStorage.getItem('nome'),'cel':localStorage.getItem('cel'),'class':localStorage.getItem('access')})">Perfil</a></li>
+                    <li> <a href="javascript:localStorage.clear();this.location.reload(true);">Logout</a></li>
+                </ul>
+
+
+<!--                <div onclick="javascript:openHTML('viewUser.html','pop-up','Dados do Usuário',{'mode':'user','id':localStorage.getItem('id'),'user':localStorage.getItem('username'),'email':localStorage.getItem('email'),'nome':localStorage.getItem('nome'),'cel':localStorage.getItem('cel'),'class':localStorage.getItem('access')})"></div>-->
+            </li>
+        </ul>
+
+
     </nav>
     
     <div id="content-screen"></div>

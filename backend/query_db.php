@@ -41,8 +41,40 @@
             VALUES ("x00","x01", "x02", "x03", "x04", "x05", "x06", "x07", "x08", "x09") ON DUPLICATE KEY UPDATE 
             tipo="x01", data_ini="x02", data_pg="x03", preco="x04", ref="x05", resp="x06", emp="x07", origem="x08", pgto="x09";',
          "22" => 'DELETE FROM tb_financeiro WHERE id="x00" AND (SELECT U.class FROM tb_usuario AS U WHERE hash="x01") IN (10,4);',
-
-    );
+         "23" => 'UPDATE tb_produto SET img_path="x01" WHERE id=x00;',
+         "24" => 'SELECT * FROM tb_empresa WHERE x00 x01 "x02";',
+         "25" => 'INSERT INTO tb_empresa (id, nome, fantasia, tipo, cnpj, ie, im, endereco, num, cidade, estado, bairro, cep, tel)
+           VALUES(x00,"x01","x02","x03","x04","x05","x06","x07","x08","x09","x10","x11","x12","x13")
+           ON DUPLICATE KEY UPDATE 
+           nome ="x01", fantasia="x02", tipo="x03", cnpj="x04", ie="x05", im="x06", endereco="x07", num="x08", cidade="x09", estado="x10", bairro="x11", cep="x12", tel="x13";',
+         "26" => 'DELETE FROM tb_empresa WHERE id="x00" AND (SELECT U.class FROM tb_usuario AS U WHERE hash="x01") IN (10,4);',
+         "27" => 'SELECT p.*, e.fantasia, i.venda, e.id AS id_emp FROM tb_pedido AS p 
+            INNER JOIN (SELECT id_ped, ROUND(SUM(qtd * preco),2) AS venda FROM tb_item_ped GROUP BY id_ped) AS i 
+            INNER JOIN tb_empresa AS e 
+            INNER JOIN tb_item_ped as ip 
+            INNER JOIN tb_produto as prod 
+            ON p.id = i.id_ped 
+            AND p.id_emp = e.id 
+            AND p.id = ip.id_ped 
+            AND ip.id_prod = prod.id
+            AND x00 x01 x02
+            AND p.data_ped >= "x03"
+            AND p.data_ped <= "x04"
+            GROUP BY p.id
+            ORDER BY p.data_ped DESC;',
+         "28" => 'INSERT INTO tb_pedido (id, id_emp, data_ped, data_ent, resp, comp, num_ped, origem, cond_pgto, obs)
+            VALUES(x00,"x01","x02","x03","x04","x05","x06","x07","x08","x09")
+            ON DUPLICATE KEY UPDATE
+            id_emp="x01", data_ped="x02, data_ent="x03, resp="x04, comp="x05, num_ped="x06, origem="x07, cond_pgto="x08, obs="x09";',
+         "29" => 'SELECT COUNT(*) as dg FROM tb_pedido WHERE num_ped LIKE "%x00%" ',
+         "30" => 'SELECT item.*, prod.descricao, prod.cod as cod_prod,  ROUND((item.qtd * item.preco),2) as total
+            FROM tb_item_ped AS item 
+            INNER JOIN tb_produto AS prod 
+            ON item.id_prod = prod.id
+            AND item.id_ped = "x00"; ',
+            
+            
+      );
 
     if (IsSet($_POST["cod"]) && IsSet($_POST["params"])){       
 

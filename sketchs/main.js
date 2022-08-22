@@ -7,19 +7,44 @@ var meses = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho'
 
 /*  PROTOTYPES  */
 
-String.prototype.maxWidth = function(N=0){
+/*  STRING  */
+String.prototype.getHash = function(S){
+    let weigth = 0
+    let hash = ''
+    let str = this.valueOf()
 
-    if(N>0){
-        while (this.length > N){
-            this.splice(this.length-1)
-        }    
+    function getRange(N){ // keeps caracters under ASCII 33 & 126
+        while (N > 126 || N < 33){
+            N -= 126
+            N < 33 ? N += 33 : N
+            N == 127 ? N++ : 0
+        }
+        return N
     }
 
+    for (i = 0; i < str.length; i++) {
+        weigth += str.charCodeAt(i) * 5
+    }
+
+    while(str.length < S){
+        str += String.fromCharCode(str.length + 33)
+    }
+
+    for (i = 0; i < str.length; i++) {
+        chr = getRange(weigth * str.charCodeAt(i))
+        chr = chr===92 ? 168 : chr;
+        chr = chr===34 ? 173 : chr;
+        hash += String.fromCharCode(chr)  
+    }
+
+    return hash;
 }
 
+String.prototype.maxWidth = function(N=0){
+    return ((N>0 && N<this.length) ? this.valueOf().substring(0,N) : this.valueOf())
+}
 
-/* GET FULL DATE FORMAT  */
-
+/* DATE */
 Date.prototype.change = function(N=1){
     this.setDate(this.getDate()+N)
  }
@@ -55,15 +80,16 @@ Date.prototype.getFormatBR = function(){
     return (`${this.getDate().toString().padStart(2,'0')}/${(this.getMonth()+1).toString().padStart(2,'0')}/${this.getFullYear()}`)
 }
 
-Date.prototype.getCurrentWeek = function(){
-    return (`${this.getDate().toString().padStart(2,'0')}/${(this.getMonth()+1).toString().padStart(2,'0')}/${this.getFullYear()}`)
-}
-
 Date.prototype.getWeekDay = function(){
     const dia = ['Dom','Seg','Ter','Qua','Qui','Sex','Sab']
     return dia[this.getDay()]
 }
 
+Date.prototype.getCod = function(){
+    return this.getFullYear().toString().substring(2,4) + (this.getMonth()+1).toString().padStart(2,'0') + this.getDate().toString().padStart(2,'0')
+}
+
+/* TABLE */
 HTMLTableElement.prototype.plot = function(obj, fields,type=''){
     fields = fields.split(',')
     type = type=='' ? '' : type.split(',')
@@ -74,7 +100,8 @@ HTMLTableElement.prototype.plot = function(obj, fields,type=''){
         if(arr.length > 1){
             td.classList = arr[1]
         }
-        let html 
+        let html, op
+    
         if(type.length > 0 && i<type.length){
             switch (type[i].substring(0,3)) {
                 case 'int':
@@ -96,14 +123,23 @@ HTMLTableElement.prototype.plot = function(obj, fields,type=''){
                     html = 'R$'+ parseFloat(obj[arr[0]]).toFixed(2)
                     break;             
                 case 'cha':
-                    let op = type[i].split(' ')
+                    op = type[i].split(' ')
                     html = ''
                     for(let j=1; j<op.length; j++){
                         if((obj[arr[0]] == op[j].split('=')[0])||(j==op.length-1 && html=='')||obj[arr[0]] == null ){
                             html = op[j].split('=')[1] == '**' ? obj[arr[0]] : op[j].split('=')[1]
                         }
                     }
-                    break;                         
+                    break;
+                case 'fun':
+                    op = type[i].split(' ')                    
+                    html = eval(`${op[1]}(obj[arr[0]])`)
+                    break;
+                case 'cal':
+                    op = type[i].split(' ')
+console.log(op)                    
+                    html = eval(op[1])
+                    break;
                 default:
                   html = obj[arr[0]]
             }            
@@ -133,40 +169,6 @@ HTMLTableElement.prototype.head = function(hd){
     this.appendChild(tr)
 }
 
-/* HASH */
-
-String.prototype.getHash = function(S){
-    let weigth = 0
-    let hash = ''
-    let str = this.valueOf()
-
-    function getRange(N){ // keeps caracters under ASCII 33 & 126
-        while (N > 126 || N < 33){
-            N -= 126
-            N < 33 ? N += 33 : N
-            N == 127 ? N++ : 0
-        }
-        return N
-    }
-
-    for (i = 0; i < str.length; i++) {
-        weigth += str.charCodeAt(i) * 5
-    }
-
-    while(str.length < S){
-        str += String.fromCharCode(str.length + 33)
-    }
-
-    for (i = 0; i < str.length; i++) {
-        chr = getRange(weigth * str.charCodeAt(i))
-        chr = chr===92 ? 168 : chr;
-        chr = chr===34 ? 173 : chr;
-        hash += String.fromCharCode(chr)  
-    }
-
-    return hash;
-}
-
 /*  FUNCTIONS  */
 
 /*  MODAL  */
@@ -193,7 +195,7 @@ function newModal(title, content, y, x){
         const mod_card = document.createElement('div')
         mod_card.classList = 'modal-content'
         mod_card.id = 'card-'+index
-        mod_card.style.transform = `translateY(${-y*index}%) translateX(${x*index}%)`
+        mod_card.style.transform = `translateY(${y}%) translateX(${x}%)`
 
             const mod_title = document.createElement('div')
             mod_title.className = 'modal-title'    
@@ -223,7 +225,7 @@ function newModal(title, content, y, x){
 
 }
 
-async function openHTML(template,where="content-screen",label="", data="",y=100, x=3){
+async function openHTML(template,where="content-screen",label="", data="",y=0, x=0){
     if(template.trim() != ""){
         return await new Promise((resolve,reject) =>{
             fetch( "templates/"+template)
@@ -318,6 +320,7 @@ function openMenu(){
         fetch(myRequest)
         .then(function (response){
             if (response.status === 200) { 
+                document.querySelector('#usr-name').innerHTML = localStorage.getItem('username').toUpperCase()
                 resolve(response.text());                    
             } else { 
                 reject(new Error("Houve algum erro na comunicação com o servidor"));                    
@@ -335,10 +338,12 @@ function openMenu(){
 
     function pushMenu(menu, obj){
         menu.innerHTML = ''
-
         for( let i=0; i<obj.length; i++){
 
-            const li = document.createElement('li')            
+            const li = document.createElement('li') 
+            if(obj[i].class.trim().length>0){
+                li.classList = obj[i].class
+            }           
             const a = document.createElement('a')
 
             a.href = obj[i].script
@@ -394,4 +399,63 @@ function fillCombo(combo, params, cod, fields, value=''){
         }
     })
 
+}
+
+/* IMAGE */
+
+function aspect_ratio(img,cvw=300, cvh=300){
+    out = [0,0,cvw,cvh]
+    w = img.width
+    h = img.height
+    
+    if(w >= h){
+        out[3] = cvh/(w/h)
+        out[1] = (cvh - out[3]) / 2
+    }else{
+        out[2] = cvw/(h/w)
+        out[0] = (cvw - out[2]) / 2
+    }
+    return out
+}
+
+function loadImg(filename, id='cnvImg') {
+
+    var ctx = document.getElementById(id);
+    if (ctx.getContext) {
+
+        ctx = ctx.getContext('2d');
+        var img = new Image();
+        img.onload = function () {
+            ar = aspect_ratio(img)
+            ctx.drawImage(img, 0, 0,img.width,img.height,ar[0],ar[1],ar[2],ar[3]);
+        };
+
+        img.src = './'+filename;
+    }
+}
+
+function uploadImage(fileID,path,filename){
+
+    const up_data = new FormData();        
+        up_data.append("up_file",  document.getElementById(fileID).files[0]);
+        up_data.append("path", path);
+        up_data.append("filename", filename);
+
+    const myRequest = new Request("backend/upload.php",{
+        method : "POST",
+        body : up_data
+    });
+
+    const myPromisse = new Promise((resolve,reject) =>{
+        fetch(myRequest)
+        .then(function (response){
+            if (response.status === 200) { 
+                resolve(response.text());             
+            } else { 
+                reject(new Error("Houve algum erro na comunicação com o servidor"));                    
+            } 
+        });
+    }); 
+
+    return myPromisse
 }

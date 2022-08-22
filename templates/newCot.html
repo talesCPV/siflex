@@ -2,11 +2,6 @@
 <template>
     <style>
 
-        .inline label{
-            min-width: 200px;
-            flex-basis: 2;
-        }
-
         #btnDel{
             display: none;
         }
@@ -14,39 +9,33 @@
     </style>
   
     <fieldset>
-        <legend>Carro</legend>
+        <legend>Dados da Cotação</legend>
+        <div class="inline">
+            <label for="edtNumPed">Num. Pedido *</label>
+            <input type="text" id="edtNumPed" readonly>
+            <label for="edtData">Data *</label>
+            <input type="date" id="edtData">             
+        </div>        
         <div class="inline">
             <label for="cmbCli">Cliente *</label>
             <select id="cmbCli"></select>
         </div>
         <div class="inline">
-            <label for="edtData">Data *</label>
-            <input type="date" id="edtData">
-            <label for="edtNumCarro">Num. do Carro*</label>
-            <input type="text" id="edtNumCarro">           
+            <label for="edtCond">Cond. Pgto.</label>
+            <textarea id="edtCond" cols="30" rows="10"></textarea>
         </div>
         <div class="inline">
-            <label for="edtDetal">Detalhamento *</label>
-            <textarea id="edtDetal" cols="30" rows="10"></textarea>
+            <label for="edtObs">Obs</label>
+            <textarea id="edtObs" cols="30" rows="10"></textarea>
         </div>
         <div class="inline">
-            <label for="edtTecnico">Técnico *</label>
-            <input type="text" id="edtTecnico" value="Bruno Mathias">
-            <label for="cmbLocal">Local de Execução</label>
-            <select id="cmbLocal">
-                <option value="No Cliente">No Cliente</option>
-                <option value="Na Flexibus">Na Fábrica</option>
-            </select>             
+            <label for="edtVend">Vendedor</label>
+            <input type="text" id="edtVend" readonly>
+            <label for="edtComp">Comprador</label>
+            <input type="text" id="edtComp">
+            <label for="edtEntrega">Entrega</label>
+            <input type="date" id="edtEntrega">
         </div>     
-        <div class="inline">
-            <label for="edtValor">Valor R$</label>
-            <input type="text" id="edtValor" value="0" onkeyup="return valFloat(this)">
-            <label for="cmbExe">Executado</label>
-            <select id="cmbExe">
-                <option value="0">NÃO</option>
-                <option value="1">SIM</option>
-            </select>
-        </div>
 
         <button id="btnCad">Cadastrar</button>
         <button id="btnDel">Deletar</button>
@@ -60,6 +49,7 @@
     console.log(main_data)
 
     document.querySelector('#edtData').value = today.getFormatDate()
+    document.querySelector('#edtEntrega').value = today.finMonth()
 
     const params = new Object;
         params.hash = localStorage.getItem('hash');
@@ -68,21 +58,37 @@
 
     fillCombo('cmbCli',params,11,['id','cod_nome'],typeof main_data === 'object' ? main_data.id_emp :'' )
 
-    if(typeof main_data === 'object'){
-        document.querySelector('#edtData').value = main_data.data_analise
-        document.querySelector('#edtNumCarro').value = main_data.num_carro
-        document.querySelector('#edtTecnico').value = main_data.func
-        document.querySelector('#cmbLocal').value = main_data.local
-        document.querySelector('#edtValor').value = parseFloat(main_data.valor).toFixed(2)
-        document.querySelector('#edtDetal').value = main_data.obs
-        document.querySelector('#cmbExe').value = main_data.exec
+    if(main_data === 'new'){
+        const params = new Object;
+            params.num_ped = today.getCod()
+        const myPromisse = queryDB(params,29);
+        myPromisse.then((resolve)=>{
+            const last = JSON.parse(resolve)
+            const dg = parseInt(last[0].dg) + 1  
+            document.querySelector('#edtNumPed').value = today.getCod()+'-'+dg
+            document.querySelector('#edtNumPed').readonly = true;
+            
+        })
+        document.querySelector('#edtVend').value = localStorage.getItem('nome').trim() == '' ? localStorage.getItem('username') : localStorage.getItem('nome')
+     
+    }else{
+        console.log(main_data)
+        
+        document.querySelector('#edtNumPed').value = main_data.num_ped
+        document.querySelector('#edtData').value = main_data.data_ped
+        document.querySelector('#edtObs').value = main_data.obs
+        document.querySelector('#edtCond').value = main_data.cond_pgto
+        document.querySelector('#edtVend').value = main_data.resp
+        document.querySelector('#edtComp').value = main_data.comp
+        document.querySelector('#edtEntrega').value = main_data.data_ent
         document.querySelector('#btnDel').style.display = 'block'
         document.querySelector('#btnCad').innerHTML = 'Salvar'
-     
+        document.querySelector('#edtNumPed').readonly = false;
+        
     }
 
     document.querySelector('#btnCad').addEventListener('click',()=>{
-
+/*
         if(checkField(['edtData','edtNumCarro','edtDetal','edtTecnico'])){
             const params = new Object;
                 params.id = typeof main_data === 'object' ? main_data.id :'DEFAULT' 
@@ -100,9 +106,11 @@
                 closeModal('all')
             })
         }
+*/        
     })
 
     document.querySelector('#btnDel').addEventListener('click',()=>{
+/*        
         if (confirm('Deseja realmente deletar este Registro?')) {
             const params = new Object;
                 params.id = main_data.id
@@ -114,9 +122,8 @@
                 document.querySelector('#btnBusca').click()
                 closeModal('all')                
             })
-
-
         }        
+*/        
     })
 
 

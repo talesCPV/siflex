@@ -10,6 +10,7 @@
         $item = new stdClass();
         $item->modulo = $obj[$i]->modulo;
         $item->script = $obj[$i]->script;
+        $item->class = $obj[$i]->class;
         $item->icone = $obj[$i]->icone;
         $item->itens = [];
 
