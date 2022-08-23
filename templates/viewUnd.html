@@ -6,23 +6,7 @@
             display: flex;
             flex-direction: column;
         }
-
-        .inline label{
-            width: auto;
-        }
-
-        .inline select{
-            width: 100%;
-            padding: 10px;
-            margin: 10px;
-        }
-
-        @media all and (max-width : 768px) {
-        .inline label{
-            width: 100%;
-        }
-        }        
-
+     
     </style>
   
     <fieldset class="frm">
@@ -33,9 +17,10 @@
             <label for="edtSigla">Sigla:*</label>
             <input type="text" id="edtSigla" placeholder="Sigla" maxlength="5">
         </div>
-
-        <button id="btnSave">Salvar</button>
-        <button id="btnDel">Deletar</button>
+        <div class="inline">
+            <button id="btnSave">Salvar</button>
+            <button id="btnDel">Deletar</button>    
+        </div>
     </fieldset>
 
 </template>

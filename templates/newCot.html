@@ -17,7 +17,7 @@
             <input type="date" id="edtData">             
         </div>        
         <div class="inline">
-            <label for="cmbCli">Cliente *</label>
+            <label for="cmbCli">Cliente</label>
             <select id="cmbCli"></select>
         </div>
         <div class="inline">
@@ -88,42 +88,40 @@
     }
 
     document.querySelector('#btnCad').addEventListener('click',()=>{
-/*
-        if(checkField(['edtData','edtNumCarro','edtDetal','edtTecnico'])){
+//id, id_emp, data_ped, data_ent, resp, comp, num_ped, origem, cond_pgto, obs
+        if(checkField(['edtData','edtNumPed'])){
             const params = new Object;
-                params.id = typeof main_data === 'object' ? main_data.id :'DEFAULT' 
+                params.id = main_data === 'new' ? 'DEFAULT' : main_data.id 
                 params.id_emp = document.querySelector('#cmbCli').value
-                params.data_analise = document.querySelector('#edtData').value.trim()
-                params.num_carro = document.querySelector('#edtNumCarro').value.trim()
-                params.func = document.querySelector('#edtTecnico').value.trim()
-                params.local = document.querySelector('#cmbLocal').value
-                params.valor = document.querySelector('#edtValor').value.trim()
-                params.obs = document.querySelector('#edtDetal').value.trim()
-                params.exec = document.querySelector('#cmbExe').value
-            const myPromisse = queryDB(params,17);
+                params.data_ped = document.querySelector('#edtData').value
+                params.data_ent = document.querySelector('#edtEntrega').value
+                params.resp = document.querySelector('#edtVend').value.trim()
+                params.comp = document.querySelector('#edtComp').value.trim().toUpperCase()
+                params.num_ped = document.querySelector('#edtNumPed').value.trim()
+                params.origem = 'SAN'
+                params.cond_pgto = document.querySelector('#edtCond').value.trim()
+                params.obs = document.querySelector('#edtObs').value.trim()
+            const myPromisse = queryDB(params,28);
             myPromisse.then((resolve)=>{
-                document.querySelector('#btnBusca').click()
-                closeModal('all')
+                if(main_data == 'new'){
+                    params.mode = 'new'
+                    openHTML('viewCot.html','pop-up','Cotação-'+params.num_ped, params)
+                }else{
+                    main_data.id_emp = document.querySelector('#cmbCli').value
+                    main_data.data_ped = document.querySelector('#edtData').value
+                    main_data.data_ent = document.querySelector('#edtEntrega').value
+                    main_data.resp = document.querySelector('#edtVend').value.trim()
+                    main_data.comp = document.querySelector('#edtComp').value.trim().toUpperCase()
+                    main_data.num_ped = document.querySelector('#edtNumPed').value.trim()
+                    main_data.origem = 'SAN'
+                    main_data.cond_pgto = document.querySelector('#edtCond').value.trim()
+                    main_data.obs = document.querySelector('#edtObs').value.trim()
+                    open()
+                }
+                closeModal()
             })
         }
-*/        
-    })
-
-    document.querySelector('#btnDel').addEventListener('click',()=>{
-/*        
-        if (confirm('Deseja realmente deletar este Registro?')) {
-            const params = new Object;
-                params.id = main_data.id
-                params.hash = localStorage.getItem('hash')
-
-            const myPromisse = queryDB(params,19);
-
-            myPromisse.then((resolve)=>{
-                document.querySelector('#btnBusca').click()
-                closeModal('all')                
-            })
-        }        
-*/        
+        
     })
 
 

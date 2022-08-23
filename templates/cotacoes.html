@@ -40,7 +40,7 @@
                         <option value="e.id"       signal="="   >Cod. do Cliente</option>      
                     </optgroup>
                 </select>
-                <input type="text" id="edtBusca" placeholder="Digite sua Busca">
+                <input type="text" id="edtBusca" placeholder="Digite sua Busca" onkeypress="return getEnter(event, 'btnBusca')">
                 <button id="btnBusca">OK</button>
             </div>
             <div class="inline center-itens">
@@ -59,8 +59,6 @@
         <button id="btnRelat">Reltório</button>
           
     </div>
-
-    
 
 </template>
 <script>
@@ -97,13 +95,10 @@
                 for(let i=0; i<json.length;i++){                                       
                     total +=  parseFloat(json[i].venda)
                     tbl.plot(json[i],'id|mobHide,num_ped|mobHide,fantasia|mobHide,data_ped,status|mobHide,venda|mobHide','int,str,str,date,change FECHADO=PED ABERTO=COT PAGO=FAT INTERNO=USO_INT. .=**,R$.')                    
-                }
-                
-                document.querySelector('#lblTotal').innerHTML =  'Total R$'+total.toFixed(2)
-      
+                }                
+                document.querySelector('#lblTotal').innerHTML =  'Total R$'+total.toFixed(2)      
             }        
         })
-
     })
 
     document.querySelector('#tblCot').addEventListener('click',(e)=>{

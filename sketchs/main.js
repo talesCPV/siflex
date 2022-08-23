@@ -187,37 +187,49 @@ function closeModal(N=''){
     mod_main.style.display = (mod_main.querySelectorAll('.modal-content').length < 1) ? "none" : 'block'
 }
 
-function newModal(title, content, y, x){
+function newModal(title, content, pos, data){
 
     const mod_main = document.querySelector('#myModal')
     const index = mod_main.querySelectorAll('.modal-content').length        
+    const offset = 15
 
-        const mod_card = document.createElement('div')
-        mod_card.classList = 'modal-content'
-        mod_card.id = 'card-'+index
-        mod_card.style.transform = `translateY(${y}%) translateX(${x}%)`
+    const mod_card = document.createElement('div')
+    mod_card.classList = 'modal-content'
+    mod_card.id = 'card-'+index        
+    mod_card.style.position = 'absolute'
+    mod_card.style.zIndex = 10+index
+    mod_card.style.margin = '0 auto'
+    mod_card.style.top = pos[1] + index*offset+'px'
+    mod_card.style.left = pos[0] + index*offset+'px'
+    mod_card.style.right = pos[0] - index*offset+'px'
 
-            const mod_title = document.createElement('div')
-            mod_title.className = 'modal-title'    
+    const myData = document.createElement('input')
+        myData.type = 'hidden'
+        myData.id = 'data-'+index
+        myData.data = JSON.stringify(data)                
+    
+    mod_card.appendChild(myData)
 
-                const p = document.createElement('p')
-                p.innerHTML = title
-                mod_title.appendChild(p)
+    const mod_title = document.createElement('div')
+    mod_title.className = 'modal-title'    
 
-                const span = document.createElement('span')
-                span.classList = 'close'
-                span.innerHTML = '&times;'
-                span.addEventListener('click',()=>{
-                    closeModal()
-                })
-                mod_title.appendChild(span)
+    const p = document.createElement('p')
+    p.innerHTML = title
+    mod_title.appendChild(p)
 
-            const mod_content = document.createElement('div')
-            mod_content.classList = 'modal-text'
-            mod_content.innerHTML = content
+    const span = document.createElement('span')
+    span.classList = 'close'
+    span.innerHTML = '&times;'
+    span.addEventListener('click',()=>{
+        closeModal()
+    })
+    mod_title.appendChild(span)
+    mod_card.appendChild(mod_title)
 
-        mod_card.appendChild(mod_title)
-        mod_card.appendChild(mod_content)
+    const mod_content = document.createElement('div')
+    mod_content.classList = 'modal-text'
+    mod_content.innerHTML = content
+    mod_card.appendChild(mod_content)
 
     mod_main.appendChild(mod_card)
     mod_main.style.display = "block"
@@ -225,7 +237,7 @@ function newModal(title, content, y, x){
 
 }
 
-async function openHTML(template,where="content-screen",label="", data="",y=0, x=0){
+async function openHTML(template,where="content-screen",label="", data="",pos=[30,30]){
     if(template.trim() != ""){
         return await new Promise((resolve,reject) =>{
             fetch( "templates/"+template)
@@ -246,12 +258,12 @@ async function openHTML(template,where="content-screen",label="", data="",y=0, x
                 }
 
                 if(where == "pop-up"){
-                    newModal(label,body.innerHTML,y,x)
+                    newModal(label,body.innerHTML,pos, data)
                 }else{
                     document.getElementById(where).innerHTML = body.innerHTML;
                 }
 
-                main_data = data;
+                data!='' ? main_data = data : 0
                 eval(script.innerHTML);
                 resolve = body
                 document.querySelector('#drop').checked = false // close menu

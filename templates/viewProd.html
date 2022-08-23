@@ -142,7 +142,7 @@
             document.querySelector('#edtMargem').value = main_data.margem
             document.querySelector('#cmbTipo').value = main_data.tipo.toUpperCase()
             document.querySelector('#edtCodFab').value = main_data.cod_cli    
-            document.querySelector('#edtPreço').innerHTML = `Preço: ${main_data.preco_venda}`    
+            document.querySelector('#edtPreço').innerHTML = moneyBR(main_data.preco_venda )
         }
         const params = new Object;
             params.hash = localStorage.getItem('hash');

@@ -9,8 +9,7 @@
          "4"  => 'SELECT * FROM tb_calendario WHERE y00=x00 AND data_agd>="x01" AND data_agd<="x02";',
          "5"  => 'INSERT INTO tb_calendario (id_user, data_agd, obs) VALUES(x00, "x01", "x02") ON DUPLICATE KEY UPDATE obs="x02";',         
          "6"  => 'DELETE FROM tb_calendario WHERE id_user="x00" AND data_agd="x01";',
-         "7"  => 'SELECT p.*, e.nome, e.id as id_emp, 
-            CONCAT("R$",FORMAT(p.preco_comp * (p.margem/100 +1),2, "de_DE")) as preco_venda
+         "7"  => 'SELECT p.*, e.nome, e.id as id_emp,(p.preco_comp * (p.margem/100 +1)) as preco_venda
             FROM tb_produto AS p 
             INNER JOIN tb_empresa AS e 
             ON x00 x01 "x02" 
@@ -48,30 +47,32 @@
            ON DUPLICATE KEY UPDATE 
            nome ="x01", fantasia="x02", tipo="x03", cnpj="x04", ie="x05", im="x06", endereco="x07", num="x08", cidade="x09", estado="x10", bairro="x11", cep="x12", tel="x13";',
          "26" => 'DELETE FROM tb_empresa WHERE id="x00" AND (SELECT U.class FROM tb_usuario AS U WHERE hash="x01") IN (10,4);',
-         "27" => 'SELECT p.*, e.fantasia, i.venda, e.id AS id_emp FROM tb_pedido AS p 
-            INNER JOIN (SELECT id_ped, ROUND(SUM(qtd * preco),2) AS venda FROM tb_item_ped GROUP BY id_ped) AS i 
+         "27" => 'SELECT p.*, e.fantasia, i.venda FROM tb_pedido AS p 
             INNER JOIN tb_empresa AS e 
-            INNER JOIN tb_item_ped as ip 
-            INNER JOIN tb_produto as prod 
-            ON p.id = i.id_ped 
-            AND p.id_emp = e.id 
-            AND p.id = ip.id_ped 
-            AND ip.id_prod = prod.id
+            INNER JOIN (   
+               SELECT id as id_ped, 0 as venda FROM tb_pedido WHERE id NOT IN (SELECT id_ped FROM tb_item_ped)
+               UNION ALL
+               SELECT id_ped, ROUND(SUM(qtd * preco),2) AS venda FROM tb_item_ped GROUP BY id_ped) AS i
+            ON p.id = i.id_ped
+            AND p.id_emp = e.id
             AND x00 x01 x02
             AND p.data_ped >= "x03"
             AND p.data_ped <= "x04"
-            GROUP BY p.id
             ORDER BY p.data_ped DESC;',
          "28" => 'INSERT INTO tb_pedido (id, id_emp, data_ped, data_ent, resp, comp, num_ped, origem, cond_pgto, obs)
             VALUES(x00,"x01","x02","x03","x04","x05","x06","x07","x08","x09")
             ON DUPLICATE KEY UPDATE
-            id_emp="x01", data_ped="x02, data_ent="x03, resp="x04, comp="x05, num_ped="x06, origem="x07, cond_pgto="x08, obs="x09";',
+            id_emp="x01", data_ped="x02", data_ent="x03", resp="x04", comp="x05", num_ped="x06", origem="x07", cond_pgto="x08", obs="x09";',
          "29" => 'SELECT COUNT(*) as dg FROM tb_pedido WHERE num_ped LIKE "%x00%" ',
          "30" => 'SELECT item.*, prod.descricao, prod.cod as cod_prod,  ROUND((item.qtd * item.preco),2) as total
             FROM tb_item_ped AS item 
             INNER JOIN tb_produto AS prod 
             ON item.id_prod = prod.id
             AND item.id_ped = "x00"; ',
+         "31" => 'DELETE FROM tb_pedido WHERE id="x00" AND (SELECT U.class FROM tb_usuario AS U WHERE hash="x01") IN (10,4);',
+         "32" => 'INSERT INTO tb_item_ped (id, id_prod, id_ped, qtd, preco, und, serv)
+            VALUES ("x00","x01","x02","x03","x04","x05","x06") ON DUPLICATE KEY UPDATE 
+            id_prod="x01", id_ped="x02", qtd="x03", preco="x04", und="x05", serv="x06";',
             
             
       );

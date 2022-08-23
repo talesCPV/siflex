@@ -1,0 +1,110 @@
+
+<template>
+    <style>
+
+
+    </style>
+
+<fieldset>
+    <legend>Busca</legend>
+
+    <div class="inline">
+        <label for="edtAddProd">por:</label>
+        <select id="cmbAddProd">
+            <option value="p.descricao" signal="LIKE">Todos</option>
+            <option value="p.cod" signal="=">Código</option>
+            <option value="e.nome" signal="LIKE">Fornecedor</option>
+            <option value="p.tipo" signal="=" val="SERVICO">Serviços</option>
+            <option value="p.tipo" signal="=" val="CONJ">Conjuntos</option>
+            <option value="p.tipo" signal="=" val="TINTA">Tintas</option>
+            <option value="p.tipo" signal="=" val="PIGMTO">Pigmentos</option>
+            <option value="p.cod_bar" signal="=">Código do Produto</option>
+            <option value="p.cod_cli" signal="LIKE">Código de Barras</option>
+            <option value="p.estoque" signal="<=" val="p.etq_min">Estoque Baixo</option>
+        </select>
+        <input type="text" id="edtAddProd" onkeypress="return getEnter(event, 'btnAddProd')">
+        <button id="btnAddProd">Busca</button>
+
+    </div>
+
+    <table id="tblAddProd"></table>
+</fieldset>
+
+
+</template>
+<script>
+    document.querySelector('#btnAddProd').addEventListener('click',()=>{
+
+        const sel = document.querySelector('#cmbAddProd')
+        const field = sel.value
+        const signal = sel.options[sel.selectedIndex].getAttribute('signal')
+        let value = sel.options[sel.selectedIndex].hasAttribute('val') ? sel.options[sel.selectedIndex].getAttribute('val') : document.querySelector('#edtAddProd').value.trim()
+        value = signal=='LIKE' ? '%'+value+'%' : value
+
+        const tbl = document.getElementById('tblAddProd')
+        tbl.innerHTML = ''
+        const params = new Object;
+            params.field = field
+            params.signal = signal
+            params.value = value
+            params.hash = localStorage.getItem('hash');
+
+        const myPromisse = queryDB(params,7);
+
+        myPromisse.then((resolve)=>{
+            if(resolve.trim() != ""){
+                const json = JSON.parse(resolve);
+                tbl.head('Cod.|mobHide,Descrição,Preço')
+                for(let i=0; i<json.length;i++){
+                    tbl.plot(json[i],'cod|mobHide,descricao,preco_venda','int,Upp,R$.')
+                }                
+            }        
+        });
+    })
+
+    document.querySelector('#tblAddProd').addEventListener('click',(e)=>{
+        const data = e.target.parentNode.data
+            data.estoque = parseInt(data.estoque)
+            data.qtd = parseInt(prompt(`Digite a quantidade desejada | estq:${data.estoque}`))
+            data.qtd = data.qtd == NaN ? 0 : data.qtd
+        if(data.qtd > data.estoque){
+            alert('Estoque insuficiente!')
+            data.qtd = 0
+        }else if(data.qtd > 0){
+            console.log(main_data)            
+            console.log(data)
+            const params = new Object;
+                params.id = 'DEFAULT' 
+                params.id_prod = data.id
+                params.id_ped = main_data.id
+                params.qtd = data.qtd
+                params.preco = data.preco_venda 
+                params.und = data.unidade
+                params.serv = data.tipo == 'SERV' ? data.tipo : null
+
+            const myPromisse = queryDB(params,32);
+
+            myPromisse.then((resolve)=>{
+                if(resolve.trim() != ""){
+                    const params = new Object;
+                        params.ped_id = main_data.id
+                    const myPromisse2 = queryDB(params,30);
+                    myPromisse2.then((resolve)=>{
+                        const json = JSON.parse(resolve)
+                        const tbl = document.querySelector('#tblItens')
+                        tbl.head('Cod.,Descrição,Und.,Qtd.,Preço Unit.,Sub Total')
+                            for(let i=0; i<json.length;i++){
+                                tbl.plot(json[i],'cod_prod,descricao,und,qtd,preco,total','str,Upp,Upp,str,R$.,R$.')
+                            }     
+                            closeModal()
+                    })
+                }  
+            })
+            
+        }else{
+            alert('Quantidade não pode ser zero!')
+        }
+    })
+
+
+</script>

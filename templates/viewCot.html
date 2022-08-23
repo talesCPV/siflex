@@ -11,33 +11,42 @@
     
     <fieldset id="fdsPed">
         <legend>Pedido</legend>
-            <table id="tblPed">
-                <tr>
-                    <th>Empresa</th><th>Emissão</th><th>Vendedor</th><th>Comprador</th><th>Entrega</th><th>Valor</th>
-                </tr>
-                <tr>
-                    <td id="tdEmp"></td><td id="tdEmi"></td><td id="tdVend"></td><td id="tdComp"></td><td id="tdEnt"></td><td id="tdVal"></td>
-                </tr>
-            </table>
-        <button id="btnEdit">Editar</button>
+        <table id="tblPed">
+            <tr>
+                <th>Empresa</th><th>Emissão</th><th>Vendedor</th><th>Comprador</th><th>Entrega</th><th>Valor</th>
+            </tr>
+            <tr>
+                <td id="tdEmp"></td><td id="tdEmi"></td><td id="tdVend"></td><td id="tdComp"></td><td id="tdEnt"></td><td id="tdVal"></td>
+            </tr>
+        </table>
+        <div class="inline">
+            <button id="btnEdit" disabled>Editar</button>
+            <button id="btnDel" disabled>Deletar</button>
+        </div>
     </fieldset>
     <fieldset>
         <legend>Ítens</legend>
         <table id="tblItens"></table>
-        <button id="btnAdd">Adicionar Ítens</button>
+        <button id="btnAdd" disabled>Adicionar Ítens</button>
     </fieldset>
 
 </template>
 <script>
 
-    document.querySelector('#tdEmp').innerHTML = main_data.fantasia.toUpperCase()
-    document.querySelector('#tdEmi').innerHTML = main_data.data_ped != null ? dataBR(main_data.data_ped) : '*'
-    document.querySelector('#tdVend').innerHTML = main_data.resp != null ? main_data.resp.toUpperCase() : '*'
-    document.querySelector('#tdComp').innerHTML = main_data.comp != null ? main_data.comp.toUpperCase(): '*'
-    document.querySelector('#tdEnt').innerHTML = main_data.data_ent != null ? dataBR(main_data.data_ent): '*'
-    document.querySelector('#tdVal').innerHTML = main_data.venda != null ? 'R$'+main_data.venda : '*'
+    function open(){
+        document.querySelector('#tdEmp').innerHTML = main_data.fantasia.toUpperCase()
+        document.querySelector('#tdEmi').innerHTML = main_data.data_ped != null ? dataBR(main_data.data_ped) : '*'
+        document.querySelector('#tdVend').innerHTML = main_data.resp != null ? main_data.resp.toUpperCase() : '*'
+        document.querySelector('#tdComp').innerHTML = main_data.comp != null ? main_data.comp.toUpperCase(): '*'
+        document.querySelector('#tdEnt').innerHTML = main_data.data_ent != null ? dataBR(main_data.data_ent): '*'
+        document.querySelector('#tdVal').innerHTML = main_data.venda != null ? 'R$'+main_data.venda : '*'
 
-    fillItens()
+        if(main_data.status == 'ABERTO'){
+            document.querySelector('#btnEdit').disabled = false
+            document.querySelector('#btnDel').disabled = false
+            document.querySelector('#btnAdd').disabled = false
+        }
+    }
 
     function fillItens(){
         const params = new Object;
@@ -46,22 +55,54 @@
         myPromisse.then((resolve)=>{
             const json = JSON.parse(resolve)
             const tbl = document.querySelector('#tblItens')
-            tbl.head('Cod.,Descrição,Und.,Qtd.,Preço,Sub Total')
+            tbl.head('Cod.,Descrição,Und.,Qtd.,Preço Unit.,Sub Total')
                 for(let i=0; i<json.length;i++){
                     tbl.plot(json[i],'cod_prod,descricao,und,qtd,preco,total','str,Upp,Upp,str,R$.,R$.')
                 }     
         })
     }
 
+    open()
+    fillItens()
+
     document.querySelector('#btnEdit').addEventListener('click',()=>{
+        openHTML('newCot.html','pop-up',(main_data.status=='ABERTO'?'Cotação-':'Pedido-') + main_data.num_ped, main_data)
+    })
 
-console.log(main_data)
+    document.querySelector('#btnDel').addEventListener('click',()=>{
+        
+        if (confirm('Deseja realmente deletar esta Cotação?')) {
+            const params = new Object;
+                params.id = main_data.id
+                params.hash = localStorage.getItem('hash')
 
-        openHTML('newCot.html','pop-up',(main_data.status=='ABERTO'?'Cotação-':'Pedido-') + main_data.num_ped, main_data,-60, 2)
+            const myPromisse = queryDB(params,31);
 
+            myPromisse.then((resolve)=>{
+                if(main_data.mode == 'edit'){
+                    document.querySelector('#btnBusca').click()
+                }
+                closeModal('all')                
+            })
+        }        
+        
+    })
+
+    document.querySelector('#btnAdd').addEventListener('click',()=>{
+
+        openHTML('addProd.html','pop-up','Adicione um Produto ou Serviço','',[100,30])
 
     })
 
+    document.querySelector('#tblItens').addEventListener('click',(e)=>{
+        const data = e.target.parentNode.data
+        console.log(data)
+
+        openHTML('edtProd.html','pop-up','Alteração de Ítem')
+
+
+
+    })
 
 
 
