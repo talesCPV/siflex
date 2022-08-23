@@ -2,6 +2,7 @@
 /* VARIABLES */
 
 var main_data
+var reload_tab
 var today = new Date()
 var meses = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro']
 
@@ -172,6 +173,20 @@ HTMLTableElement.prototype.head = function(hd){
 /*  FUNCTIONS  */
 
 /*  MODAL  */
+
+function getModalData(id){
+    return JSON.parse(document.getElementById(id).data)
+}
+
+function postLocalData(id, data){
+    const myData = document.createElement('input')
+        myData.type = 'hidden'
+        myData.id = id
+        myData.data = JSON.stringify(data)
+    
+    return myData
+}
+
 function closeModal(N=''){
     const mod_main = document.querySelector('#myModal')
 
@@ -187,28 +202,23 @@ function closeModal(N=''){
     mod_main.style.display = (mod_main.querySelectorAll('.modal-content').length < 1) ? "none" : 'block'
 }
 
-function newModal(title, content, pos, data){
+function newModal(title, content, pos, data, id){
 
     const mod_main = document.querySelector('#myModal')
     const index = mod_main.querySelectorAll('.modal-content').length        
     const offset = 15
 
     const mod_card = document.createElement('div')
-    mod_card.classList = 'modal-content'
-    mod_card.id = 'card-'+index        
-    mod_card.style.position = 'absolute'
-    mod_card.style.zIndex = 10+index
-    mod_card.style.margin = '0 auto'
-    mod_card.style.top = pos[1] + index*offset+'px'
-    mod_card.style.left = pos[0] + index*offset+'px'
-    mod_card.style.right = pos[0] - index*offset+'px'
-
-    const myData = document.createElement('input')
-        myData.type = 'hidden'
-        myData.id = 'data-'+index
-        myData.data = JSON.stringify(data)                
+        mod_card.classList = 'modal-content'
+        mod_card.id = 'card-'+index        
+        mod_card.style.position = 'absolute'
+        mod_card.style.zIndex = 10+index
+        mod_card.style.margin = '0 auto'
+        mod_card.style.top = pos[1] + index*offset+'px'
+        mod_card.style.left = pos[0] + index*offset+'px'
+        mod_card.style.right = pos[0] - index*offset+'px'
     
-    mod_card.appendChild(myData)
+    mod_card.appendChild(postLocalData(id,data))
 
     const mod_title = document.createElement('div')
     mod_title.className = 'modal-title'    
@@ -258,12 +268,12 @@ async function openHTML(template,where="content-screen",label="", data="",pos=[3
                 }
 
                 if(where == "pop-up"){
-                    newModal(label,body.innerHTML,pos, data)
+                    newModal(label,body.innerHTML,pos, data,template.split('.')[0])
                 }else{
                     document.getElementById(where).innerHTML = body.innerHTML;
+                    data!='' ? main_data = data : 0
                 }
 
-                data!='' ? main_data = data : 0
                 eval(script.innerHTML);
                 resolve = body
                 document.querySelector('#drop').checked = false // close menu

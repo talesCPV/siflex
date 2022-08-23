@@ -6,14 +6,69 @@
     </style>
 
 <fieldset>
-    <legend>Produto</legend>
+    <legend id="lgdItem"></legend>
 
-
+    <div class="inline">
+        <label for="edtQtd">Qtd</label>
+        <input type="text" id="edtQtd" onkeyup="return valFloat(this,0)">
+        <label for="edtPreco">Preço</label>
+        <input type="text" id="edtPreco" onkeyup="return valFloat(this)">
+    </div>
+    <div class="inline">
+        <button id="btnSaveItem">Salvar</button>
+        <button id="btnDelItem">Deletar</button>
+    </div>
 </fieldset>
 
 
 </template>
 <script>
+    const localData = getModalData('edtProd')
+//  console.log(localData)
+    document.querySelector('#lgdItem').innerHTML = localData.descricao
+    document.querySelector('#edtQtd').value = localData.qtd
+    document.querySelector('#edtPreco').value = parseFloat(localData.preco).toFixed(2)
+
+
+    document.querySelector('#btnSaveItem').addEventListener('click',()=>{
+        const params = new Object;
+                params.id = localData.id 
+                params.id_prod = localData.id_prod
+                params.id_ped = localData.id_ped
+                params.qtd = document.querySelector('#edtQtd').value
+                params.preco = document.querySelector('#edtPreco').value
+                params.und = data.und
+                params.serv = data.serv
+
+            const myPromisse = queryDB(params,32);
+
+            myPromisse.then((resolve)=>{
+                if(resolve.trim() != ""){
+                    reload_tab()
+                    closeModal()
+                }  
+            })
+    })
+
+    document.querySelector('#btnDelItem').addEventListener('click',()=>{
+
+        if (confirm('Deseja realmente deletar este ítem da cotação?')) {
+
+            const params = new Object;
+                params.id = localData.id 
+                params.hash = localStorage.getItem('hash')
+
+            const myPromisse = queryDB(params,33);
+
+            myPromisse.then((resolve)=>{
+                if(resolve.trim() != ""){
+                    reload_tab()
+                    closeModal()
+                }  
+            })
+        }    
+    
+    })
 
 
 </script>

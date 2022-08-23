@@ -123,26 +123,27 @@
 
 </template>
 <script>
+    const localData = getModalData('viewProd')
 
     pageBegin()
 
     function pageBegin(){
-        if (main_data != 'new'){
-            const img = main_data.img_path != null ? main_data.img_path : 'noimage.png'
+        if (localData != 'new'){
+            const img = localData.img_path != null ? localData.img_path : 'noimage.png'
             loadImg(`../prod_img/${img}`)
-            document.querySelector('#edtDesc').value = main_data.descricao
-            document.querySelector('#edtEtq').value = main_data.estoque
-            document.querySelector('#edtCodFab').value = main_data.cod_bar
-            document.querySelector('#edtEtqMin').value = main_data.etq_min
-            document.querySelector('#edtCodInt').value = main_data.cod
-            document.querySelector('#edtCodBar').value = main_data.cod_bar
-            document.querySelector('#edtCFOP').value = main_data.CFOP
-            document.querySelector('#edtNCM').value = main_data.ncm
-            document.querySelector('#edtComp').value = main_data.preco_comp
-            document.querySelector('#edtMargem').value = main_data.margem
-            document.querySelector('#cmbTipo').value = main_data.tipo.toUpperCase()
-            document.querySelector('#edtCodFab').value = main_data.cod_cli    
-            document.querySelector('#edtPreço').innerHTML = moneyBR(main_data.preco_venda )
+            document.querySelector('#edtDesc').value = localData.descricao
+            document.querySelector('#edtEtq').value = localData.estoque
+            document.querySelector('#edtCodFab').value = localData.cod_bar
+            document.querySelector('#edtEtqMin').value = localData.etq_min
+            document.querySelector('#edtCodInt').value = localData.cod
+            document.querySelector('#edtCodBar').value = localData.cod_bar
+            document.querySelector('#edtCFOP').value = localData.CFOP
+            document.querySelector('#edtNCM').value = localData.ncm
+            document.querySelector('#edtComp').value = localData.preco_comp
+            document.querySelector('#edtMargem').value = localData.margem
+            document.querySelector('#cmbTipo').value = localData.tipo.toUpperCase()
+            document.querySelector('#edtCodFab').value = localData.cod_cli    
+            document.querySelector('#edtPreço').innerHTML = moneyBR(localData.preco_venda )
         }
         const params = new Object;
             params.hash = localStorage.getItem('hash');
@@ -151,7 +152,7 @@
         myPromisse.then((resolve)=>{
             const perm = JSON.parse(resolve)
             if(perm[0].access == '1'){
-                if (main_data != 'new'){
+                if (localData != 'new'){
                     document.querySelector('#btnEdit').style.display = 'block'                
                 }else{
                     document.querySelector('#btnEdit').click()
@@ -160,9 +161,9 @@
             }
         })
 
-        fillCombo('cmbUnd',params,8,['sigla','nome'],typeof main_data === 'object' ? main_data.unidade :'' )
+        fillCombo('cmbUnd',params,8,['sigla','nome'],typeof localData === 'object' ? localData.unidade :'' )
         params.tipo = 'FOR'
-        fillCombo('cmbForn',params,11,['id','cod_nome'],typeof main_data === 'object' ? main_data.id_emp :'' )
+        fillCombo('cmbForn',params,11,['id','cod_nome'],typeof localData === 'object' ? localData.id_emp :'' )
     }
 
     document.querySelector('#btnEdit').addEventListener('click',()=>{
@@ -170,7 +171,7 @@
         for(let i=0; i<inputs.length; i++){
             inputs[i].disabled = false
         }
-        if (main_data == 'new'){
+        if (localData == 'new'){
             document.querySelector('#edtCodInt').disabled = true
         }
         document.querySelector('#btnEdit').style.display = 'none'
@@ -181,7 +182,7 @@
 
     document.querySelector('#btnSave').addEventListener('click',()=>{
         const params = new Object;
-            params.id = typeof main_data === 'object' ? main_data.id : 'DEFAULT'
+            params.id = typeof localData === 'object' ? localData.id : 'DEFAULT'
             params.descricao = document.querySelector('#edtDesc').value.toUpperCase()
             params.estoque = document.querySelector('#edtEtq').value
             params.etq_min = document.querySelector('#edtEtqMin').value
@@ -208,7 +209,7 @@
     document.querySelector('#btnDel').addEventListener('click',()=>{
         if (confirm('Deseja realmente deletar este produto?')) {
             const params = new Object;
-                params.id = main_data.id
+                params.id = localData.id
                 params.hash = localStorage.getItem('hash');
 
             const myPromisse = queryDB(params,13);
@@ -220,7 +221,7 @@
     })
 
     document.querySelector('#btnEtq').addEventListener('click',()=>{
-        print_etq(main_data)
+        print_etq(localData)
     })
 
     document.querySelector('#up_file').addEventListener('change',()=>{
@@ -245,12 +246,12 @@
     })
 
     document.querySelector('#btnUpload').addEventListener('click',()=>{
-        const upload = uploadImage('up_file','../../prod_img/',`img_${main_data.cod}`)
+        const upload = uploadImage('up_file','../../prod_img/',`img_${localData.cod}`)
 
         upload.then(function (resolve){
             if(resolve != '0'){
                 const params = new Object;
-                    params.id = main_data.id 
+                    params.id = localData.id 
                     params.filename = resolve
  
                 const myPromisse = queryDB(params,23);

@@ -33,77 +33,75 @@
 </template>
 <script>
 
-    function open(){
-        document.querySelector('#tdEmp').innerHTML = main_data.fantasia.toUpperCase()
-        document.querySelector('#tdEmi').innerHTML = main_data.data_ped != null ? dataBR(main_data.data_ped) : '*'
-        document.querySelector('#tdVend').innerHTML = main_data.resp != null ? main_data.resp.toUpperCase() : '*'
-        document.querySelector('#tdComp').innerHTML = main_data.comp != null ? main_data.comp.toUpperCase(): '*'
-        document.querySelector('#tdEnt').innerHTML = main_data.data_ent != null ? dataBR(main_data.data_ent): '*'
-        document.querySelector('#tdVal').innerHTML = main_data.venda != null ? 'R$'+main_data.venda : '*'
+    const localData = getModalData('viewCot')
 
-        if(main_data.status == 'ABERTO'){
+    function open(){
+        document.querySelector('#tdEmp').innerHTML = localData.fantasia.toUpperCase()
+        document.querySelector('#tdEmi').innerHTML = localData.data_ped != null ? dataBR(localData.data_ped) : '*'
+        document.querySelector('#tdVend').innerHTML = localData.resp != null ? localData.resp.toUpperCase() : '*'
+        document.querySelector('#tdComp').innerHTML = localData.comp != null ? localData.comp.toUpperCase(): '*'
+        document.querySelector('#tdEnt').innerHTML = localData.data_ent != null ? dataBR(localData.data_ent): '*'
+
+        if(localData.status == 'ABERTO'){
             document.querySelector('#btnEdit').disabled = false
             document.querySelector('#btnDel').disabled = false
             document.querySelector('#btnAdd').disabled = false
+            document.querySelector('#tblItens').disabled = false
         }
     }
 
-    function fillItens(){
+    reload_tab = function fillItens(){
         const params = new Object;
-            params.ped_id = main_data.id
+            params.ped_id = localData.id
         const myPromisse = queryDB(params,30);
         myPromisse.then((resolve)=>{
             const json = JSON.parse(resolve)
             const tbl = document.querySelector('#tblItens')
-            tbl.head('Cod.,Descrição,Und.,Qtd.,Preço Unit.,Sub Total')
-                for(let i=0; i<json.length;i++){
-                    tbl.plot(json[i],'cod_prod,descricao,und,qtd,preco,total','str,Upp,Upp,str,R$.,R$.')
-                }     
+            let tot = 0
+            tbl.head('Cod.,Descrição,Und.,Qtd.,Preço Unit.,Sub Total')            
+            for(let i=0; i<json.length;i++){
+                tbl.plot(json[i],'cod_prod,descricao,und,qtd,preco,total','str,Upp,Upp,str,R$.,R$.')
+                tot += parseFloat(json[i].total)
+            }
+            document.querySelector('#tdVal').innerHTML = moneyBR(tot)
         })
     }
 
     open()
-    fillItens()
+    reload_tab()
 
     document.querySelector('#btnEdit').addEventListener('click',()=>{
-        openHTML('newCot.html','pop-up',(main_data.status=='ABERTO'?'Cotação-':'Pedido-') + main_data.num_ped, main_data)
+        openHTML('newCot.html','pop-up',(localData.status=='ABERTO'?'Cotação-':'Pedido-') + localData.num_ped, localData)
     })
 
     document.querySelector('#btnDel').addEventListener('click',()=>{
         
         if (confirm('Deseja realmente deletar esta Cotação?')) {
             const params = new Object;
-                params.id = main_data.id
+                params.id = localData.id
                 params.hash = localStorage.getItem('hash')
 
             const myPromisse = queryDB(params,31);
 
             myPromisse.then((resolve)=>{
-                if(main_data.mode == 'edit'){
+                if(localData.mode == 'edit'){
                     document.querySelector('#btnBusca').click()
                 }
                 closeModal('all')                
             })
-        }        
-        
+        }                
     })
 
     document.querySelector('#btnAdd').addEventListener('click',()=>{
-
-        openHTML('addProd.html','pop-up','Adicione um Produto ou Serviço','',[100,30])
-
+        openHTML('addProd.html','pop-up','Adicione um Produto ou Serviço',localData,[100,30])
     })
 
     document.querySelector('#tblItens').addEventListener('click',(e)=>{
-        const data = e.target.parentNode.data
-        console.log(data)
-
-        openHTML('edtProd.html','pop-up','Alteração de Ítem')
-
-
-
+        if(localData.status == 'ABERTO'){
+            const data = e.target.parentNode.data
+            data.mode = 'edit'
+            openHTML('edtProd.html','pop-up','Alteração de Ítem',data)
+        }
     })
-
-
 
 </script>

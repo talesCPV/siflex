@@ -99,24 +99,25 @@
 
 </template>
 <script>
+    const localData = getModalData('viewEmp')
 
     pageBegin()
 
     function pageBegin(){
-        if (main_data != 'new'){
-            document.querySelector('#edtNome').value = main_data.nome == null ? '' : main_data.nome.toUpperCase()
-            document.querySelector('#edtFant').value = main_data.fantasia == null ? '' : main_data.fantasia.toUpperCase() 
-            document.querySelector('#cmbTipo').value = main_data.tipo == null ? '' : main_data.tipo
-            document.querySelector('#edtCNPJ').value = getCNPJ(main_data.cnpj)
-            document.querySelector('#edtIncEst').value = getIE(main_data.ie)
-            document.querySelector('#edtInscMun').value = main_data.im == null ? '' : main_data.im
-            document.querySelector('#edtEnd').value = main_data.endereco == null ? '' : main_data.endereco.toUpperCase()
-            document.querySelector('#edtNum').value = main_data.num == null ? '' : main_data.num
-            document.querySelector('#edtCidade').value = main_data.cidade == null ? '' : main_data.cidade.toUpperCase()
-            document.querySelector('#cmbEstado').value = main_data.estado == null ? '' : main_data.estado
-            document.querySelector('#edtBairro').value = main_data.bairro == null ? '' : main_data.bairro.toUpperCase()
-            document.querySelector('#edtCEP').value = main_data.cep == null ? '' : main_data.cep
-            document.querySelector('#edtTel').value = main_data.tel == null ? '' : main_data.tel
+        if (localData != 'new'){
+            document.querySelector('#edtNome').value = localData.nome == null ? '' : localData.nome.toUpperCase()
+            document.querySelector('#edtFant').value = localData.fantasia == null ? '' : localData.fantasia.toUpperCase() 
+            document.querySelector('#cmbTipo').value = localData.tipo == null ? '' : localData.tipo
+            document.querySelector('#edtCNPJ').value = getCNPJ(localData.cnpj)
+            document.querySelector('#edtIncEst').value = getIE(localData.ie)
+            document.querySelector('#edtInscMun').value = localData.im == null ? '' : localData.im
+            document.querySelector('#edtEnd').value = localData.endereco == null ? '' : localData.endereco.toUpperCase()
+            document.querySelector('#edtNum').value = localData.num == null ? '' : localData.num
+            document.querySelector('#edtCidade').value = localData.cidade == null ? '' : localData.cidade.toUpperCase()
+            document.querySelector('#cmbEstado').value = localData.estado == null ? '' : localData.estado
+            document.querySelector('#edtBairro').value = localData.bairro == null ? '' : localData.bairro.toUpperCase()
+            document.querySelector('#edtCEP').value = localData.cep == null ? '' : localData.cep
+            document.querySelector('#edtTel').value = localData.tel == null ? '' : localData.tel
         }
         const params = new Object;
             params.hash = localStorage.getItem('hash');
@@ -125,7 +126,7 @@
         myPromisse.then((resolve)=>{
             const perm = JSON.parse(resolve)
             if(perm[0].access == '1'){
-                if (main_data != 'new'){
+                if (localData != 'new'){
                     document.querySelector('#btnEdit').style.display = 'block'                
                 }else{
                     document.querySelector('#btnEdit').click()
@@ -151,7 +152,7 @@
         if(checkField(['edtNome'])){
             const fant = document.querySelector('#edtFant').value.trim() == '' ? document.querySelector('#edtNome').value.trim() : document.querySelector('#edtFant').value.trim()
             const params = new Object;
-            params.id = typeof main_data === 'object' ? main_data.id : 'DEFAULT'
+            params.id = typeof localData === 'object' ? localData.id : 'DEFAULT'
             params.nome = document.querySelector('#edtNome').value.trim().toUpperCase()
             params.fantasia = fant.toUpperCase()
             params.tipo = document.querySelector('#cmbTipo').value
@@ -169,7 +170,7 @@
 
         const myPromisse = queryDB(params,25);
         myPromisse.then((resolve)=>{
-            main_data != 'new' ? document.querySelector('#btnBusca').click() : 0            
+            localData != 'new' ? document.querySelector('#btnBusca').click() : 0            
             closeModal('all')
         })
         }
@@ -179,7 +180,7 @@
     document.querySelector('#btnDel').addEventListener('click',()=>{
         if (confirm('Deseja realmente deletar esta empresa?')) {
             const params = new Object;
-                params.id = main_data.id
+                params.id = localData.id
                 params.hash = localStorage.getItem('hash');
 
             const myPromisse = queryDB(params,26);

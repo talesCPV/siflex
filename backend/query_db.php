@@ -73,6 +73,7 @@
          "32" => 'INSERT INTO tb_item_ped (id, id_prod, id_ped, qtd, preco, und, serv)
             VALUES ("x00","x01","x02","x03","x04","x05","x06") ON DUPLICATE KEY UPDATE 
             id_prod="x01", id_ped="x02", qtd="x03", preco="x04", und="x05", serv="x06";',
+         "33" => 'DELETE FROM tb_item_ped WHERE id="x00" AND (SELECT U.class FROM tb_usuario AS U WHERE hash="x01") IN (10,4);',
             
             
       );

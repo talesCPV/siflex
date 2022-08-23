@@ -24,26 +24,21 @@
   
     viewUser()
 
-
-    function viewUser(){
-      
+    function viewUser(){      
         const tbl = document.getElementById('tblUser')
         tbl.innerHTML = ''
         const params = new Object;
             params.hash = localStorage.getItem('hash');
         const myPromisse = queryDB(params,1);
-
         myPromisse.then((resolve)=>{
             if(resolve.trim() != ""){
                 const json = JSON.parse(resolve);
-
                 document.querySelector('#fdsUser').style.display = json.length > 0 ? 'block' : 'none'
                 tbl.head('Usuário,Nome,Email|mobHide')
                 for(let i=0; i<json.length;i++){
                     tbl.plot(json[i],'nome,user,email|mobHide','str,Upp,str')
                 }
             }        
-
         });
     }
 

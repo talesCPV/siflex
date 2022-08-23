@@ -1,4 +1,3 @@
-
 <template>
     <style>
 
@@ -25,10 +24,11 @@
 
 </template>
 <script>
-  
-    if(main_data.mode == 'edit'){
-        document.querySelector('#edtNome').value = main_data.nome
-        document.querySelector('#edtSigla').value = main_data.sigla
+      const localData = getModalData('viewUnd')
+
+    if(localData.mode == 'edit'){
+        document.querySelector('#edtNome').value = localData.nome
+        document.querySelector('#edtSigla').value = localData.sigla
     }else{
         document.querySelector('#btnDel').style.display = 'none'
     }
@@ -37,17 +37,16 @@
         if(checkField(['edtNome','edtSigla']) ){
 
             const params = new Object;
-                params.id = main_data.mode == 'new' ? 'DEFAULT' : main_data.id
+                params.id = localData.mode == 'new' ? 'DEFAULT' : localData.id
                 params.nome = document.querySelector('#edtNome').value.trim()
                 params.sigla = document.querySelector('#edtSigla').value.trim().toUpperCase()
 
-                const myPromisse = queryDB(params,9);
+            const myPromisse = queryDB(params,9);
 
-                myPromisse.then((resolve)=>{
-                    closeModal('all')
-                    openHTML('config.html','pop-up','Configuração de Sistema')
-                })
-
+            myPromisse.then((resolve)=>{
+                closeModal('all')
+                openHTML('config.html','pop-up','Configuração de Sistema')
+            })
         }        
     })
 
@@ -55,18 +54,14 @@
 
         if (confirm('Deseja realmente deletar este usuário?')) {
             const params = new Object;
-                params.id = main_data.id
+                params.id = localData.id
 
             const myPromisse = queryDB(params,3);
-
             myPromisse.then((resolve)=>{
                 closeModal('all')
                 openHTML('usuarios.html','pop-up','Cadastro de Usuários')
             })
-
-
         }
-
     })
 
 
