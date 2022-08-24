@@ -121,7 +121,7 @@ HTMLTableElement.prototype.plot = function(obj, fields,type=''){
                     html = obj[arr[0]].toLowerCase()
                     break;
                 case 'R$.':
-                    html = 'R$'+ parseFloat(obj[arr[0]]).toFixed(2)
+                    html = viewMoneyBR(parseFloat(obj[arr[0]]).toFixed(2))   //'R$'+ parseFloat(obj[arr[0]]).toFixed(2)
                     break;             
                 case 'cha':
                     op = type[i].split(' ')
@@ -189,17 +189,15 @@ function postLocalData(id, data){
 
 function closeModal(N=''){
     const mod_main = document.querySelector('#myModal')
-
     if(N=='all'){
-        while(mod_main.querySelectorAll('.modal-content').length > 0){
-            mod_main.querySelectorAll('.modal-content')[0].remove()    
+        while(mod_main.querySelectorAll('.modal').length > 0){
+            mod_main.querySelectorAll('.modal')[0].remove()    
         }
     }else{
-        N = (N=='')? mod_main.querySelectorAll('.modal-content').length-1 : N // N=='' -> Last Modal
-        mod_main.querySelector('#card-'+N).remove()    
+        N = (N=='')? mod_main.querySelectorAll('.modal').length-1 : N // N=='' -> Last Modal
+        mod_main.querySelector('#modal-'+N).remove()    
     }
-
-    mod_main.style.display = (mod_main.querySelectorAll('.modal-content').length < 1) ? "none" : 'block'
+    mod_main.style.display = (mod_main.querySelectorAll('.modal').length < 1) ? "none" : 'block'
 }
 
 function newModal(title, content, pos, data, id){
@@ -208,11 +206,17 @@ function newModal(title, content, pos, data, id){
     const index = mod_main.querySelectorAll('.modal-content').length        
     const offset = 15
 
+    const backModal = document.createElement('div')
+        backModal.classList = 'modal'
+        backModal.id = 'modal-'+index
+        backModal.style.zIndex = 2+index
+        backModal.style.display = 'block'
+
     const mod_card = document.createElement('div')
         mod_card.classList = 'modal-content'
         mod_card.id = 'card-'+index        
         mod_card.style.position = 'absolute'
-        mod_card.style.zIndex = 10+index
+        mod_card.style.zIndex = 3+index
         mod_card.style.margin = '0 auto'
         mod_card.style.top = pos[1] + index*offset+'px'
         mod_card.style.left = pos[0] + index*offset+'px'
@@ -241,7 +245,9 @@ function newModal(title, content, pos, data, id){
     mod_content.innerHTML = content
     mod_card.appendChild(mod_content)
 
-    mod_main.appendChild(mod_card)
+
+    backModal.appendChild(mod_card)
+    mod_main.appendChild(backModal)
     mod_main.style.display = "block"
 
 

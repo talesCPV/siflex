@@ -13,11 +13,11 @@
         width: auto !important;
         margin: auto;
     }
-
+/*
     input[type=date]{
         max-width: 150px;
     }
-
+*/
     input, select, textarea{
         padding: 10px;
         margin: 10px;
@@ -121,7 +121,8 @@
 
     .ckBOX{
         white-space: nowrap;
-        padding-top: 13px;        
+        padding-top: 13px;    
+        margin: 0 20px;    
     }
 
     .form-base{
@@ -154,6 +155,11 @@
         .control-size{
             flex-direction: column;
             width: 100% !important;
+        }
+
+        .ckBOX{
+            margin: 20px auto !important;
+            font-size: 1.25em;
         }
 
         .mobHide{

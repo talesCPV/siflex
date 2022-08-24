@@ -159,10 +159,20 @@ function dataBR(V){
     return V.substring(8,10)+'/'+V.substring(5,7)+'/'+V.substring(0,4)
 }
 
+function viewMoneyBR(V){
+    const num = getNum(V)
+    let out = ''
+    for(let i=num.length-1; i>=0; i--){        
+        out = num[i] + out        
+        out = i==num.length-2 ? ','+out : (i-num.length-1)%3==0 && i!=0 && i< num.length-3 ? '.'+out : out
+    }
+    return 'R$'+out
+}
+/*
 function moneyBR(V){
     return 'R$'+ parseFloat(V).toFixed(2)
 }
-
+*/
 function horario(edt){
     let ok_chr = ['1','2','3','4','5','6','7','8','9','0'];
     var num = edt.value;

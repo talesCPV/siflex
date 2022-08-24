@@ -101,8 +101,17 @@
             const myPromisse = queryDB(params,28);
             myPromisse.then((resolve)=>{
                 if(localData == 'new'){
-                    params.mode = 'new'
-                    openHTML('viewCot.html','pop-up','Cotação-'+params.num_ped, params)
+                    const myPromisseLastID = queryDB(params,34)
+                    myPromisseLastID.then((resolve)=>{
+                        const sel = document.querySelector('#cmbCli')
+                        params.mode = 'new'
+                        params.fantasia = sel.options[sel.selectedIndex].text
+                        const json = JSON.parse(resolve)
+                        params.id = json[0].last_ped
+                        params.status = 'ABERTO'
+                        openHTML('viewCot.html','pop-up','Cotação-'+params.num_ped, params)
+                        closeModal()
+                    })
                 }else{
                     localData.id_emp = document.querySelector('#cmbCli').value
                     localData.data_ped = document.querySelector('#edtData').value
@@ -114,8 +123,8 @@
                     localData.cond_pgto = document.querySelector('#edtCond').value.trim()
                     localData.obs = document.querySelector('#edtObs').value.trim()
                     open()
+                    closeModal()
                 }
-                closeModal()
             })
         }
         

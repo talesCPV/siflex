@@ -34,7 +34,7 @@
 <script>
 
     const localData = getModalData('viewCot')
-
+console.log(localData)
     function open(){
         document.querySelector('#tdEmp').innerHTML = localData.fantasia.toUpperCase()
         document.querySelector('#tdEmi').innerHTML = localData.data_ped != null ? dataBR(localData.data_ped) : '*'
@@ -63,7 +63,7 @@
                 tbl.plot(json[i],'cod_prod,descricao,und,qtd,preco,total','str,Upp,Upp,str,R$.,R$.')
                 tot += parseFloat(json[i].total)
             }
-            document.querySelector('#tdVal').innerHTML = moneyBR(tot)
+            document.querySelector('#tdVal').innerHTML = viewMoneyBR(tot.toFixed(2))
         })
     }
 
@@ -76,19 +76,29 @@
 
     document.querySelector('#btnDel').addEventListener('click',()=>{
         
-        if (confirm('Deseja realmente deletar esta Cotação?')) {
-            const params = new Object;
-                params.id = localData.id
-                params.hash = localStorage.getItem('hash')
+        if (confirm('Deseja realmente deletar esta Cotação?')) {            
+            const params_itens = new Object;
+                params_itens.id_ped = localData.id
+                params_itens.hash = localStorage.getItem('hash')
 
-            const myPromisse = queryDB(params,31);
+            const myPromisse_item = queryDB(params_itens,33);
 
-            myPromisse.then((resolve)=>{
-                if(localData.mode == 'edit'){
-                    document.querySelector('#btnBusca').click()
-                }
-                closeModal('all')                
+            myPromisse_item.then((resolve)=>{
+                const params_ped = new Object;
+                    params_ped.id = localData.id
+                    params_ped.hash = localStorage.getItem('hash')
+
+                const myPromisse_ped = queryDB(params_ped,31);
+                myPromisse_ped.then((resolve)=>{
+                    if(localData.mode == 'edit'){
+                        document.querySelector('#btnBusca').click()
+                    }
+                    closeModal('all') 
+                
+                })
+               
             })
+            
         }                
     })
 
