@@ -66,12 +66,11 @@
             const last = JSON.parse(resolve)
             const dg = parseInt(last[0].dg) + 1  
             document.querySelector('#edtNumPed').value = today.getCod()+'-'+dg
-            document.querySelector('#edtNumPed').readonly = true;
-            
+            document.querySelector('#edtNumPed').readOnly = true             
         })
         document.querySelector('#edtVend').value = localStorage.getItem('nome').trim() == '' ? localStorage.getItem('username') : localStorage.getItem('nome')
      
-    }else{        
+    }else{  
         document.querySelector('#edtNumPed').value = localData.num_ped
         document.querySelector('#edtData').value = localData.data_ped
         document.querySelector('#edtObs').value = localData.obs
@@ -81,7 +80,7 @@
         document.querySelector('#edtEntrega').value = localData.data_ent
         document.querySelector('#btnDel').style.display = 'block'
         document.querySelector('#btnCad').innerHTML = 'Salvar'
-        document.querySelector('#edtNumPed').readonly = false;        
+        document.querySelector('#edtNumPed').readOnly = false
     }
 
     document.querySelector('#btnCad').addEventListener('click',()=>{
@@ -122,6 +121,7 @@
                     localData.origem = 'SAN'
                     localData.cond_pgto = document.querySelector('#edtCond').value.trim()
                     localData.obs = document.querySelector('#edtObs').value.trim()
+                    document.querySelector('#btnBusca').click()
                     open()
                     closeModal()
                 }

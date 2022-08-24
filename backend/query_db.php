@@ -75,6 +75,7 @@
             id_prod="x01", id_ped="x02", qtd="x03", preco="x04", und="x05", serv="x06";',
          "33" => 'DELETE FROM tb_item_ped WHERE y00="x00" AND (SELECT U.class FROM tb_usuario AS U WHERE hash="x01") IN (10,4);',
          "34" => 'SELECT MAX(id) AS last_ped FROM tb_pedido',
+         "35" => 'UPDATE tb_pedido SET status="x02" WHERE id=x00 AND (SELECT U.class FROM tb_usuario AS U WHERE hash="x01") IN (10,4);'
             
             
       );

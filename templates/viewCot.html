@@ -13,15 +13,16 @@
         <legend>Pedido</legend>
         <table id="tblPed">
             <tr>
-                <th>Empresa</th><th>Emissão</th><th>Vendedor</th><th>Comprador</th><th>Entrega</th><th>Valor</th>
+                <th>Empresa</th><th>Emissão</th><th class="mobHide">Vendedor</th><th  class="mobHide">Comprador</th><th>Entrega</th><th>Valor</th>
             </tr>
             <tr>
-                <td id="tdEmp"></td><td id="tdEmi"></td><td id="tdVend"></td><td id="tdComp"></td><td id="tdEnt"></td><td id="tdVal"></td>
+                <td id="tdEmp"></td><td id="tdEmi"></td><td id="tdVend"  class="mobHide"></td><td id="tdComp"  class="mobHide"></td><td id="tdEnt"></td><td id="tdVal"></td>
             </tr>
         </table>
         <div class="inline">
             <button id="btnEdit" disabled>Editar</button>
             <button id="btnDel" disabled>Deletar</button>
+            <button id="btnFecha" disabled>Encerrar</button>
         </div>
     </fieldset>
     <fieldset>
@@ -34,6 +35,8 @@
 <script>
 
     const localData = getModalData('viewCot')
+    document.querySelector('#btnFecha').innerHTML = localData.status=='FECHADO' ? 'Upload NF' : 'Encerrar'
+
 console.log(localData)
     function open(){
         document.querySelector('#tdEmp').innerHTML = localData.fantasia.toUpperCase()
@@ -56,11 +59,12 @@ console.log(localData)
         const myPromisse = queryDB(params,30);
         myPromisse.then((resolve)=>{
             const json = JSON.parse(resolve)
+            document.querySelector('#btnFecha').disabled = json.length > 0 ? false : true
             const tbl = document.querySelector('#tblItens')
             let tot = 0
-            tbl.head('Cod.,Descrição,Und.,Qtd.,Preço Unit.,Sub Total')            
+            tbl.head('Cod.|mobHide,Descrição,Und.|mobHide,Qtd.,Preço Unit.,Sub Total')            
             for(let i=0; i<json.length;i++){
-                tbl.plot(json[i],'cod_prod,descricao,und,qtd,preco,total','str,Upp,Upp,str,R$.,R$.')
+                tbl.plot(json[i],'cod_prod|mobHide,descricao,und|mobHide,qtd,preco,total','str,Upp,Upp,str,R$.,R$.')
                 tot += parseFloat(json[i].total)
             }
             document.querySelector('#tdVal').innerHTML = viewMoneyBR(tot.toFixed(2))
@@ -104,6 +108,21 @@ console.log(localData)
 
     document.querySelector('#btnAdd').addEventListener('click',()=>{
         openHTML('addProd.html','pop-up','Adicione um Produto ou Serviço',localData,[100,30])
+    })
+
+    document.querySelector('#btnFecha').addEventListener('click',()=>{
+        if (confirm('Deseja realmente encerrar esta cotação?')) { 
+            const params = new Object;
+                params.id = localData === 'new' ? 'DEFAULT' : localData.id 
+                params.hash = localStorage.getItem('hash')
+                params.status = 'FECHADO'
+                
+            const myPromisse = queryDB(params,35);
+            myPromisse.then((resolve)=>{
+                reload_tab()        
+            })
+        }
+        
     })
 
     document.querySelector('#tblItens').addEventListener('click',(e)=>{
