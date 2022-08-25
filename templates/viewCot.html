@@ -51,7 +51,6 @@
     const localData = getModalData('viewCot')
     document.querySelector('#btnFecha').innerHTML = localData.status=='FECHADO' ? 'Upload NF' : 'Encerrar'
 
-console.log(localData)
     function open(){
         document.querySelector('#tdEmp').innerHTML = localData.fantasia.toUpperCase()
         document.querySelector('#tdEmi').innerHTML = localData.data_ped != null ? dataBR(localData.data_ped) : '*'

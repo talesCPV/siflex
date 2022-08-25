@@ -254,11 +254,8 @@ function print_pcp(tbl){
     doc.save('pcp.pdf')
 }
 
-function anaFrotaRelat(obj){
-
+function anaFrotaRelat(obj,tipo='analise'){
     function postCli(data){
-//        line(txt.y)
-//        addLine()
         doc.setFontSize(11)
         doc.setFont(undefined, 'bold')
         doc.text('Cliente:' + data.fantasia.trim().toUpperCase() ,15,txt.y)
@@ -274,25 +271,42 @@ function anaFrotaRelat(obj){
     }
 
     function postTable(){
-
         function pushTot(title,value,color=[37, 68, 65],font=[255]){
             tbl_body.push([{
                 content: title,
-                colSpan: 3,
+                colSpan: colspan,
                 styles: { halign: 'right', fillColor: color, textColor:font},
               },
               {
                 content: value, 
-                styles: { halign: 'left', fillColor: color, textColor:font },         
+                styles: { halign: 'right', fillColor: color, textColor:font },         
               }])
         }
-        pushTot('Subtotal',viewMoneyBR(subTot.toFixed(2),[0,0,0]))
+
+        let head
+        let colspan
+        if(tipo == 'analise'){
+            head =  [["Carro","Analize", "Exec.",'Valor']]
+            colspan = 3
+        }else{
+            head =  [["Carro","Local", "Serviço."]]
+            colspan = 2
+        }
+
+        pushTot('','Total '+viewMoneyBR(subTot.toFixed(2),[0,0,0]))
+
 
         doc.autoTable({
-            head: [["Carro","Analize", "Exec.",'Valor']],
+            head: head,
             body: tbl_body,
-            startY: txt.y      
-        }); 
+            columnStyles: {
+                0: {cellWidth: 15},
+                1: {cellWidth: 20},
+                2: {cellWidth: 100}
+            },
+            startY: txt.y
+        });
+
         txt.y = doc.previousAutoTable.finalY
         tbl_body = []
         total += subTot
@@ -318,7 +332,11 @@ function anaFrotaRelat(obj){
 
     doc.setFontSize(15)
     doc.setFont(undefined, 'bold')
+    if(tipo == 'analise'){
     center_text(document.querySelector('#edtTitle').value.trim())
+    }else{
+        center_text('Orçamento')
+    }
     doc.setFont(undefined, 'normal')
     doc.setFontSize(12)
     addLine()
@@ -337,19 +355,26 @@ function anaFrotaRelat(obj){
             postCli(data)
         }
 
-        tbl_body.push([data.num_carro,dataBR(data.data_analise),data.exec=='1'?'SIM':'NÃO',viewMoneyBR(parseFloat(data.valor).toFixed(2))])
+        if(tipo == 'analise'){
+            tbl_body.push([data.num_carro,dataBR(data.data_analise),data.exec=='1'?'SIM':'NÃO',viewMoneyBR(parseFloat(data.valor).toFixed(2))])            
+        }else{
+            tbl_body.push([data.num_carro,data.local,data.obs])
+            tbl_body.push(['Valor',viewMoneyBR(parseFloat(data.valor).toFixed(2)),''])
+        }
+
         subTot += parseFloat(data.valor)
     }
 
-
     postTable()
     addLine()
-    doc.setFontSize(11)
-    doc.setFont(undefined, 'bold')
-    right_text('Total '+ viewMoneyBR(total.toFixed(2)),17)
-    doc.setFont(undefined, 'normal')
-    doc.setFontSize(10)
-    addLine()
+    if(tipo == 'analise'){
+        doc.setFontSize(11)
+        doc.setFont(undefined, 'bold')
+        right_text('Total '+ viewMoneyBR(total.toFixed(2)),17)
+        doc.setFont(undefined, 'normal')
+        doc.setFontSize(10)
+        addLine()
+    }
 
 //  TEXTO DE OBS 
     if(document.querySelector('#edtObs').value.trim() != ''){
@@ -361,67 +386,6 @@ function anaFrotaRelat(obj){
         addLine(0.7)
         box(document.querySelector('#edtObs').value.trim(),10,txt.y,170,0.7)
     
-    }
-
-    doc.save('RelAnaFrot.pdf')
-
-}
-
-function anaFrotaOrc(obj){
-
-    function postCli(data){
-        doc.setFont(undefined, 'bold')
-        line(txt.y)
-        addLine(3)
-        doc.text(today.getFormatBR() +'  Cliente: '+data.fantasia, txt.x,txt.y);
-        doc.text('CNPJ: '+getCNPJ(data.cnpj), txt.x+135,txt.y);
-        addLine()
-        doc.text('End.: '+data.endereco.trim()+','+data.num+'   '+data.cidade.trim()+'-'+data.estado, txt.x,txt.y);
-        addLine(2)
-
-    }
-
-    doc = new jsPDF()  
-
-    clearTxt(37,10,[210,297])
-    frame()
-    header_pdf()
-    doc.setFontSize(23)
-    doc.setFont(undefined, 'bold')
-    doc.text('ORÇAMENTO', txt.x+ 65,txt.y);
-    addLine()
-    doc.setFont(undefined, 'normal')
-    doc.setFontSize(12)
-    let lastEmp
-    let tot = 0
-    let subTot = 0
-    for(let i=1; i< obj.rows.length;i++){
-        const data = obj.rows[i].data
-        if(data.id_emp != lastEmp){
-            lastEmp = data.id_emp
-            postCli(data)
-        }
-
-        doc.setFont(undefined, 'bold')
-        doc.text('Carro-'+data.num_carro, txt.x,txt.y);
-        doc.text('Local de Execução: '+data.local, txt.x+ 40,txt.y);
-        addLine()
-        doc.text('Serviço:', txt.x,txt.y);
-        addLine()
-        doc.setFont(undefined, 'normal')
-        box(data.obs,txt.x,txt.y,800,1)
-        doc.text('Valor R$'+parseFloat(data.valor).toFixed(2), txt.x,txt.y);
-        addLine(2)
-
-        subTot += parseFloat(data.valor)
-        if(i+1 == obj.rows.length || obj.rows[i+1].data.id_emp != lastEmp){
-            doc.setFont(undefined, 'bold')
-            doc.text('Valor Total R$ '+subTot.toFixed(2), txt.x,txt.y);
-            doc.setFont(undefined, 'normal')
-            tot += subTot
-            subTot = 0
-            addLine()
-        }
     }
 
     doc.save('RelAnaFrot.pdf')
