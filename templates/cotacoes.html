@@ -103,7 +103,6 @@
                     total +=  parseFloat(json[i].venda)
                     tbl.plot(json[i],'id|mobHide,num_ped,fantasia,data_ped,status|mobHide,venda|mobHide','int,str,Upp,date,change FECHADO=PED ABERTO=COT PAGO=FAT INTERNO=USO_INT. .=**,R$.')                    
                 }                
-//                document.querySelector('#lblTotal').innerHTML =  'Total R$'+total.toFixed(2)      
                 document.querySelector('#lblTotal').innerHTML =  'Total '+ viewMoneyBR(total.toFixed(2))
             }        
         })

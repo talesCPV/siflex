@@ -5,10 +5,8 @@
             width: 100%;
         }
 
-        #btnControl{
+        #fdsRelat{
             display: none;
-            width: 100%;
-            justify-content: center;
         }
 
         table tr{  
@@ -51,10 +49,26 @@
         </fieldset>
 
         <table id="tblAnaFrota"></table>
-        <div class="inline" id="btnControl">
-            <button id="btnRelat">Reltório</button>
-            <button id="btnOrc">Orçamento</button>
-        </div>
+
+        <fieldset id="fdsRelat">
+            <legend>Relatórios</legend>
+            <div class="inline">
+                <label for="edtTitle">Título</label>
+                <input type="text" id="edtTitle" placeholder="Título do relatório" value="Análise de Frota">
+            </div>
+
+            <div class="inline">
+                <label for="edtObs">Obs:</label>
+                <textarea id="edtObs" cols="30" rows="10"></textarea>
+            </div>
+
+            <div class="inline">            
+                <button id="btnRelat">Reltório</button>
+                <button id="btnOrc">Orçamento</button>
+            </div>
+    
+        </fieldset>
+
 
     </div>
 
@@ -86,7 +100,7 @@
         myPromisse.then((resolve)=>{
             if(resolve.trim() != ""){
                 const json = JSON.parse(resolve);                
-                document.querySelector('#btnControl').style.display = json.length > 0 ? 'flex' : 'none'
+                document.querySelector('#fdsRelat').style.display = json.length > 0 ? 'block' : 'none'
                 tbl.head('Cod.|mobHide,Cliente,Carro,Visita.,Exec.|mobHide,Valor R$|mobHide')                                             
                 for(let i=0; i<json.length;i++){
                     tbl.plot(json[i],'id|mobHide,fantasia,num_carro,data_analise,exec|mobHide,valor|mobHide','int,Upp,str,date,change 0=NÃO 1=SIM .=,R$.')

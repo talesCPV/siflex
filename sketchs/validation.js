@@ -155,6 +155,28 @@ function getCEP(V){
     return out
 }
 
+function getFone(V){
+    let num = getNum(V)
+    let out = '';
+    for(i=0;i<num.length;i++){
+        chr = num.substring(i,i+1);
+        if(i == 0){
+            out = '(' + out ;
+        }
+        if(i == 2){
+            out = out + ')';
+        }
+        if(i == 6){
+            out = out + '-';
+        }
+        if(i == 10){
+            out = out.substring(0,5) +" "+out.substring(5,3)+out.substring(9,1)+"-"+out.substring(10,3);
+        }		
+        out = out + chr;			
+    }
+    return out
+}
+
 function dataBR(V){
     return V.substring(8,10)+'/'+V.substring(5,7)+'/'+V.substring(0,4)
 }

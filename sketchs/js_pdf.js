@@ -25,7 +25,7 @@ var imgData = new Image()
 
 /* FUNCTIONS */
 
-function addPage(Y=46,margin=10){
+function addPage(Y=46){
     doc.addPage();
     frame()
     header_pdf()    
@@ -69,7 +69,7 @@ function logo(pos = [14,7,36,25]){
     doc.addImage(imgData, 'png', pos[0], pos[1], pos[2], pos[3]);
 }
 
-function addLine(N=1, botton=20, top=46){
+function addLine(N=1, botton=0, top=46){
     txt.y += txt.lineHeigth * N
     if(txt.y >= doc.internal.pageSize.getHeight() - botton){
         addPage(top)
@@ -101,12 +101,19 @@ function box(text,x,y,w,lh=0.8){
     }    
 }
 
-
 function center_text(T='',box=[0,doc.internal.pageSize.getWidth()]){
     const text = T==''? txt.text : T
-    const w = doc.getTextDimensions(text).w
-    const xOffset = (box[2] - box[1] - w) /2;   
+    const w = doc.getTextDimensions(T).w
+    const xOffset = (box[1] - box[0] - w) /2;  
     doc.text(T, box[0] + xOffset, txt.y);
+    addLine()
+}
+
+function right_text(T='',margin=0, pos=doc.internal.pageSize.getWidth()){
+    const text = T==''? txt.text : T
+    const w = doc.getTextDimensions(T).w
+    const xOffset = pos - margin - w 
+    doc.text(T, xOffset, txt.y);
     addLine()
 }
 
@@ -250,12 +257,19 @@ function print_pcp(tbl){
 function anaFrotaRelat(obj){
 
     function postCli(data){
+//        line(txt.y)
+//        addLine()
+        doc.setFontSize(11)
         doc.setFont(undefined, 'bold')
+        doc.text('Cliente:' + data.fantasia.trim().toUpperCase() ,15,txt.y)
+        doc.setFont(undefined, 'normal')
+        doc.setFontSize(10)
+        data.cnpj.trim() != '' ? doc.text('CNPJ:' + getCNPJ(data.cnpj) ,130,txt.y) :0
         addLine()
-        doc.text('Cliente: '+data.fantasia, txt.x+5,txt.y);
-        doc.text('CNPJ: '+getCNPJ(data.cnpj), txt.x+135,txt.y);
+        data.endereco.trim() != '' ? doc.text('End. '+ data.endereco.trim().toUpperCase()+','+data.num.trim(),15,txt.y) :0
+        data.cidade.trim()!= '' ? doc.text(data.cidade.trim().toUpperCase()+'-'+data.estado,130,txt.y) :0    
         addLine()
-        doc.text('End.: '+data.endereco.trim()+','+data.num+'   '+data.cidade.trim()+'-'+data.estado, txt.x+5,txt.y);
+        doc.text('Data da Avaliação:'+ dataBR(data.data_analise),15,txt.y)
         addLine(2)
     }
 
@@ -268,23 +282,25 @@ function anaFrotaRelat(obj){
                 styles: { halign: 'right', fillColor: color, textColor:font},
               },
               {
-                content: moneyBR(value), 
+                content: value, 
                 styles: { halign: 'left', fillColor: color, textColor:font },         
               }])
         }
-
-        pushTot('Subtotal',subTot)
+        pushTot('Subtotal',viewMoneyBR(subTot.toFixed(2),[0,0,0]))
 
         doc.autoTable({
-            head: [["Data", "Carro", "Exec.",'Valor']],
+            head: [["Carro","Analize", "Exec.",'Valor']],
             body: tbl_body,
             startY: txt.y      
         }); 
         txt.y = doc.previousAutoTable.finalY
         tbl_body = []
-        addLine()
         total += subTot
         subTot=0  
+
+        addLine()
+        line(txt.y)
+        addLine()
     }
 
     jsPDF.autoTableSetDefaults({
@@ -296,13 +312,17 @@ function anaFrotaRelat(obj){
     clearTxt(37,10,[210,297])
     frame()
     header_pdf()
-    doc.setFontSize(21)
+
+    line(txt.y)
+    addLine(2)
+
+    doc.setFontSize(15)
     doc.setFont(undefined, 'bold')
-    addLine()
-    doc.text('ANÁLISE DE FROTA', txt.x+ 55,txt.y);
-    addLine()
+    center_text(document.querySelector('#edtTitle').value.trim())
     doc.setFont(undefined, 'normal')
     doc.setFontSize(12)
+    addLine()
+
     let lastEmp
     let tbl_body = []
     let subTot = 0
@@ -317,17 +337,32 @@ function anaFrotaRelat(obj){
             postCli(data)
         }
 
-        tbl_body.push([dataBR(data.data_analise),data.num_carro,data.exec=='1'?'SIM':'NÃO',moneyBR(data.valor)])
+        tbl_body.push([data.num_carro,dataBR(data.data_analise),data.exec=='1'?'SIM':'NÃO',viewMoneyBR(parseFloat(data.valor).toFixed(2))])
         subTot += parseFloat(data.valor)
-       
     }
 
 
     postTable()
     addLine()
-    doc.text('TOTAL   '+moneyBR(total), 155,txt.y);
+    doc.setFontSize(11)
+    doc.setFont(undefined, 'bold')
+    right_text('Total '+ viewMoneyBR(total.toFixed(2)),17)
+    doc.setFont(undefined, 'normal')
+    doc.setFontSize(10)
     addLine()
-    line(txt.y)
+
+//  TEXTO DE OBS 
+    if(document.querySelector('#edtObs').value.trim() != ''){
+        if(txt.y < 250){
+            txt.y = 250
+        }
+        doc.setFontSize(8)
+        line(txt.y)
+        addLine(0.7)
+        box(document.querySelector('#edtObs').value.trim(),10,txt.y,170,0.7)
+    
+    }
+
     doc.save('RelAnaFrot.pdf')
 
 }
@@ -405,7 +440,7 @@ function print_finan(obj){
     let total = 0
     for(let i=1; i< obj.rows.length;i++){
         const data = obj.rows[i].data
-        tbl_body.push([data.id,data.tipo,data.origem,data.ref.maxWidth(15).toUpperCase(),data.emp.maxWidth(15).toUpperCase(),dataBR(data.data_pg),data.pgto,moneyBR(data.preco)])
+        tbl_body.push([data.id,data.tipo,data.origem,data.ref.maxWidth(15).toUpperCase(),data.emp.maxWidth(15).toUpperCase(),dataBR(data.data_pg),data.pgto,viewMoneyBR(data.preco)])
         total += data.tipo =='ENTRADA' ? parseFloat(data.preco) : -parseFloat(data.preco) 
 
     }
@@ -439,7 +474,7 @@ function print_finan(obj){
 
     addLine()
 
-    doc.text('Total    '+moneyBR(total), 155,txt.y);
+    doc.text('Total    '+viewMoneyBR(total.toFixed(2)), 155,txt.y);
 
     doc.save('RelFinan.pdf')
 
@@ -480,5 +515,120 @@ function print_prod(obj){
     txt.y = doc.previousAutoTable.finalY
 
     doc.save('relatProd.pdf')
+
+}
+
+function print_cotacao(ped,itens,emp,tipo='cot'){
+   
+    const show_val = document.querySelector('#ckbValor').checked
+
+    jsPDF.autoTableSetDefaults({
+        headStyles: { fillColor: [37, 68, 65] },
+    })
+
+    doc = new jsPDF();
+    
+    clearTxt(37,10,[210,297])
+    frame()
+    header_pdf()
+    line(txt.y)
+    addLine()
+
+//  CABEÇALHO    
+    doc.setFontSize(10)
+    doc.text(ped.id +' - '+ (ped.status=='ABERTO' ? 'COTAÇÃO: ' : 'PEDIDO: ') + ped.num_ped.trim().toUpperCase()  ,10,txt.y)
+    doc.text('Data:' + dataBR(ped.data_ped) ,172,txt.y)
+    addLine()
+    doc.setFontSize(11)
+    doc.setFont(undefined, 'bold')
+    doc.text('Cliente:' + ped.fantasia.trim().toUpperCase() ,10,txt.y)
+    doc.setFont(undefined, 'normal')
+    doc.setFontSize(10)
+    addLine()
+    emp.endereco.trim() != '' ? doc.text('End. '+ emp.endereco.trim().toUpperCase()+','+emp.num.trim(),10,txt.y) :0
+    emp.cidade.trim()!= '' ? doc.text(emp.cidade.trim().toUpperCase()+'-'+emp.estado,120,txt.y) :0    
+    addLine()
+    doc.text('CEP:'+ getCEP(emp.cep),10,txt.y)
+    doc.text('Tel:'+ getFone(emp.tel),80,txt.y)
+    emp.cnpj.trim()!= '' ? doc.text('CNPJ:'+ getCNPJ(emp.cnpj),120,txt.y) :0    
+    emp.ie.trim()!= '' ? doc.text('IE:'+ getIE(emp.ie),172,txt.y) :0
+    addLine()
+    ped.comp != null ? doc.text('Comprador:'+ped.comp.trim().toUpperCase(),10,txt.y) :0    
+    ped.resp != null ? doc.text('Vendedor:'+ ped.resp.trim().toUpperCase(),80,txt.y) :0
+    doc.text('Prev. Entrega:'+ dataBR(ped.data_ent),157,txt.y)
+    addLine()
+    doc.text('Obs:',10,txt.y)
+    ped.obs != null ? box(ped.obs,20,txt.y,170) : addLine()    
+    line(txt.y)
+    addLine(2)
+
+    doc.setFontSize(15)
+    doc.setFont(undefined, 'bold')
+    if(tipo == 'cot'){
+        if(show_val){
+            center_text((ped.status=='ABERTO' ? 'COTAÇÃO - ' : 'PEDIDO - ')+ ped.num_ped.trim().toUpperCase())   
+        }else{
+            center_text('Preparação de Material')
+        }
+    }else{
+        center_text('Recibo de Material')
+    }
+    doc.setFontSize(14)
+
+//    TABELA
+    let tbl_body = []
+    let total = 0
+    let head
+    for(let i=1; i< itens.rows.length;i++){
+        const data = itens.rows[i].data
+        if(show_val){
+            tbl_body.push([data.cod_prod,data.descricao.maxWidth(40).toUpperCase(),data.und,data.qtd,viewMoneyBR(parseFloat(data.preco).toFixed(2)),viewMoneyBR(data.total)])
+            head= [["Cod","Descrição",'Und.','Qtd.',"Preço Unit.",'Sub Total.']]
+        }else{
+            tbl_body.push([data.cod_prod,data.descricao.maxWidth(50).toUpperCase(),data.und,data.qtd])
+            head= [["Cod","Descrição",'Und.','Qtd.']]
+        }
+        total += parseFloat(data.total)
+    }
+
+    doc.autoTable({
+        head: head,
+        body: tbl_body,
+        startY: txt.y      
+    });
+
+    txt.y = doc.previousAutoTable.finalY
+    addLine()
+
+
+//  TOTAL  
+    if(show_val){  
+        right_text('Total '+ viewMoneyBR(total.toFixed(2)),17)
+    }
+
+//  ASS. RECIBO DE MATERIAL
+
+    if(tipo == 'rec'){
+        addLine(5)
+        doc.setFontSize(9)
+        doc.setFont(undefined, 'normal')
+        center_text('______________________________________________________')
+        center_text('Fico ciente da cobranca que sera feita posteriormente')
+    }
+    
+//  CONDIÇÂO DE PGTO  
+    if(show_val){
+        if(txt.y < 250){
+            txt.y = 250
+        }
+        doc.setFontSize(8)
+        line(txt.y)
+        addLine(0.7)
+        doc.text('Condição de Pagamento:',10,txt.y)
+        addLine(0.7)
+        box(ped.cond_pgto.trim(),10,txt.y,170,0.7)    
+    }
+
+    doc.save('cotacao.pdf')
 
 }

@@ -6,6 +6,9 @@
             font-size: 0.9em;
         }
 
+        #fdsRelat{
+            display: none;
+        }
 
     </style>
     
@@ -29,6 +32,17 @@
         <legend>Ítens</legend>
         <table id="tblItens"></table>
         <button id="btnAdd" disabled>Adicionar Ítens</button>
+    </fieldset>
+    <fieldset id="fdsRelat">
+        <legend>Relatórios</legend>
+        <div class="inline">
+            <div class="ckBOX">
+                <label for="ckbValor">Mostrar Valor</label>
+                <input type="checkbox" id="ckbValor" checked>
+            </div>
+            <button id="btnCot">Cotação</button>
+            <button id="btnRecMat">Recibo de Material</button>
+        </div>
     </fieldset>
 
 </template>
@@ -60,6 +74,7 @@ console.log(localData)
         myPromisse.then((resolve)=>{
             const json = JSON.parse(resolve)
             document.querySelector('#btnFecha').disabled = json.length > 0 ? false : true
+            document.querySelector('#fdsRelat').style.display = json.length > 0 ? 'block' : 'none'
             const tbl = document.querySelector('#tblItens')
             let tot = 0
             tbl.head('Cod.|mobHide,Descrição,Und.|mobHide,Qtd.,Preço Unit.,Sub Total')            
@@ -132,5 +147,29 @@ console.log(localData)
             openHTML('edtProd.html','pop-up','Alteração de Ítem',data)
         }
     })
+
+    function cot_pdf(tipo='cot'){
+        const params = new Object;
+            params.field = 'id'
+            params.signal = '='
+            params.value = localData.id_emp            
+        
+            const myPromisse = queryDB(params,24);
+
+            myPromisse.then((resolve)=>{            
+                print_cotacao(localData,document.querySelector('#tblItens'),JSON.parse(resolve)[0],tipo)       
+            })
+    }
+
+
+    document.querySelector('#btnCot').addEventListener('click',()=>{
+        cot_pdf('cot')
+    })
+
+    document.querySelector('#btnRecMat').addEventListener('click',()=>{
+        cot_pdf('rec')
+    })
+
+
 
 </script>

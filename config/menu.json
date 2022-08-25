@@ -116,21 +116,21 @@
 					"icone"  : "fa fa-cogs",
 					"itens"  : [
 						{
-							"modulo" : "Lançamentos",
-							"script" : "javascript:openHTML('viewFinan.html','pop-up','Financeiro',0)",
-							"access" : [10,4],
-							"class"  : "",
-							"icone"  : "fa fa-archive",
-							"itens"  : []
-						},
-						{
 							"modulo" : "Análise",
 							"script" : "javascript:openHTML('financeiro.html','content-screen','CADASTRO',0)",
 							"access" : [10,4],
 							"class"  : "",
 							"icone"  : "fa fa-archive",
 							"itens"  : []
-						}				
+						},							
+						{
+							"modulo" : "Lançamentos",
+							"script" : "javascript:openHTML('viewFinan.html','pop-up','Financeiro',0)",
+							"access" : [10,4],
+							"class"  : "",
+							"icone"  : "fa fa-archive",
+							"itens"  : []
+						}		
 					]
 				},				
 				{
@@ -152,23 +152,15 @@
 			]
 		},
 		{
-			"modulo" : "Cotações",
+			"modulo" : "Comercial",
 			"script" : "#",
 			"access" : [10,4],
 			"class"  : "",
 			"icone"  : "fa fa-cogs",
 			"itens"  : [
 				{
-					"modulo" : "Pesquisa",
+					"modulo" : "Cotações",
 					"script" : "javascript:openHTML('cotacoes.html','content-screen','Cotações e Pedidos')",
-					"access" : [10,4,3],
-					"class"  : "",
-					"icone"  : "fa fa-archive",
-					"itens"  : []
-				},
-				{
-					"modulo" : "Nova",
-					"script" : "javascript:openHTML('newCot.html','pop-up','Nova Cotação','new')",
 					"access" : [10,4,3],
 					"class"  : "",
 					"icone"  : "fa fa-archive",
