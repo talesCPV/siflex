@@ -23,28 +23,28 @@
 
 </template>
 <script>
-    const localData = getModalData('edtProd')
+//    main_data.addProd= getModalData('edtProd')
 //  console.log(localData)
-    document.querySelector('#lgdItem').innerHTML = localData.descricao
-    document.querySelector('#edtQtd').value = localData.qtd
-    document.querySelector('#edtPreco').value = parseFloat(localData.preco).toFixed(2)
+    document.querySelector('#lgdItem').innerHTML = main_data.edtProd.data.descricao
+    document.querySelector('#edtQtd').value = main_data.edtProd.data.qtd
+    document.querySelector('#edtPreco').value = parseFloat(main_data.edtProd.data.preco).toFixed(2)
 
 
     document.querySelector('#btnSaveItem').addEventListener('click',()=>{
         const params = new Object;
-                params.id = localData.id 
-                params.id_prod = localData.id_prod
-                params.id_ped = localData.id_ped
+                params.id = main_data.edtProd.data.id 
+                params.id_prod = main_data.edtProd.data.id_prod
+                params.id_ped = main_data.edtProd.data.id_ped
                 params.qtd = document.querySelector('#edtQtd').value
                 params.preco = document.querySelector('#edtPreco').value
-                params.und = data.und
-                params.serv = data.serv
+                params.und = main_data.edtProd.data.und
+                params.serv = main_data.edtProd.data.serv
 
             const myPromisse = queryDB(params,32);
 
             myPromisse.then((resolve)=>{
                 if(resolve.trim() != ""){
-                    reload_tab()
+                    main_data.viewCot.fillItens()
                     closeModal()
                 }  
             })
@@ -55,14 +55,14 @@
         if (confirm('Deseja realmente deletar este ítem da cotação?')) {
 
             const params = new Object;
-                params.id = localData.id 
+                params.id = main_data.edtProd.data.id 
                 params.hash = localStorage.getItem('hash')
 
             const myPromisse = queryDB(params,33);
 
             myPromisse.then((resolve)=>{
                 if(resolve.trim() != ""){
-                    reload_tab()
+                    main_data.viewCot.fillItens()
                     closeModal()
                 }  
             })

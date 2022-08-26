@@ -48,27 +48,29 @@
 </template>
 <script>
 
-    const localData = getModalData('viewCot')
-    document.querySelector('#btnFecha').innerHTML = localData.status=='FECHADO' ? 'Upload NF' : 'Encerrar'
+    main_data.viewCot.open = function open(){
+        document.querySelector('#tdEmp').innerHTML = main_data.viewCot.data.fantasia.toUpperCase()
+        document.querySelector('#tdEmi').innerHTML = main_data.viewCot.data.data_ped != null ? dataBR(main_data.viewCot.data.data_ped) : '*'
+        document.querySelector('#tdVend').innerHTML = main_data.viewCot.data.resp != null ? main_data.viewCot.data.resp.toUpperCase() : '*'
+        document.querySelector('#tdComp').innerHTML = main_data.viewCot.data.comp != null ? main_data.viewCot.data.comp.toUpperCase(): '*'
+        document.querySelector('#tdEnt').innerHTML = main_data.viewCot.data.data_ent != null ? dataBR(main_data.viewCot.data.data_ent): '*'
 
-    function open(){
-        document.querySelector('#tdEmp').innerHTML = localData.fantasia.toUpperCase()
-        document.querySelector('#tdEmi').innerHTML = localData.data_ped != null ? dataBR(localData.data_ped) : '*'
-        document.querySelector('#tdVend').innerHTML = localData.resp != null ? localData.resp.toUpperCase() : '*'
-        document.querySelector('#tdComp').innerHTML = localData.comp != null ? localData.comp.toUpperCase(): '*'
-        document.querySelector('#tdEnt').innerHTML = localData.data_ent != null ? dataBR(localData.data_ent): '*'
-
-        if(localData.status == 'ABERTO'){
+        if(main_data.viewCot.data.status == 'ABERTO'){
             document.querySelector('#btnEdit').disabled = false
             document.querySelector('#btnDel').disabled = false
             document.querySelector('#btnAdd').disabled = false
-            document.querySelector('#tblItens').disabled = false
+            document.querySelector('#btnFecha').innerHTML = 'Encerrar'
+        }else{
+            document.querySelector('#btnFecha').innerHTML = 'Upload NF' 
+            document.querySelector('#btnEdit').disabled = true
+            document.querySelector('#btnDel').disabled = true
+            document.querySelector('#btnAdd').disabled = true
         }
     }
 
-    reload_tab = function fillItens(){
+    main_data.viewCot.fillItens = function fillItens(){
         const params = new Object;
-            params.ped_id = localData.id
+            params.ped_id = main_data.viewCot.data.id
         const myPromisse = queryDB(params,30);
         myPromisse.then((resolve)=>{
             const json = JSON.parse(resolve)
@@ -85,30 +87,30 @@
         })
     }
 
-    open()
-    reload_tab()
+    main_data.viewCot.open()
+    main_data.viewCot.fillItens()
 
     document.querySelector('#btnEdit').addEventListener('click',()=>{
-        openHTML('newCot.html','pop-up',(localData.status=='ABERTO'?'Cotação-':'Pedido-') + localData.num_ped, localData)
+        openHTML('newCot.html','pop-up',(main_data.viewCot.data.status=='ABERTO'?'Cotação-':'Pedido-') + main_data.viewCot.num_ped, main_data.viewCot.data)
     })
 
     document.querySelector('#btnDel').addEventListener('click',()=>{
         
         if (confirm('Deseja realmente deletar esta Cotação?')) {            
             const params_itens = new Object;
-                params_itens.id_ped = localData.id
+                params_itens.id_ped = main_data.viewCot.data.id
                 params_itens.hash = localStorage.getItem('hash')
 
             const myPromisse_item = queryDB(params_itens,33);
 
             myPromisse_item.then((resolve)=>{
                 const params_ped = new Object;
-                    params_ped.id = localData.id
+                    params_ped.id = main_data.viewCot.data.id
                     params_ped.hash = localStorage.getItem('hash')
 
                 const myPromisse_ped = queryDB(params_ped,31);
                 myPromisse_ped.then((resolve)=>{
-                    if(localData.mode == 'edit'){
+                    if(main_data.viewCot.data.mode == 'edit'){
                         document.querySelector('#btnBusca').click()
                     }
                     closeModal('all') 
@@ -121,26 +123,30 @@
     })
 
     document.querySelector('#btnAdd').addEventListener('click',()=>{
-        openHTML('addProd.html','pop-up','Adicione um Produto ou Serviço',localData,[100,30])
+        openHTML('addProd.html','pop-up','Adicione um Produto ou Serviço',main_data.viewCot.data,[100,30])
     })
 
     document.querySelector('#btnFecha').addEventListener('click',()=>{
         if (confirm('Deseja realmente encerrar esta cotação?')) { 
             const params = new Object;
-                params.id = localData === 'new' ? 'DEFAULT' : localData.id 
+                params.id = main_data.viewCot.data.id 
                 params.hash = localStorage.getItem('hash')
                 params.status = 'FECHADO'
                 
             const myPromisse = queryDB(params,35);
             myPromisse.then((resolve)=>{
-                reload_tab()        
+                const myPromisse_delProd = queryDB(params,36)
+                myPromisse_delProd.then((resolve)=>{
+                    main_data.viewCot.data.status = 'FECHADO'
+                    main_data.viewCot.open()
+                })
             })
         }
         
     })
 
     document.querySelector('#tblItens').addEventListener('click',(e)=>{
-        if(localData.status == 'ABERTO'){
+        if(main_data.viewCot.data.status == 'ABERTO'){
             const data = e.target.parentNode.data
             data.mode = 'edit'
             openHTML('edtProd.html','pop-up','Alteração de Ítem',data)
@@ -151,12 +157,12 @@
         const params = new Object;
             params.field = 'id'
             params.signal = '='
-            params.value = localData.id_emp            
+            params.value = main_data.viewCot.data.id_emp            
         
             const myPromisse = queryDB(params,24);
 
             myPromisse.then((resolve)=>{            
-                print_cotacao(localData,document.querySelector('#tblItens'),JSON.parse(resolve)[0],tipo)       
+                print_cotacao(main_data.viewCot.data,document.querySelector('#tblItens'),JSON.parse(resolve)[0],tipo)       
             })
     }
 

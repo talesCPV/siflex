@@ -1,5 +1,10 @@
 /* CSS Document */
 
+:root{
+    --top-bar : #254441d0;
+}
+
+
 #container {
 	margin: 0 auto;
 	max-width: 890px;
@@ -22,7 +27,7 @@ p {
 nav { 
 	margin:0;
 	padding: 0;
-	background-color: #254441;
+	background-color: var(--top-bar);
 }
 
 #logo {
@@ -81,7 +86,7 @@ nav ul li {
 	margin: 0px;
 	display:inline-block;
 	float: left;
-	background-color: #254441;
+	background-color: var(--top-bar);
 	}
 
 /* Styling the links */
@@ -140,10 +145,18 @@ li > a:after { content:  ' +'; }
 li > a:only-child:after { content: ''; }
 
 
+.menu > li, .usr-menu > li{
+	background-color: #ffffff00;
+}
+
 /* Media Queries
 --------------------------------------------- */
 
 @media all and (max-width : 768px) {
+
+	:root{
+		--top-bar : #254441;
+	}
 
 	.hideMenu{
 		display: block;

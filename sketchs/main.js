@@ -1,8 +1,7 @@
 
 /* VARIABLES */
 
-var main_data
-var reload_tab
+var main_data = new Object
 var today = new Date()
 var meses = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro']
 
@@ -255,6 +254,7 @@ function newModal(title, content, pos, data, id){
 
 async function openHTML(template,where="content-screen",label="", data="",pos=[30,30]){
     if(template.trim() != ""){
+        const page_name = template.split('.')[0]
         return await new Promise((resolve,reject) =>{
             fetch( "templates/"+template)
             .then( stream => stream.text())
@@ -274,11 +274,13 @@ async function openHTML(template,where="content-screen",label="", data="",pos=[3
                 }
 
                 if(where == "pop-up"){
-                    newModal(label,body.innerHTML,pos, data,template.split('.')[0])
+                    newModal(label,body.innerHTML,pos, data,page_name)
                 }else{
-                    document.getElementById(where).innerHTML = body.innerHTML;
-                    data!='' ? main_data = data : 0
+                    document.getElementById(where).innerHTML = body.innerHTML;                    
                 }
+
+                main_data[page_name] = new Object
+                main_data[page_name].data = data
 
                 eval(script.innerHTML);
                 resolve = body

@@ -114,7 +114,6 @@ function right_text(T='',margin=0, pos=doc.internal.pageSize.getWidth()){
     const w = doc.getTextDimensions(T).w
     const xOffset = pos - margin - w 
     doc.text(T, xOffset, txt.y);
-    addLine()
 }
 
 function block_text(T=''){
@@ -509,22 +508,25 @@ function print_cotacao(ped,itens,emp,tipo='cot'){
     doc.setFont(undefined, 'normal')
     doc.setFontSize(10)
     addLine()
-    emp.endereco.trim() != '' ? doc.text('End. '+ emp.endereco.trim().toUpperCase()+','+emp.num.trim(),10,txt.y) :0
-    emp.cidade.trim()!= '' ? doc.text(emp.cidade.trim().toUpperCase()+'-'+emp.estado,120,txt.y) :0    
-    addLine()
-    doc.text('CEP:'+ getCEP(emp.cep),10,txt.y)
-    doc.text('Tel:'+ getFone(emp.tel),80,txt.y)
-    emp.cnpj.trim()!= '' ? doc.text('CNPJ:'+ getCNPJ(emp.cnpj),120,txt.y) :0    
-    emp.ie.trim()!= '' ? doc.text('IE:'+ getIE(emp.ie),172,txt.y) :0
+    emp.endereco.trim() != '' ? doc.text('End. '+ emp.endereco.trim().toUpperCase()+','+emp.num.trim(),10,txt.y) :0 
+    emp.cidade.trim()!= '' ? doc.text(emp.cidade.trim().toUpperCase()+'-'+emp.estado,120,txt.y) :0 
+    emp.endereco.trim() == '' && emp.cidade.trim() == '' ? 0 : addLine()
+    emp.cep == null || emp.cep.trim() == '' ? 0 : doc.text('CEP:'+ getCEP(emp.cep),10,txt.y)
+    emp.tel == null || emp.tel.trim() == '' ? 0 : doc.text('Tel:'+ getFone(emp.tel),80,txt.y)
+    emp.cnpj== null || emp.cnpj.trim()== '' ? 0 : doc.text('CNPJ:'+ getCNPJ(emp.cnpj),120,txt.y)
+    emp.ie  == null || emp.ie.trim()  == '' ? 0 : doc.text('IE:'+ getIE(emp.ie),172,txt.y)
     addLine()
     ped.comp != null ? doc.text('Comprador:'+ped.comp.trim().toUpperCase(),10,txt.y) :0    
     ped.resp != null ? doc.text('Vendedor:'+ ped.resp.trim().toUpperCase(),80,txt.y) :0
     doc.text('Prev. Entrega:'+ dataBR(ped.data_ent),157,txt.y)
     addLine()
-    doc.text('Obs:',10,txt.y)
-    ped.obs != null ? box(ped.obs,20,txt.y,170) : addLine()    
+    if(ped.obs != null && ped.obs.trim() != ''){
+        doc.text('Obs:',10,txt.y)
+        box(ped.obs,20,txt.y,170)
+        addLine()    
+    }
     line(txt.y)
-    addLine(2)
+    addLine(2)    
 
     doc.setFontSize(15)
     doc.setFont(undefined, 'bold')
@@ -537,7 +539,7 @@ function print_cotacao(ped,itens,emp,tipo='cot'){
     }else{
         center_text('Recibo de Material')
     }
-    doc.setFontSize(14)
+    
 
 //    TABELA
     let tbl_body = []
@@ -566,8 +568,18 @@ function print_cotacao(ped,itens,emp,tipo='cot'){
 
 
 //  TOTAL  
+    doc.setFontSize(12)
     if(show_val){  
-        right_text('Total '+ viewMoneyBR(total.toFixed(2)),17)
+        if(ped.desconto != '0') {
+            addLine(0.5)
+            right_text('Subtotal '+ viewMoneyBR(total.toFixed(2)),17)
+            addLine()
+            right_text('Desconto '+ viewMoneyBR(parseFloat(ped.desconto).toFixed(2)),17)
+            addLine(0.4)
+            line(txt.y,'h',150,15)
+            addLine()
+        }        
+        right_text('Total '+ viewMoneyBR((total - parseFloat(ped.desconto)).toFixed(2)),17)
     }
 
 //  ASS. RECIBO DE MATERIAL
@@ -581,7 +593,7 @@ function print_cotacao(ped,itens,emp,tipo='cot'){
     }
     
 //  CONDIÇÂO DE PGTO  
-    if(show_val){
+    if(show_val && ped.cond_pgto.trim() != ''){
         if(txt.y < 250){
             txt.y = 250
         }

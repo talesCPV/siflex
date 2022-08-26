@@ -34,7 +34,7 @@
 </template>
 <script>
 
-    const localData = getModalData('addProd')
+//    const localData = getModalData('addProd')
 
     document.querySelector('#btnAddProd').addEventListener('click',()=>{
 
@@ -77,7 +77,7 @@
             const params = new Object;
                 params.id = 'DEFAULT' 
                 params.id_prod = data.id
-                params.id_ped = localData.id
+                params.id_ped = main_data.viewCot.data.id
                 params.qtd = data.qtd
                 params.preco = data.preco_venda 
                 params.und = data.unidade
@@ -87,7 +87,7 @@
 
             myPromisse.then((resolve)=>{
                 if(resolve.trim() != ""){
-                    reload_tab()
+                    main_data.viewCot.fillItens()
                     closeModal()
                 }  
             })

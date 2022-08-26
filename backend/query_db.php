@@ -59,10 +59,10 @@
             AND p.data_ped >= "x03"
             AND p.data_ped <= "x04"
             ORDER BY p.data_ped DESC;',
-         "28" => 'INSERT INTO tb_pedido (id, id_emp, data_ped, data_ent, resp, comp, num_ped, origem, cond_pgto, obs)
-            VALUES(x00,"x01","x02","x03","x04","x05","x06","x07","x08","x09")
+         "28" => 'INSERT INTO tb_pedido (id, id_emp, data_ped, data_ent, resp, comp, num_ped, origem, cond_pgto, obs, desconto)
+            VALUES(x00,"x01","x02","x03","x04","x05","x06","x07","x08","x09","x10")
             ON DUPLICATE KEY UPDATE
-            id_emp="x01", data_ped="x02", data_ent="x03", resp="x04", comp="x05", num_ped="x06", origem="x07", cond_pgto="x08", obs="x09";',
+            id_emp="x01", data_ped="x02", data_ent="x03", resp="x04", comp="x05", num_ped="x06", origem="x07", cond_pgto="x08", obs="x09", desconto="x10";',
          "29" => 'SELECT COUNT(*) as dg FROM tb_pedido WHERE num_ped LIKE "%x00%" ',
          "30" => 'SELECT item.*, prod.descricao, prod.cod as cod_prod,  ROUND((item.qtd * item.preco),2) as total
             FROM tb_item_ped AS item 
@@ -71,11 +71,13 @@
             AND item.id_ped = "x00"; ',
          "31" => 'DELETE FROM tb_pedido WHERE id="x00" AND (SELECT U.class FROM tb_usuario AS U WHERE hash="x01") IN (10,4);',
          "32" => 'INSERT INTO tb_item_ped (id, id_prod, id_ped, qtd, preco, und, serv)
-            VALUES ("x00","x01","x02","x03","x04","x05","x06") ON DUPLICATE KEY UPDATE 
+            VALUES (x00,"x01","x02","x03","x04","x05","x06") ON DUPLICATE KEY UPDATE 
             id_prod="x01", id_ped="x02", qtd="x03", preco="x04", und="x05", serv="x06";',
          "33" => 'DELETE FROM tb_item_ped WHERE y00="x00" AND (SELECT U.class FROM tb_usuario AS U WHERE hash="x01") IN (10,4);',
          "34" => 'SELECT MAX(id) AS last_ped FROM tb_pedido',
-         "35" => 'UPDATE tb_pedido SET status="x02" WHERE id=x00 AND (SELECT U.class FROM tb_usuario AS U WHERE hash="x01") IN (10,4);'
+         "35" => 'UPDATE tb_pedido SET status="x02" WHERE id=x00 AND (SELECT U.class FROM tb_usuario AS U WHERE hash="x01") IN (10,4);',
+         "36" => 'UPDATE tb_produto as prod INNER JOIN tb_item_ped as item 
+            SET prod.estoque = (prod.estoque - item.qtd) WHERE prod.id=item.id_prod AND item.id_ped = "x00";',
             
             
       );
