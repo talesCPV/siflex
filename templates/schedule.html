@@ -22,9 +22,8 @@
 </template>
 
 <script>
-    const localData = getModalData('schedule')
 
-    document.getElementById('txtSchedule').value = document.getElementById(localData.data).innerHTML.trim()
+    document.getElementById('txtSchedule').value = document.getElementById(main_data.schedule.data.data).innerHTML.trim()
     document.getElementById('btnSalvar').addEventListener('click',()=>{
     
         const text = document.getElementById('txtSchedule').value;
@@ -40,14 +39,14 @@
 
     const params = new Object;
         params.id_user = localStorage.getItem("id");
-        params.data_agd = localData.data
+        params.data_agd = main_data.schedule.data.data
         params.obs = text;
 
     const resp = queryDB(params,cod);
     resp.then((resolve)=>{
-        document.getElementById(localData.data).innerHTML = text;
-        document.getElementById(localData.data).parentNode.style.background = color;
-        document.getElementById(localData.data).parentNode.style.color = font;
+        document.getElementById(main_data.schedule.data.data).innerHTML = text;
+        document.getElementById(main_data.schedule.data.data).parentNode.style.background = color;
+        document.getElementById(main_data.schedule.data.data).parentNode.style.color = font;
         closeModal()
     }); 
 

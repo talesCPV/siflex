@@ -99,25 +99,24 @@
 
 </template>
 <script>
-    const localData = getModalData('viewEmp')
-
+    
     pageBegin()
 
     function pageBegin(){
-        if (localData != 'new'){
-            document.querySelector('#edtNome').value = localData.nome == null ? '' : localData.nome.toUpperCase()
-            document.querySelector('#edtFant').value = localData.fantasia == null ? '' : localData.fantasia.toUpperCase() 
-            document.querySelector('#cmbTipo').value = localData.tipo == null ? '' : localData.tipo
-            document.querySelector('#edtCNPJ').value = getCNPJ(localData.cnpj)
-            document.querySelector('#edtIncEst').value = getIE(localData.ie)
-            document.querySelector('#edtInscMun').value = localData.im == null ? '' : localData.im
-            document.querySelector('#edtEnd').value = localData.endereco == null ? '' : localData.endereco.toUpperCase()
-            document.querySelector('#edtNum').value = localData.num == null ? '' : localData.num
-            document.querySelector('#edtCidade').value = localData.cidade == null ? '' : localData.cidade.toUpperCase()
-            document.querySelector('#cmbEstado').value = localData.estado == null ? '' : localData.estado
-            document.querySelector('#edtBairro').value = localData.bairro == null ? '' : localData.bairro.toUpperCase()
-            document.querySelector('#edtCEP').value = localData.cep == null ? '' : localData.cep
-            document.querySelector('#edtTel').value = localData.tel == null ? '' : localData.tel
+        if (main_data.viewEmp.data != 'new'){
+            document.querySelector('#edtNome').value = main_data.viewEmp.data.nome == null ? '' : main_data.viewEmp.data.nome.toUpperCase()
+            document.querySelector('#edtFant').value = main_data.viewEmp.data.fantasia == null ? '' : main_data.viewEmp.data.fantasia.toUpperCase() 
+            document.querySelector('#cmbTipo').value = main_data.viewEmp.data.tipo == null ? '' : main_data.viewEmp.data.tipo
+            document.querySelector('#edtCNPJ').value = getCNPJ(main_data.viewEmp.data.cnpj)
+            document.querySelector('#edtIncEst').value = getIE(main_data.viewEmp.data.ie)
+            document.querySelector('#edtInscMun').value = main_data.viewEmp.data.im == null ? '' : main_data.viewEmp.data.im
+            document.querySelector('#edtEnd').value = main_data.viewEmp.data.endereco == null ? '' : main_data.viewEmp.data.endereco.toUpperCase()
+            document.querySelector('#edtNum').value = main_data.viewEmp.data.num == null ? '' : main_data.viewEmp.data.num
+            document.querySelector('#edtCidade').value = main_data.viewEmp.data.cidade == null ? '' : main_data.viewEmp.data.cidade.toUpperCase()
+            document.querySelector('#cmbEstado').value = main_data.viewEmp.data.estado == null ? '' : main_data.viewEmp.data.estado
+            document.querySelector('#edtBairro').value = main_data.viewEmp.data.bairro == null ? '' : main_data.viewEmp.data.bairro.toUpperCase()
+            document.querySelector('#edtCEP').value = main_data.viewEmp.data.cep == null ? '' : main_data.viewEmp.data.cep
+            document.querySelector('#edtTel').value = main_data.viewEmp.data.tel == null ? '' : main_data.viewEmp.data.tel
         }
         const params = new Object;
             params.hash = localStorage.getItem('hash');
@@ -126,7 +125,7 @@
         myPromisse.then((resolve)=>{
             const perm = JSON.parse(resolve)
             if(perm[0].access == '1'){
-                if (localData != 'new'){
+                if (main_data.viewEmp.data != 'new'){
                     document.querySelector('#btnEdit').style.display = 'block'                
                 }else{
                     document.querySelector('#btnEdit').click()
@@ -152,7 +151,7 @@
         if(checkField(['edtNome'])){
             const fant = document.querySelector('#edtFant').value.trim() == '' ? document.querySelector('#edtNome').value.trim() : document.querySelector('#edtFant').value.trim()
             const params = new Object;
-            params.id = typeof localData === 'object' ? localData.id : 'DEFAULT'
+            params.id = typeof main_data.viewEmp.data === 'object' ? main_data.viewEmp.data.id : 'DEFAULT'
             params.nome = document.querySelector('#edtNome').value.trim().toUpperCase()
             params.fantasia = fant.toUpperCase()
             params.tipo = document.querySelector('#cmbTipo').value
@@ -170,7 +169,7 @@
 
         const myPromisse = queryDB(params,25);
         myPromisse.then((resolve)=>{
-            localData != 'new' ? document.querySelector('#btnBusca').click() : 0            
+            main_data.viewEmp.data != 'new' ? document.querySelector('#btnBusca').click() : 0            
             closeModal('all')
         })
         }

@@ -38,13 +38,12 @@
 
 </template>
 <script>
-    const localData = getModalData('viewPCP')
 
-    document.querySelector('#lgdPCP').innerHTML = `${localData.dayweek} - ${dataBR(localData.day)}`
-    document.querySelector('#edtFrente').innerHTML = localData.frente != undefined ? localData.frente : ''
-    document.querySelector('#edtSuporte').innerHTML = localData.suporte != undefined ? localData.suporte : ''
-    document.querySelector('#edtCostura').innerHTML = localData.costura != undefined ? localData.costura : ''
-    document.querySelector('#edtMontagem').innerHTML = localData.montagem != undefined ? localData.montagem : ''
+    document.querySelector('#lgdPCP').innerHTML = `${main_data.viewPCP.data.dayweek} - ${dataBR(main_data.viewPCP.data.day)}`
+    document.querySelector('#edtFrente').innerHTML = main_data.viewPCP.data.frente != undefined ? main_data.viewPCP.data.frente : ''
+    document.querySelector('#edtSuporte').innerHTML = main_data.viewPCP.data.suporte != undefined ? main_data.viewPCP.data.suporte : ''
+    document.querySelector('#edtCostura').innerHTML = main_data.viewPCP.data.costura != undefined ? main_data.viewPCP.data.costura : ''
+    document.querySelector('#edtMontagem').innerHTML = main_data.viewPCP.data.montagem != undefined ? main_data.viewPCP.data.montagem : ''
 
     document.querySelector('#btnSave').addEventListener('click',()=>{
 
@@ -55,13 +54,13 @@
 
         let myPromisse
         const params = new Object;
-            params.id = localData.id == undefined ? 'DEFAULT' : localData.id
+            params.id = main_data.viewPCP.data.id == undefined ? 'DEFAULT' : main_data.viewPCP.data.id
 
         if(frente == ''&& suporte == ''&& costura == ''&& montagem == ''){            
             params.hash = localStorage.getItem('hash');
             myPromisse = queryDB(params,16);
         }else{
-            params.data = localData.day.getFormatDate()
+            params.data = main_data.viewPCP.data.day.getFormatDate()
             params.suporte = suporte
             params.frente = frente
             params.costura = costura

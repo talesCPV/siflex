@@ -149,15 +149,16 @@ function block_text(T=''){
     print()
 }
 
-function header_pdf(){
+function header_pdf(lin_h = 5, font_size = 12){
+    ini_y = 13
     logo([14,15,45,10])
     //  CABEÇALHO
-    doc.setFontSize(12)
+    doc.setFontSize(font_size)
     doc.setFont(undefined, 'normal')
-    doc.text('Av. Dr. Rosalvo de Almeida Telles, 2070', 97,13);
-    doc.text('Nova Cacapava - Cacapava-SP - CEP 12.283-020', 88,18);
-    doc.text('comercial@flexibus.com.br | (12) 3653-2230', 93,23);
-    doc.text('CNPJ 00.519.547/0001-06', 111,28);    
+    doc.text('Av. Dr. Rosalvo de Almeida Telles, 2070', 97,ini_y);
+    doc.text('Nova Cacapava - Cacapava-SP - CEP 12.283-020', 88,ini_y+lin_h);
+    doc.text('comercial@flexibus.com.br | (12) 3653-2230', 93,ini_y + (lin_h*2));
+    doc.text('CNPJ 00.519.547/0001-06', 111,ini_y+(lin_h*3));    
 
 }
 
@@ -214,15 +215,8 @@ function print_pcp(tbl){
     clearTxt(10,10,[297,210])
     frame()
     grid()
-    logo([14,15,45,10])
-
-//  CABEÇALHO
-    doc.setFontSize(12)
-    doc.setFont(undefined, 'bold')
-    doc.text('Av. Dr. Rosalvo de Almeida Telles, 2070', 85,13);
-    doc.text('Nova Cacapava - Cacapava-SP - CEP 12.283-020', 78,18);
-    doc.text('comercial@flexibus.com.br | (12) 3653-2230', 83,23);
-    doc.text('CNPJ 00.519.547/0001-06', 98,28);
+    header_pdf(4,10)
+   
     doc.setFontSize(45)
     doc.text('PCP', 200,23);
     doc.setFontSize(12)
@@ -239,7 +233,7 @@ function print_pcp(tbl){
         for(let cel=0; cel<tbl[row].cells.length;cel++){
             if(row == 0||cel == 0){
                 doc.setFont(undefined, 'bold')
-                doc.setFontSize(12)
+                doc.setFontSize(14)
                 y_ = 15
             }else{
                 doc.setFont(undefined, 'normal')
@@ -334,7 +328,7 @@ function anaFrotaRelat(obj,tipo='analise'){
     if(tipo == 'analise'){
     center_text(document.querySelector('#edtTitle').value.trim())
     }else{
-        center_text('Orçamento')
+        center_text('Orçamento para a Execução de Serviços')
     }
     doc.setFont(undefined, 'normal')
     doc.setFontSize(12)
