@@ -43,7 +43,7 @@
             const myPromisse = queryDB(params,9);
 
             myPromisse.then((resolve)=>{
-                closeModal('all')
+                closeModal('viewUnd')
                 openHTML('config.html','pop-up','Configuração de Sistema')
             })
         }        
@@ -57,7 +57,7 @@
 
             const myPromisse = queryDB(params,3);
             myPromisse.then((resolve)=>{
-                closeModal('all')
+                closeModal('viewUnd')
                 openHTML('usuarios.html','pop-up','Cadastro de Usuários')
             })
         }

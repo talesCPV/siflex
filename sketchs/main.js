@@ -137,7 +137,6 @@ HTMLTableElement.prototype.plot = function(obj, fields,type=''){
                     break;
                 case 'cal':
                     op = type[i].split(' ')
-console.log(op)                    
                     html = eval(op[1])
                     break;
                 default:
@@ -186,20 +185,21 @@ function postLocalData(id, data){
     return myData
 }
 
-function closeModal(N=''){
+function closeModal(id='all'){
     const mod_main = document.querySelector('#myModal')
-    if(N=='all'){
+    if(id=='all'){
         while(mod_main.querySelectorAll('.modal').length > 0){
             mod_main.querySelectorAll('.modal')[0].remove()    
         }
     }else{
-        N = (N=='')? mod_main.querySelectorAll('.modal').length-1 : N // N=='' -> Last Modal
-        mod_main.querySelector('#modal-'+N).remove()    
+        id = (id=='')? mod_main.querySelectorAll('.modal').length-1 : id 
+        mod_main.querySelector('#modal-'+id).remove()
+        delete main_data[id]
     }
     mod_main.style.display = (mod_main.querySelectorAll('.modal').length < 1) ? "none" : 'block'
 }
 
-function newModal(title, content, pos, data, id){
+function newModal(title, content, pos, id){
 
     const mod_main = document.querySelector('#myModal')
     const index = mod_main.querySelectorAll('.modal-content').length        
@@ -207,13 +207,13 @@ function newModal(title, content, pos, data, id){
 
     const backModal = document.createElement('div')
         backModal.classList = 'modal'
-        backModal.id = 'modal-'+index
+        backModal.id = 'modal-'+id
         backModal.style.zIndex = 2+index
         backModal.style.display = 'block'
 
     const mod_card = document.createElement('div')
         mod_card.classList = 'modal-content'
-        mod_card.id = 'card-'+index        
+        mod_card.id = 'card-'+id    
         mod_card.style.position = 'absolute'
         mod_card.style.zIndex = 3+index
         mod_card.style.margin = '0 auto'
@@ -221,7 +221,7 @@ function newModal(title, content, pos, data, id){
         mod_card.style.left = pos[0] + index*offset+'px'
         mod_card.style.right = pos[0] - index*offset+'px'
     
-    mod_card.appendChild(postLocalData(id,data))
+//    mod_card.appendChild(postLocalData(id,data))
 
     const mod_title = document.createElement('div')
     mod_title.className = 'modal-title'    
@@ -234,7 +234,7 @@ function newModal(title, content, pos, data, id){
     span.classList = 'close'
     span.innerHTML = '&times;'
     span.addEventListener('click',()=>{
-        closeModal()
+        closeModal(id)
     })
     mod_title.appendChild(span)
     mod_card.appendChild(mod_title)
@@ -274,7 +274,7 @@ async function openHTML(template,where="content-screen",label="", data="",pos=[3
                 }
 
                 if(where == "pop-up"){
-                    newModal(label,body.innerHTML,pos, data,page_name)
+                    newModal(label,body.innerHTML,pos,page_name)
                 }else{
                     document.getElementById(where).innerHTML = body.innerHTML;                    
                 }

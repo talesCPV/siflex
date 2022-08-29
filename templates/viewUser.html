@@ -93,7 +93,7 @@
                 const myPromisse = queryDB(params,2);
 
                 myPromisse.then((resolve)=>{
-                    closeModal('all')
+                    closeModal('viewUser')
                     if(localData.mode != 'user'){
                         openHTML('usuarios.html','pop-up','Cadastro de Usuários')
                     }else{
@@ -115,7 +115,7 @@
             const myPromisse = queryDB(params,3);
 
             myPromisse.then((resolve)=>{
-                closeModal('all')
+                closeModal('viewUser')
                 openHTML('usuarios.html','pop-up','Cadastro de Usuários')
             })
         }

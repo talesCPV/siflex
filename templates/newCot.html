@@ -110,7 +110,7 @@
                         params.id = json[0].last_ped
                         params.status = 'ABERTO'
                         openHTML('viewCot.html','pop-up','Cotação-'+params.num_ped, params)
-                        closeModal()
+                        closeModal('newCot')
                     })
                 }else{
                     main_data.newCot.data.id_emp = document.querySelector('#cmbCli').value
@@ -125,7 +125,7 @@
                     main_data.newCot.data.desconto = document.querySelector('#edtDesc').value
                     document.querySelector('#btnBusca').click()
                     main_data.viewCot.open()
-                    closeModal()
+                    closeModal('newCot')
                 }
             })
         }
