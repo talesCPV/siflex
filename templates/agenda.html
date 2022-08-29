@@ -9,14 +9,14 @@
         <legend>Agenda</legend>
 
         <div class="inline">
-            <label for="cmbBusca">Busca por:</label>
-            <select id="cmbBusca">
+            <label for="cmbBuscaAgd">Busca por:</label>
+            <select id="cmbBuscaAgd">
                 <option value="ag.nome" signal="LIKE">Nome</option>
                 <option value="emp.fantasia" signal="LIKE">Empresa</option>
                 <option value="ag.id" signal="=">Código</option>
             </select>
             <input type="text" id="edtBusca" placeholder="Digite sua busca" onkeypress="return getEnter(event, 'btnBusca')">
-            <button id="btnBusca">Busca</button>
+            <button id="btnBuscaAgd">Busca</button>
         </div>
         <button id="btnNovo">Novo Contato</button>
         <table id="tblAgenda"></table>
@@ -28,9 +28,9 @@
 </template>
 <script>
 
-    document.querySelector('#btnBusca').addEventListener('click',()=>{
+    document.querySelector('#btnBuscaAgd').addEventListener('click',()=>{
 
-        const sel = document.querySelector('#cmbBusca')
+        const sel = document.querySelector('#cmbBuscaAgd')
         const field = sel.value
         const signal = sel.options[sel.selectedIndex].getAttribute('signal')
         let value = document.querySelector('#edtBusca').value.trim()

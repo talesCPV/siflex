@@ -6,14 +6,13 @@
     $ext = pathinfo($_FILES["up_file"]["name"], PATHINFO_EXTENSION);
     $filename = $_POST["filename"].'.'.$ext;
     $path = $_POST["path"];
-    $url = $path.$filename; 
-    if (file_exists($file)){      
+    $url = $path.$filename;   
+    if (file_exists($file)){          
       if(move_uploaded_file($file, $url)){      
         $out = $filename;
       }
     }
   }
-
   print $out;
 
 ?>

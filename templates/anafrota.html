@@ -55,6 +55,10 @@
             <div class="inline">
                 <label for="edtTitle">Título</label>
                 <input type="text" id="edtTitle" placeholder="Título do relatório" value="Análise de Frota">
+                <label for="edtFont">Fonte</label>
+                <input type="text" id="edtFont" class="mob-wide" onkeyup="return valFloat(this,0)" value="11" style="width: 80px;">
+                <label for="edtCor">Cor</label>
+                <input type="color" id="edtCor" class="mob-wide" style="width: 80px;">
             </div>
 
             <div class="inline">
@@ -117,11 +121,11 @@
     })
 
     document.querySelector('#btnRelat').addEventListener('click',()=>{
-        anaFrotaRelat(document.getElementById('tblAnaFrota'),'analise')
+        anaFrotaRelat(document.getElementById('tblAnaFrota'),'analise',document.querySelector('#edtFont').value,document.querySelector('#edtCor').value)
     })
 
     document.querySelector('#btnOrc').addEventListener('click',()=>{
-        anaFrotaRelat(document.getElementById('tblAnaFrota'),'orcamento')
+        anaFrotaRelat(document.getElementById('tblAnaFrota'),'orcamento',document.querySelector('#edtFont').value,document.querySelector('#edtCor').value)
     })
 
 

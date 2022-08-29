@@ -161,7 +161,9 @@
         })
 
         fillCombo('cmbUnd',params,8,['sigla','nome'],typeof main_data.viewProd.data === 'object' ? main_data.viewProd.data.unidade :'' )
-        params.tipo = 'FOR'
+        params.field = 'tipo'
+        params.signal = '='
+        params.value = 'FOR'        
         fillCombo('cmbForn',params,11,['id','cod_nome'],typeof main_data.viewProd.data === 'object' ? main_data.viewProd.data.id_emp :'' )
     }
 

@@ -170,7 +170,7 @@ function getFone(V){
             out = out + '-';
         }
         if(i == 10){
-            out = out.substring(0,5) +" "+out.substring(5,3)+out.substring(9,1)+"-"+out.substring(10,3);
+            out = out.substring(0,5) +" "+out.substring(5,8)+out.substring(9,10)+"-"+out.substring(10,13)
         }		
         out = out + chr;			
     }
@@ -226,31 +226,7 @@ function horario(edt){
 }
 
 function phone(param){ // formata a string no padrão TELEFONE
-    number(param);
-    var num = param.value;
-    var out = '';
-    var count = 0;
-
-    for(i=0;i<num.length;i++){
-        chr = num.substring(i,i+1);
-        count++;
-
-        if(count == 1){
-            out = '(' + out ;
-        }
-        if(count == 3){
-            out = out + ')';
-        }
-        if(count == 7){
-            out = out + '-';
-        }
-        if(count == 11){
-            out = out.substr(0,5) +" "+out.substr(5,3)+out.substr(9,1)+"-"+out.substr(10,3);
-        }		
-        out = out + chr;			
-    }
-
-    param.value = out;
+    param.value = getFone(param.value)
 }
 
 function hideOrig(){

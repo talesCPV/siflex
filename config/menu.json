@@ -1,7 +1,7 @@
 {
 	"menu": [
 		{
-			"modulo" : "Agenda",
+			"modulo" : "Calendario",
 			"script" : "javascript:openHTML('calendar.html','content-screen')",
 			"icone"  : "fa fa-home",
 			"class"  : "",
@@ -154,13 +154,21 @@
 		{
 			"modulo" : "Comercial",
 			"script" : "#",
-			"access" : [10,4],
+			"access" : [10,4,3],
 			"class"  : "",
 			"icone"  : "fa fa-cogs",
 			"itens"  : [
 				{
 					"modulo" : "Cotações",
 					"script" : "javascript:openHTML('cotacoes.html','content-screen','Cotações e Pedidos')",
+					"access" : [10,4,3],
+					"class"  : "",
+					"icone"  : "fa fa-archive",
+					"itens"  : []
+				},
+				{
+					"modulo" : "Contatos",
+					"script" : "javascript:openHTML('agenda.html','pop-up','Contatos Comerciais')",
 					"access" : [10,4,3],
 					"class"  : "",
 					"icone"  : "fa fa-archive",

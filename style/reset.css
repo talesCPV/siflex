@@ -129,10 +129,29 @@
         border-radius: 20px;
         background-color: cornsilk;
         color: darkslategray;
-        max-width: auto;
-        margin: 30px;
+        max-width: 1200px;
+        margin: auto;
+        margin-top: 80px;
         padding: 30px;
     }
+
+    .control-size{
+        display: flex;
+        flex-direction: row;
+        margin: 0;
+    }
+
+    .control-size *{
+        min-width: auto !important;
+    }
+
+    .path:nth-child(even) {
+        background-color: #79a04779 !important;
+    }    
+
+    .path:nth-child(odd) {
+        background-color: #a3d66179 !important;
+    }    
 
 /*  MOBILE  */
 
@@ -140,6 +159,10 @@
 
         input[type=date]{
             max-width: none;
+        }
+
+        .form-base{
+            margin-top: 150px;
         }
 
         .control-size{
@@ -169,8 +192,6 @@
             margin: 2px 10px;
         }
 
-        .mob-wide{
-            width: 100% !important;
-        }
+
 
     }

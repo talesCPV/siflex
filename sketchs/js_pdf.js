@@ -247,7 +247,7 @@ function print_pcp(tbl){
     doc.save('pcp.pdf')
 }
 
-function anaFrotaRelat(obj,tipo='analise'){
+function anaFrotaRelat(obj,tipo='analise',font=11, color= '#000000'){
     function postCli(data){
         doc.setFontSize(11)
         doc.setFont(undefined, 'bold')
@@ -260,34 +260,42 @@ function anaFrotaRelat(obj,tipo='analise'){
         data.cidade.trim()!= '' ? doc.text(data.cidade.trim().toUpperCase()+'-'+data.estado,130,txt.y) :0    
         addLine()
         doc.text('Data da Avaliação:'+ dataBR(data.data_analise),15,txt.y)
-        addLine(2)
+        addLine()
+        //  TEXTO DE OBS
+        doc.setTextColor(color); 
+        if(document.querySelector('#edtObs').value.trim() != ''){
+            addLine()
+            doc.setFontSize(8)
+            box(document.querySelector('#edtObs').value.trim(),15,txt.y,170,0.7)
+        }
+        doc.setTextColor(0,0,0); 
     }
 
     function postTable(){
-        function pushTot(title,value,color=[37, 68, 65],font=[255]){
+        function pushTot(title,value){
             tbl_body.push([{
                 content: title,
                 colSpan: colspan,
-                styles: { halign: 'right', fillColor: color, textColor:font},
+                styles: { halign: 'left', fillColor: [37, 68, 65], textColor:[255]},
               },
               {
                 content: value, 
-                styles: { halign: 'right', fillColor: color, textColor:font },         
+                styles: { halign: 'right', fillColor: [37, 68, 65], textColor:[255] },         
               }])
         }
 
         let head
         let colspan
         if(tipo == 'analise'){
-            head =  [["Carro","Analize", "Exec.",'Valor']]
+            head =  [["Carro","Análise", "Exec.",'Valor']]
             colspan = 3
         }else{
-            head =  [["Carro","Local", "Serviço."]]
+            head =  [["Carro","Local", "Serviço a ser Executado"]]
             colspan = 2
         }
 
-        pushTot('','Total '+viewMoneyBR(subTot.toFixed(2),[0,0,0]))
-
+        pushTot(qtd+' carros','Total '+viewMoneyBR(subTot.toFixed(2)))
+        qtd = 0
 
         doc.autoTable({
             head: head,
@@ -297,6 +305,7 @@ function anaFrotaRelat(obj,tipo='analise'){
                 1: {cellWidth: 20},
                 2: {cellWidth: 100}
             },
+            styles :{fontSize: font},
             startY: txt.y
         });
 
@@ -317,19 +326,15 @@ function anaFrotaRelat(obj,tipo='analise'){
     doc = new jsPDF()  
 
     clearTxt(37,10,[210,297])
-    frame()
+//    frame()
     header_pdf()
 
     line(txt.y)
-    addLine(2)
+    addLine()
 
     doc.setFontSize(15)
     doc.setFont(undefined, 'bold')
-    if(tipo == 'analise'){
     center_text(document.querySelector('#edtTitle').value.trim())
-    }else{
-        center_text('Orçamento para a Execução de Serviços')
-    }
     doc.setFont(undefined, 'normal')
     doc.setFontSize(12)
     addLine()
@@ -337,7 +342,8 @@ function anaFrotaRelat(obj,tipo='analise'){
     let lastEmp
     let tbl_body = []
     let subTot = 0
-    let total = 0    
+    let total = 0 
+    let qtd = 0   
     for(let i=1; i< obj.rows.length;i++){
         const data = obj.rows[i].data
         if(data.id_emp != lastEmp){
@@ -352,7 +358,9 @@ function anaFrotaRelat(obj,tipo='analise'){
             tbl_body.push([data.num_carro,dataBR(data.data_analise),data.exec=='1'?'SIM':'NÃO',viewMoneyBR(parseFloat(data.valor).toFixed(2))])            
         }else{
             tbl_body.push([data.num_carro,data.local,data.obs])
-            tbl_body.push(['Valor',viewMoneyBR(parseFloat(data.valor).toFixed(2)),''])
+            tbl_body.push(['','','Valor: '+viewMoneyBR(parseFloat(data.valor).toFixed(2))])
+            tbl_body.push(['','',''])
+            qtd++
         }
 
         subTot += parseFloat(data.valor)
@@ -367,18 +375,15 @@ function anaFrotaRelat(obj,tipo='analise'){
         doc.setFont(undefined, 'normal')
         doc.setFontSize(10)
         addLine()
-    }
-
-//  TEXTO DE OBS 
-    if(document.querySelector('#edtObs').value.trim() != ''){
-        if(txt.y < 250){
-            txt.y = 250
-        }
+    }else{
         doc.setFontSize(8)
-        line(txt.y)
-        addLine(0.7)
-        box(document.querySelector('#edtObs').value.trim(),10,txt.y,170,0.7)
-    
+        doc.setFont(undefined, 'bold')
+        center_text('Lembrando que até a data da execução poderá haver acrécimos de serviço')
+        addLine(0.5)
+        center_text('Recomenda-se corrigir os problemas o mais rápido possível')
+        doc.setFont(undefined, 'normal')
+        doc.setFontSize(10)
+        addLine()
     }
 
     doc.save('RelAnaFrot.pdf')

@@ -61,8 +61,9 @@
 
     const params = new Object;
         params.hash = localStorage.getItem('hash');
-        params.tipo = 'CLI'
-
+        params.field = 'tipo'
+        params.signal = '='
+        params.value = 'CLI'
 
     fillCombo('cmbCli',params,11,['id','cod_nome'],typeof main_data.viewAnaFrota.data === 'object' ? main_data.viewAnaFrota.data.id_emp :'' )
 
@@ -94,8 +95,12 @@
                 params.exec = document.querySelector('#cmbExe').value
             const myPromisse = queryDB(params,17);
             myPromisse.then((resolve)=>{
-                document.querySelector('#btnBusca').click()
-                closeModal('viewAnaFrota')
+//                document.querySelector('#btnBusca').click()
+                document.querySelector('#edtNumCarro').value = ''
+                document.querySelector('#edtDetal').value = ''
+                document.querySelector('#edtValor').value = ''
+                document.querySelector('#edtNumCarro').focus()
+//                closeModal('viewAnaFrota')
             })
         }
     })

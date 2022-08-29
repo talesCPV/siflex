@@ -10,6 +10,10 @@
             display: none;
         }
 
+        #btnVerNF{
+            display: none;
+        }
+
     </style>
     
     <fieldset id="fdsPed">
@@ -26,6 +30,7 @@
             <button id="btnEdit" disabled>Editar</button>
             <button id="btnDel" disabled>Deletar</button>
             <button id="btnFecha" disabled>Encerrar</button>
+            <button id="btnVerNF">Ver NF</button>
         </div>
     </fieldset>
     <fieldset>
@@ -65,6 +70,9 @@
             document.querySelector('#btnEdit').disabled = true
             document.querySelector('#btnDel').disabled = true
             document.querySelector('#btnAdd').disabled = true
+            if(main_data.viewCot.data.status == 'PAGO'){
+                document.querySelector('#btnVerNF').style.display = 'block'
+            }
         }
     }
 
@@ -127,20 +135,36 @@
     })
 
     document.querySelector('#btnFecha').addEventListener('click',()=>{
-        if (confirm('Deseja realmente encerrar esta cotação?')) { 
-            const params = new Object;
-                params.id = main_data.viewCot.data.id 
-                params.hash = localStorage.getItem('hash')
-                params.status = 'FECHADO'
-                
-            const myPromisse = queryDB(params,35);
-            myPromisse.then((resolve)=>{
-                const myPromisse_delProd = queryDB(params,36)
-                myPromisse_delProd.then((resolve)=>{
-                    main_data.viewCot.data.status = 'FECHADO'
-                    main_data.viewCot.open()
+        if(main_data.viewCot.data.status == 'ABERTO'){
+            if (confirm('Deseja realmente encerrar esta cotação?')) { 
+                const params = new Object;
+                    params.id = main_data.viewCot.data.id 
+                    params.hash = localStorage.getItem('hash')
+                    params.status = 'FECHADO'
+                    
+                const myPromisse = queryDB(params,35);
+                myPromisse.then((resolve)=>{
+                    const myPromisse_delProd = queryDB(params,36)
+                    myPromisse_delProd.then((resolve)=>{
+                        main_data.viewCot.data.status = 'FECHADO'
+                        main_data.viewCot.open()
+                    })
                 })
-            })
+            }
+        }else{
+            const params = new Object;
+                    params.id = main_data.viewCot.data.id
+                    params.status = 'PAGO'
+                    params.path =  '../nf/venda/FB_'+main_data.viewCot.data.id+'.pdf'
+
+            const obj = new Object
+                obj.id = main_data.viewCot.data.id
+                obj.path = '../../nf/venda/'
+                obj.filename = 'FB_'+main_data.viewCot.data.id
+                obj.ext = '.pdf'
+                obj.params = params
+                obj.query = 40
+            openHTML('uploadFile.html','pop-up','Upload de NF',obj,[20,150])
         }
         
     })
@@ -175,6 +199,9 @@
         cot_pdf('rec')
     })
 
+    document.querySelector('#btnVerNF').addEventListener('click',()=>{
+        window.open('../'+main_data.viewCot.data.path, '_blank');
+    })
 
 
 </script>

@@ -5,22 +5,39 @@
             width: 98%;
         }
 
+        #scroll{
+            max-height: 200px;
+            overflow: hidden;
+            overflow-y: scroll;
+        }
+
     </style>
   
     <div class="form-base">
         <h1>Configurações</h1>
         <fieldset>
+            <legend>Unidades</legend>
+            <div id="scroll">
+                <table id="tblUnd"></table>
+            </div>
+            <button id="btnUnd">Novo</button>
+        </fieldset>          
+        <fieldset>
             <legend>Centro de Custo R$</legend>
             <div class="inline">
-                <input type="text" id="edtCusto" onkeyup="number(this)">
+                <input type="text" id="edtCusto" onkeyup="return valFloat(this)">
                 <button id="btnCusto">Salvar</button>
             </div>
         </fieldset>
         <fieldset>
-            <legend>Unidades</legend>
-            <table id="tblUnd"></table>
-            <button id="btnUnd">Novo</button>
-        </fieldset>   
+            <legend>Texto Padrão</legend>
+            <div class="inline">
+                <label for="edtCondPgto">Cond. Pgto</label>
+                <textarea id="edtCondPgto" cols="30" rows="10"></textarea>
+            </div>
+            <button id="btnCondPgto">Salvar</button>
+        </fieldset>
+ 
         
     </div>
 
@@ -29,9 +46,10 @@
     
     fillUnd()
 
-    getConfig('config').then((txt)=>{
+    getConfig('config').then((txt)=>{    
         const json =  JSON.parse(txt)
         document.querySelector('#edtCusto').value = parseFloat(json.centro_custo).toFixed(2)
+        document.querySelector('#edtCondPgto').value = json.cond_pgto
     })
 
     function fillUnd(){
@@ -69,6 +87,11 @@
     document.querySelector('#btnCusto').addEventListener('click',()=>{
         const custo = document.querySelector('#edtCusto')
         getConfig('config',custo.value,'centro_custo')
+    })
+
+    document.querySelector('#btnCondPgto').addEventListener('click',()=>{
+        const condPgto = document.querySelector('#edtCondPgto')
+        getConfig('config',condPgto.value.trim(),'cond_pgto')
     })
 
 </script>

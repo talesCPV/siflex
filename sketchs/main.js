@@ -90,10 +90,13 @@ Date.prototype.getCod = function(){
 }
 
 /* TABLE */
-HTMLTableElement.prototype.plot = function(obj, fields,type=''){
+HTMLTableElement.prototype.plot = function(obj, fields,type='',file=false){
     fields = fields.split(',')
     type = type=='' ? '' : type.split(',')
     const tr = document.createElement('tr')
+    if(file && obj.path != null){
+        tr.classList = 'path'
+    }
     for(let i=0; i<fields.length; i++){
         const td = document.createElement('td')
         const arr = fields[i].split('|')
@@ -108,19 +111,19 @@ HTMLTableElement.prototype.plot = function(obj, fields,type=''){
                   html = parseInt(obj[arr[0]])
                   break;
                 case 'Upp':
-                    html = obj[arr[0]].toUpperCase()
+                    html = obj[arr[0]] != null ? obj[arr[0]].toUpperCase() : ''
                     break
                 case 'str':
-                    html = obj[arr[0]]
+                    html = obj[arr[0]] != null ? obj[arr[0]] : ''
                   break;
                 case 'dat':
-                    html = obj[arr[0]].substring(8,10)+'/'+ obj[arr[0]].substring(5,7)+'/'+obj[arr[0]].substring(0,4)
+                    html = obj[arr[0]] != null ? obj[arr[0]].substring(8,10)+'/'+ obj[arr[0]].substring(5,7)+'/'+obj[arr[0]].substring(0,4) : ''
                     break                 
                 case 'Low':
-                    html = obj[arr[0]].toLowerCase()
+                    html = obj[arr[0]] != null ? obj[arr[0]].toLowerCase() : ''
                     break;
                 case 'R$.':
-                    html = viewMoneyBR(parseFloat(obj[arr[0]]).toFixed(2))   //'R$'+ parseFloat(obj[arr[0]]).toFixed(2)
+                    html = obj[arr[0]] != null ? viewMoneyBR(parseFloat(obj[arr[0]]).toFixed(2)) : ''   //'R$'+ parseFloat(obj[arr[0]]).toFixed(2)
                     break;             
                 case 'cha':
                     op = type[i].split(' ')
@@ -136,11 +139,11 @@ HTMLTableElement.prototype.plot = function(obj, fields,type=''){
                     html = eval(`${op[1]}(obj[arr[0]])`)
                     break;
                 case 'cal':
-                    op = type[i].split(' ')
+                    op = type[i].split(' ')                   
                     html = eval(op[1])
-                    break;
+                    break;                  
                 default:
-                  html = obj[arr[0]]
+                  html = obj[arr[0]] != null ? obj[arr[0]] :''
             }            
         }else{
             html = obj[fields[i].split('|')[0]]
@@ -172,19 +175,6 @@ HTMLTableElement.prototype.head = function(hd){
 
 /*  MODAL  */
 
-function getModalData(id){
-    return JSON.parse(document.getElementById(id).data)
-}
-
-function postLocalData(id, data){
-    const myData = document.createElement('input')
-        myData.type = 'hidden'
-        myData.id = id
-        myData.data = JSON.stringify(data)
-    
-    return myData
-}
-
 function closeModal(id='all'){
     const mod_main = document.querySelector('#myModal')
     if(id=='all'){
@@ -192,7 +182,7 @@ function closeModal(id='all'){
             mod_main.querySelectorAll('.modal')[0].remove()    
         }
     }else{
-        id = (id=='')? mod_main.querySelectorAll('.modal').length-1 : id 
+        id = (id=='')? mod_main.querySelectorAll('.modal').length-1 : id
         mod_main.querySelector('#modal-'+id).remove()
         delete main_data[id]
     }
@@ -213,7 +203,7 @@ function newModal(title, content, pos, id){
 
     const mod_card = document.createElement('div')
         mod_card.classList = 'modal-content'
-        mod_card.id = 'card-'+id    
+        mod_card.id = 'card-'+id        
         mod_card.style.position = 'absolute'
         mod_card.style.zIndex = 3+index
         mod_card.style.margin = '0 auto'
@@ -221,8 +211,6 @@ function newModal(title, content, pos, id){
         mod_card.style.left = pos[0] + index*offset+'px'
         mod_card.style.right = pos[0] - index*offset+'px'
     
-//    mod_card.appendChild(postLocalData(id,data))
-
     const mod_title = document.createElement('div')
     mod_title.className = 'modal-title'    
 
@@ -318,7 +306,6 @@ function getConfig(field,value=0,order='read'){
         data.append("order", order);
         data.append("field", field);
         data.append("value", value);
-
     const myRequest = new Request("backend/getConfig.php",{
         method : "POST",
         body : data

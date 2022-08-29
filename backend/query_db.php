@@ -18,7 +18,7 @@
          "8"  => 'SELECT * FROM tb_und WHERE(SELECT U.class FROM tb_usuario AS U WHERE hash="x00") IN (10,4) ORDER BY nome;' ,          
          "9"  => 'INSERT INTO tb_und (id, nome, sigla) VALUES(x00, "x01", "x02") ON DUPLICATE KEY UPDATE nome="x01", sigla="x02";',
          "10" => 'SELECT IF((SELECT U.class FROM tb_usuario AS U WHERE hash="x00") IN (10,4),TRUE,FALSE) AS access',
-         "11" => 'SELECT *, CONCAT(LPAD(id,4,"0"),"-",nome) AS cod_nome FROM tb_empresa WHERE(SELECT U.class FROM tb_usuario AS U WHERE hash="x00") IN (10,4) AND tipo = "x01" ORDER BY nome;',
+         "11" => 'SELECT *, CONCAT(LPAD(id,4,"0"),"-",nome) AS cod_nome FROM tb_empresa WHERE(SELECT U.class FROM tb_usuario AS U WHERE hash="x00") IN (10,4) AND x01 x02 "x03" ORDER BY nome;',
          "12" => 'INSERT INTO tb_produto (id, descricao, estoque, etq_min, unidade, cod, cod_bar, cfop, id_emp, ncm, preco_comp, margem, tipo, cod_cli)
             VALUES(x00,"x01","x02","x03","x04",((SELECT MAX(P.cod)+1 FROM tb_produto as P WHERE P.cod < 7000)),"x06","x07","x08","x09","x10","x11","x12","x13")
             ON DUPLICATE KEY UPDATE 
@@ -78,6 +78,16 @@
          "35" => 'UPDATE tb_pedido SET status="x02" WHERE id=x00 AND (SELECT U.class FROM tb_usuario AS U WHERE hash="x01") IN (10,4);',
          "36" => 'UPDATE tb_produto as prod INNER JOIN tb_item_ped as item 
             SET prod.estoque = (prod.estoque - item.qtd) WHERE prod.id=item.id_prod AND item.id_ped = "x00";',
+         "37" => 'SELECT ag.*, emp.fantasia FROM tb_agenda AS ag
+            INNER JOIN tb_empresa AS emp 
+            ON ag.id_emp = emp.id
+            AND x00 x01 "x02";',
+         "38" => 'INSERT INTO tb_agenda (id, id_emp, nome, email, depart, cel1, cel2)
+            VALUES (x00,"x01","x02","x03","x04","x05","x06") ON DUPLICATE KEY UPDATE 
+            id_emp="x01", nome="x02", email="x03", depart="x04", cel1="x05", cel2="x06";',
+         "39" => 'DELETE FROM tb_agenda WHERE id="x00" AND (SELECT U.class FROM tb_usuario AS U WHERE hash="x01") IN (10,4,3); ',
+         "40" => 'UPDATE tb_pedido SET status="x01", path="x02" WHERE id=x00;',
+
             
             
       );

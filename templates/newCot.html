@@ -53,12 +53,17 @@
 
     const params = new Object;
         params.hash = localStorage.getItem('hash');
-        params.tipo = 'CLI'
-
+        params.field = 'tipo'
+        params.signal = '='
+        params.value = 'CLI'     
 
     fillCombo('cmbCli',params,11,['id','cod_nome'],typeof main_data.newCot.data === 'object' ? main_data.newCot.data.id_emp :'' )
 
     if(main_data.newCot.data === 'new'){
+        getConfig('config').then((txt)=>{    
+            const json =  JSON.parse(txt)
+            document.querySelector('#edtCond').value = json.cond_pgto
+        })        
         const params = new Object;
             params.num_ped = today.getCod()
         const myPromisse = queryDB(params,29);
@@ -110,7 +115,7 @@
                         params.id = json[0].last_ped
                         params.status = 'ABERTO'
                         openHTML('viewCot.html','pop-up','Cotação-'+params.num_ped, params)
-                        closeModal('newCot')
+                        closeModal()
                     })
                 }else{
                     main_data.newCot.data.id_emp = document.querySelector('#cmbCli').value
@@ -125,7 +130,7 @@
                     main_data.newCot.data.desconto = document.querySelector('#edtDesc').value
                     document.querySelector('#btnBusca').click()
                     main_data.viewCot.open()
-                    closeModal('newCot')
+                    closeModal()
                 }
             })
         }

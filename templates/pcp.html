@@ -56,20 +56,18 @@
 
 </template>
 <script>
+    const dia = ['Seg','Ter','Qua','Qui','Sex','Sab','Dom']
+    const tbl = document.getElementById('tblPCP')
     document.querySelector('#edtSem').value = today.getFormatDate()
 
-
-    document.querySelector('#btnBusca').addEventListener('click',()=>{
-
-        const dia = ['Seg','Ter','Qua','Qui','Sex','Sab','Dom']
+    main_data.pcp.viewWeek = ()=>{
         const week = new Date(document.querySelector('#edtSem').value)
-        const tbl = document.getElementById('tblPCP')
         tbl.innerHTML = ''
         tbl.head('Dia,Equipe de Frente,Equipe de Suporte,Costura,Montagem')
         week.change(-week.getDay()+1)
         document.querySelector('#lgdSem').innerHTML = `Semana de ${week.getFormatBR()}`
 
-        week.start = week.getFormatDate()
+        main_data.pcp.start = week.getFormatDate()
         for(let i=0; i<7; i++){
             const row = document.createElement('tr')            
             row.classList = 'd-'+week.getFormatDate()
@@ -91,13 +89,13 @@
             week.change()
         }
         week.change(-1)
-        week.end = week.getFormatDate()
+        main_data.pcp.end = week.getFormatDate()
         document.querySelector('#lgdSem').innerHTML += ` a ${week.getFormatBR()}`
 
         const params = new Object;
             params.hash = localStorage.getItem('hash');
-            params.inicio = week.start
-            params.final = week.end
+            params.inicio = main_data.pcp.start
+            params.final = main_data.pcp.end
 
         const myPromisse = queryDB(params,14);
 
@@ -119,13 +117,17 @@
                 }                
             }        
         })
+    }
+
+    document.querySelector('#btnBusca').addEventListener('click',()=>{
+        main_data.pcp.viewWeek()
     })
 
     document.querySelector('#edtSem').addEventListener('change',()=>{
-        document.querySelector('#btnBusca').click()
+        main_data.pcp.viewWeek()       
     })
 
-    document.querySelector('#tblPCP').addEventListener('click',(e)=>{
+    tbl.addEventListener('click',(e)=>{
         data = e.target.parentNode.data      
         data.mode = 'viewPCP'
         data.dayweek = e.target.parentNode.cells[0].innerHTML
