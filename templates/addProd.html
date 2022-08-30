@@ -40,9 +40,10 @@
 
         const sel = document.querySelector('#cmbAddProd')
         const field = sel.value
-        const signal = sel.options[sel.selectedIndex].getAttribute('signal')
+        const signal = sel.options[sel.selectedIndex].getAttribute('signal')        
         let value = sel.options[sel.selectedIndex].hasAttribute('val') ? sel.options[sel.selectedIndex].getAttribute('val') : document.querySelector('#edtAddProd').value.trim()
-        value = signal=='LIKE' ? '%'+value+'%' : value
+        value = signal=='LIKE' ? `"%${value}%"` : signal=='IN' ? `(${value})` : sel.value=='true'? sel.value : `"${value}"`
+
 
         const tbl = document.getElementById('tblAddProd')
         tbl.innerHTML = ''

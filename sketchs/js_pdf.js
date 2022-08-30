@@ -249,7 +249,8 @@ function print_pcp(tbl){
     doc.save('pcp.pdf')
 }
 
-function anaFrotaRelat(obj,tipo='analise',font=11, color='#000000'){
+function anaFrotaRelat(obj,tipo='analise'){
+    
     function postCli(data){
         doc.setFontSize(11)
         doc.setFont(undefined, 'bold')
@@ -264,7 +265,7 @@ function anaFrotaRelat(obj,tipo='analise',font=11, color='#000000'){
         doc.text('Data da Avaliação:'+ dataBR(data.data_analise),15,txt.y)
         addLine()
         //  TEXTO DE OBS
-        doc.setTextColor(color); 
+        doc.setTextColor(main_data.anafrota.data.cor); 
         if(document.querySelector('#edtObs').value.trim() != ''){
             addLine()
             doc.setFontSize(8)
@@ -289,7 +290,7 @@ function anaFrotaRelat(obj,tipo='analise',font=11, color='#000000'){
         let head
         let colspan
         let celWidth
-        if(tipo == 'analise'){
+        if( tipo == 'analise'){
             head =  [["Carro","Análise", "Exec.",'Valor']]
             colspan = 3
             celWidth = 20
@@ -310,7 +311,7 @@ function anaFrotaRelat(obj,tipo='analise',font=11, color='#000000'){
                 1: {cellWidth: 20},
                 2: {cellWidth: celWidth}
             },
-            styles :{fontSize: font},
+            styles :{fontSize: main_data.anafrota.data.font},
             startY: txt.y
         });
 
@@ -380,7 +381,15 @@ function anaFrotaRelat(obj,tipo='analise',font=11, color='#000000'){
         doc.setFontSize(10)
         addLine()
     }else{
-        doc.setTextColor(color); 
+        if(main_data.anafrota.data.desc > 0){
+            addLine()
+            right_text('Desconto: '+ viewMoneyBR(main_data.anafrota.data.desc.toFixed(2)),17)
+            addLine(0.4)
+            line(txt.y,'h',150,15)
+            addLine()            
+            right_text('Total '+ viewMoneyBR((total-main_data.anafrota.data.desc).toFixed(2)),17)
+        }
+        doc.setTextColor(main_data.anafrota.data.cor); 
         doc.setFontSize(8)
         doc.setFont(undefined, 'bold')
         center_text('Lembrando que até a data da execução poderá haver acrécimos de serviço')
@@ -522,14 +531,16 @@ function print_cotacao(ped,itens,emp,tipo='cot'){
     ped.comp != null ? doc.text('Comprador:'+ped.comp.trim().toUpperCase(),10,txt.y) :0    
     ped.resp != null ? doc.text('Vendedor:'+ ped.resp.trim().toUpperCase(),80,txt.y) :0
     doc.text('Prev. Entrega:'+ dataBR(ped.data_ent),157,txt.y)
-    addLine()
     if(ped.obs != null && ped.obs.trim() != ''){
+        addLine()
         doc.text('Obs:',10,txt.y)
-        box(ped.obs,20,txt.y,170)
-        addLine()    
+        addLine()
+        doc.setFont(undefined, 'bold')
+        box(ped.obs,10,txt.y,170)
+        doc.setFont(undefined, 'normal')
     }
     line(txt.y)
-    addLine(2)    
+    addLine(2)
 
     doc.setFontSize(15)
     doc.setFont(undefined, 'bold')

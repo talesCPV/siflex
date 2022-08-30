@@ -49,14 +49,10 @@
          "26" => 'DELETE FROM tb_empresa WHERE id="x00" AND (SELECT U.class FROM tb_usuario AS U WHERE hash="x01") IN (10,4);',
          "27" => 'SELECT p.*, e.fantasia, i.venda FROM tb_pedido AS p 
             INNER JOIN tb_empresa AS e
-            INNER JOIN tb_produto as prod 
-            INNER JOIN (   
-               SELECT id as id_ped, 0 as venda, 0 as id_prod FROM tb_pedido WHERE id NOT IN (SELECT id_ped FROM tb_item_ped)
-               UNION ALL
-               SELECT id_ped, ROUND(SUM(qtd * preco),2) AS venda, id_prod FROM tb_item_ped GROUP BY id_ped) AS i
+            INNER JOIN ( SELECT id as id_ped, 0 as venda, 0 as id_prod FROM tb_pedido WHERE id NOT IN (SELECT id_ped FROM tb_item_ped)
+               UNION ALL SELECT id_ped, ROUND(SUM(qtd * preco),2) AS venda, id_prod FROM tb_item_ped GROUP BY id_ped) AS i
             ON p.id = i.id_ped
             AND p.id_emp = e.id
-            AND i.id_prod = prod.id
             AND x00 x01 x02
             AND p.data_ped >= "x03"
             AND p.data_ped <= "x04"
