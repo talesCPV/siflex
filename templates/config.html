@@ -35,7 +35,11 @@
                 <label for="edtCondPgto">Cond. Pgto</label>
                 <textarea id="edtCondPgto" cols="30" rows="10"></textarea>
             </div>
-            <button id="btnCondPgto">Salvar</button>
+            <div class="inline">
+                <label for="edtAnaFrota">Analise de Frota</label>
+                <textarea id="edtAnaFrota" cols="30" rows="10"></textarea>
+            </div>            
+            <button id="btnTxtPadrao">Salvar</button>
         </fieldset>
  
         
@@ -50,6 +54,7 @@
         const json =  JSON.parse(txt)
         document.querySelector('#edtCusto').value = parseFloat(json.centro_custo).toFixed(2)
         document.querySelector('#edtCondPgto').value = json.cond_pgto
+        document.querySelector('#edtAnaFrota').value = json.ana_frota
     })
 
     function fillUnd(){
@@ -89,9 +94,11 @@
         getConfig('config',custo.value,'centro_custo')
     })
 
-    document.querySelector('#btnCondPgto').addEventListener('click',()=>{
+    document.querySelector('#btnTxtPadrao').addEventListener('click',()=>{
         const condPgto = document.querySelector('#edtCondPgto')
         getConfig('config',condPgto.value.trim(),'cond_pgto')
+        const anaFrota = document.querySelector('#edtAnaFrota')
+        getConfig('config',anaFrota.value.trim(),'ana_frota')
     })
 
 </script>

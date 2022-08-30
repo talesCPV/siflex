@@ -23,7 +23,7 @@
     </style>
 
     <div class="form-base">
-        <h1>Cotações e Pedidos</h1>
+        <h1>NF de Compras</h1>
         <fieldset>
             <legend>Busca Por:</legend>
     
@@ -31,15 +31,14 @@
                 <select id="cmbBusca">
                     <optgroup label="Geral">
                         <option value="true"       signal="=" val="true"   >Todos      </option>                        
-                        <option value="p.status"   signal="=" val="ABERTO" >Cotações   </option>
-                        <option value="p.status"   signal="=" val="FECHADO">Pedidos    </option>
-                        <option value="p.status"   signal="=" val="PAGO"   >Faturados  </option>
-                        <option value="p.status"   signal="=" val="INTERNO">Uso Interno</option>
-                        <option value="p.id"       signal="IN"   >Código</option>
-                        <option value="p.num_ped"  signal="LIKE">Número</option>
-                        <option value="prod.cod"   signal="="   >Cod. do Produto</option>
-                        <option value="e.fantasia" signal="LIKE"   >Cliente</option>
-                        <option value="e.id"       signal="IN"   >Cod. do Cliente</option>      
+                        <option value="ENT.id"     signal="IN" >Código   </option>
+                        <option value="EMP.fantasia" signal="=">Fornecedor    </option>
+                        <option value="TRIM(ENT.nf)"     signal="IN" >Num. NF  </option>
+                        <option value="p.status"   signal="=">Nome do Produto</option>
+                        <option value="p.id"       signal="IN"   >Cód. do Produto</option>
+                        <option value="EMP.id"  signal="LIKE">Cód. do Fornecedor</option>
+                        <option value="ENT.status" signal="=" val="ABERTO" >Aberta</option>
+                        <option value="ENT.status" signal="=" val="FECHADO" >Fechado</option>
                     </optgroup>
                 </select>
                 <input type="text" id="edtBusca" placeholder="Digite sua Busca" onkeypress="return getEnter(event, 'btnBusca')">
@@ -55,10 +54,10 @@
             </div>            
         </fieldset>
         <div class="inline" >
-            <button id="btnNova">Nova Cotação</button>
+            <button id="btnNova">Nova NF</button>
         </div>
 
-        <table id="tblCot"></table>
+        <table id="tblComp"></table>
         <p id="lblTotal"></p>
           
     </div>
@@ -70,20 +69,29 @@
     document.querySelector('#edtFin').value =  today.finMonth()
 
     document.querySelector('#btnNova').addEventListener('click',()=>{
-        openHTML('newCot.html','pop-up','Nova Cotação','new')
+//        openHTML('newCot.html','pop-up','Nova Cotação','new')
+        openHTML('newComp.html','pop-up','Entrada de Material','new')
+
     })
 
 
     document.querySelector('#btnBusca').addEventListener('click',()=>{
+
         const sel = document.querySelector('#cmbBusca')
         const field = sel.value
         const signal = sel.options[sel.selectedIndex].getAttribute('signal')
         const ckb = document.querySelector('#ckbData').checked
-        let value = sel.options[sel.selectedIndex].hasAttribute('val') ? sel.options[sel.selectedIndex].getAttribute('val') : document.querySelector('#edtBusca').value.trim()
+        let value = document.querySelector('#edtBusca').value.trim()
+        const values_arr = value.split(',')
+        if(signal=='IN'){
+            value = ''
+            for(let i=0; i< values_arr.length; i++){
+                value += i==0 ? `"${values_arr[i]}"` : `,"${values_arr[i]}"`
+            }
+        }
+        value = sel.options[sel.selectedIndex].hasAttribute('val') ? sel.options[sel.selectedIndex].getAttribute('val') : value
         value = signal=='LIKE' ? `"%${value}%"` : signal=='IN' ? `(${value})` : sel.value=='true'? sel.value : `"${value}"`
-//        value = signal=='LIKE' ? `"%${value}%"` : sel.value=='true'? sel.value : `"${value}"`
-
-        const tbl = document.getElementById('tblCot')
+        const tbl = document.getElementById('tblComp')
         const params = new Object;
             params.field = field
             params.signal = signal
@@ -91,7 +99,7 @@
             params.ini = ckb ? document.querySelector('#edtIni').value : '2000-01-01';
             params.fin = ckb ? document.querySelector('#edtFin').value : '2100-12-31';        
 
-        const myPromisse = queryDB(params,27);
+        const myPromisse = queryDB(params,41);
 
         myPromisse.then((resolve)=>{
             if(resolve.trim() != ""){
@@ -99,20 +107,20 @@
                 let total = 0
                 tbl.innerHTML=''
                 document.querySelector('#lblTotal').style.display = json.length > 0 ? 'block' : 'none'
-                json.length > 0 ? tbl.head('Cod.|mobHide,Num.,Cliente.,Data,Status|mobHide,Valor R$|mobHide') : 0
+                json.length > 0 ? tbl.head('Cod.|mobHide,NF.,Fornecedor.,Obs,Data|mobHide,Status|mobHide') : 0
                 for(let i=0; i<json.length;i++){                                       
                     total +=  parseFloat(json[i].venda)
-                    tbl.plot(json[i],'id|mobHide,num_ped,fantasia,data_ped,status|mobHide,venda|mobHide','int,str,Upp,date,change FECHADO=PED ABERTO=COT PAGO=FAT INTERNO=USO_INT. .=**,R$.',true)                    
+                    tbl.plot(json[i],'id|mobHide,nf,fantasia,OBS,data_ent|mobHide,status|mobHide','int,Upp,Upp,Upp,date,Upp',true)                    
                 }                
                 document.querySelector('#lblTotal').innerHTML =  'Total '+ viewMoneyBR(total.toFixed(2))
             }        
         })
     })
 
-    document.querySelector('#tblCot').addEventListener('click',(e)=>{
+    document.querySelector('#tblComp').addEventListener('click',(e)=>{
         data = e.target.parentNode.data
         data.mode = 'edit'      
-        openHTML('viewCot.html','pop-up','Cotação',data)
+        openHTML('viewComp.html','pop-up','Entrada de Material',data)
     })
 
 </script>

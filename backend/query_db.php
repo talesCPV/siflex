@@ -12,7 +12,7 @@
          "7"  => 'SELECT p.*, e.nome, e.id as id_emp,(p.preco_comp * (p.margem/100 +1)) as preco_venda
             FROM tb_produto AS p 
             INNER JOIN tb_empresa AS e 
-            ON x00 x01 "x02" 
+            ON x00 x01 x02 
             AND p.id_emp = e.id 
             ORDER BY cast(p.cod as unsigned integer);',
          "8"  => 'SELECT * FROM tb_und WHERE(SELECT U.class FROM tb_usuario AS U WHERE hash="x00") IN (10,4) ORDER BY nome;' ,          
@@ -41,20 +41,22 @@
             tipo="x01", data_ini="x02", data_pg="x03", preco="x04", ref="x05", resp="x06", emp="x07", origem="x08", pgto="x09";',
          "22" => 'DELETE FROM tb_financeiro WHERE id="x00" AND (SELECT U.class FROM tb_usuario AS U WHERE hash="x01") IN (10,4);',
          "23" => 'UPDATE tb_produto SET img_path="x01" WHERE id=x00;',
-         "24" => 'SELECT * FROM tb_empresa WHERE x00 x01 "x02";',
+         "24" => 'SELECT * FROM tb_empresa WHERE x00 x01 x02;',
          "25" => 'INSERT INTO tb_empresa (id, nome, fantasia, tipo, cnpj, ie, im, endereco, num, cidade, estado, bairro, cep, tel)
            VALUES(x00,"x01","x02","x03","x04","x05","x06","x07","x08","x09","x10","x11","x12","x13")
            ON DUPLICATE KEY UPDATE 
            nome ="x01", fantasia="x02", tipo="x03", cnpj="x04", ie="x05", im="x06", endereco="x07", num="x08", cidade="x09", estado="x10", bairro="x11", cep="x12", tel="x13";',
          "26" => 'DELETE FROM tb_empresa WHERE id="x00" AND (SELECT U.class FROM tb_usuario AS U WHERE hash="x01") IN (10,4);',
          "27" => 'SELECT p.*, e.fantasia, i.venda FROM tb_pedido AS p 
-            INNER JOIN tb_empresa AS e 
+            INNER JOIN tb_empresa AS e
+            INNER JOIN tb_produto as prod 
             INNER JOIN (   
-               SELECT id as id_ped, 0 as venda FROM tb_pedido WHERE id NOT IN (SELECT id_ped FROM tb_item_ped)
+               SELECT id as id_ped, 0 as venda, 0 as id_prod FROM tb_pedido WHERE id NOT IN (SELECT id_ped FROM tb_item_ped)
                UNION ALL
-               SELECT id_ped, ROUND(SUM(qtd * preco),2) AS venda FROM tb_item_ped GROUP BY id_ped) AS i
+               SELECT id_ped, ROUND(SUM(qtd * preco),2) AS venda, id_prod FROM tb_item_ped GROUP BY id_ped) AS i
             ON p.id = i.id_ped
             AND p.id_emp = e.id
+            AND i.id_prod = prod.id
             AND x00 x01 x02
             AND p.data_ped >= "x03"
             AND p.data_ped <= "x04"
@@ -87,8 +89,23 @@
             id_emp="x01", nome="x02", email="x03", depart="x04", cel1="x05", cel2="x06";',
          "39" => 'DELETE FROM tb_agenda WHERE id="x00" AND (SELECT U.class FROM tb_usuario AS U WHERE hash="x01") IN (10,4,3); ',
          "40" => 'UPDATE tb_pedido SET status="x01", path="x02" WHERE id=x00;',
-
-            
+         "41" => 'SELECT ENT.*, EMP.fantasia, EMP.id AS emp_id
+            FROM tb_entrada AS ENT
+            INNER JOIN tb_empresa AS EMP 
+            ON ENT.id_emp = EMP.id
+            AND x00 x01 x02
+            AND data_ent >= "x03" 
+            AND ENT.data_ent <= "x04" 
+            ORDER BY ENT.data_ent DESC;',
+         "42" => 'INSERT INTO tb_entrada (id, nf, id_emp, data_ent, resp, status, OBS)
+            VALUES (x00,"x01","x02","x03","x04","x05","x06") ON DUPLICATE KEY UPDATE
+            nf="x01", id_emp="x02", data_ent="x03", resp="x04", status="x05", OBS="x06";',
+         "43" => 'SELECT IC.*, PROD.descricao, PROD.unidade, ROUND((IC.qtd * IC.preco),2) as total
+            FROM tb_item_compra AS IC 
+            INNER JOIN tb_produto AS PROD
+            ON PROD.id = IC.id_prod
+            AND id_ent="x00";',
+         "44" => 'UPDATE tb_entrada SET path="x01" WHERE id=x00;',
             
       );
 

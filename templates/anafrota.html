@@ -21,14 +21,14 @@
         <fieldset>
             <legend>Busca Por:</legend>
             <div class="inline">
-                <input type="text" id="edtBusca"placeholder="Digite sua Busca" onkeypress="return getEnter(event, 'btnBusca')">
                 <select id="cmbBusca">
                     <option value="true" signal="="  val="true">Todos</option>
                     <option value="E.nome" signal="LIKE">Cliente</option>
                     <option value="E.id" signal="=">Código do Cliente</option>
                     <option value="A.num_carro" signal="LIKE">Num. do Carro</option>
-                    <option value="A.id" signal="=">Cod.</option>
+                    <option value="A.id" signal="IN">Cod.</option>
                 </select>
+                <input type="text" id="edtBusca"placeholder="Digite sua Busca" onkeypress="return getEnter(event, 'btnBusca')">
                 <select id="cmbExec">
                     <option value="1">Todos</option>
                     <option value="2">Executados</option>
@@ -79,6 +79,11 @@
 </template>
 <script>
     
+    getConfig('config').then((txt)=>{    
+        const json =  JSON.parse(txt)
+        document.querySelector('#edtObs').value = json.ana_frota
+    })
+
     document.querySelector('#edtIni').value = today.getFormatDate(-7)
     document.querySelector('#edtFin').value = today.getFormatDate(7)
 
@@ -89,7 +94,7 @@
         const signal = sel.options[sel.selectedIndex].getAttribute('signal')
         const ckb = document.querySelector('#ckbData').checked
         let value = sel.options[sel.selectedIndex].hasAttribute('val') ? sel.options[sel.selectedIndex].getAttribute('val') : document.querySelector('#edtBusca').value.trim()
-        value = signal=='LIKE' ? `"%${value}%"` : sel.value=='true'? sel.value : `"${value}"`
+        value = signal=='LIKE' ? `"%${value}%"` : signal=='IN' ? `(${value})` : sel.value=='true'? sel.value : `"${value}"`
 
         const tbl = document.getElementById('tblAnaFrota')
         const params = new Object;

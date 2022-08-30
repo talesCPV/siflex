@@ -1,0 +1,111 @@
+
+<template>
+    <style>
+
+        #btnDel{
+            display: none;
+        }
+
+    </style>
+  
+    <fieldset>
+        <legend>Entrada de Material</legend>
+        <div class="inline">
+            <label for="edtNF">NF *</label>
+            <input type="text" id="edtNF">
+            <label for="edtData">Data *</label>
+            <input type="date" id="edtData">             
+        </div>        
+        <div class="inline">
+            <label for="cmbForn">Fornecedor</label>
+            <select id="cmbForn"></select>
+        </div>
+        <div class="inline">
+            <label for="edtObs">Obs</label>
+            <textarea id="edtObs" cols="30" rows="10"></textarea>
+        </div>
+        <div class="inline">
+            <label for="edtResp">Emitido por</label>
+            <input type="text" id="edtResp" readonly>
+        </div>     
+
+        <button id="btnCad">Cadastrar</button>
+        <button id="btnDel">Deletar</button>
+
+    </fieldset>
+
+
+</template>
+<script>
+
+    document.querySelector('#edtData').value = today.getFormatDate()
+
+    const params = new Object;
+        params.hash = localStorage.getItem('hash');
+        params.field = 'tipo'
+        params.signal = '='
+        params.value = 'FOR'     
+
+    fillCombo('cmbForn',params,11,['id','cod_nome'],typeof main_data.newComp.data === 'object' ? main_data.newComp.data.id_emp :'' )
+
+    if(main_data.newComp.data === 'new'){
+        document.querySelector('#edtResp').value = localStorage.getItem('nome').trim() == '' ? localStorage.getItem('username').toUpperCase() : localStorage.getItem('nome').toUpperCase()
+    }else{
+        document.querySelector('#edtNF').value = main_data.newComp.data.nf.toUpperCase()
+        document.querySelector('#edtData').value = main_data.newComp.data.data_ent
+        document.querySelector('#edtObs').value = main_data.newComp.data.obs
+        document.querySelector('#edtResp').value = main_data.newComp.data.resp.toUpperCase()
+        document.querySelector('#btnDel').style.display = 'block'
+        document.querySelector('#btnCad').innerHTML = 'Salvar'
+        document.querySelector('#edtNumPed').readOnly = false
+    }
+
+    document.querySelector('#btnCad').addEventListener('click',()=>{
+
+        if(checkField(['edtData','edtNumPed'])){
+            const params = new Object;
+                params.id = main_data.newCot.data === 'new' ? 'DEFAULT' : main_data.newCot.data.id 
+                params.id_emp = document.querySelector('#cmbCli').value
+                params.data_ped = document.querySelector('#edtData').value
+                params.data_ent = document.querySelector('#edtEntrega').value
+                params.resp = document.querySelector('#edtVend').value.trim()
+                params.comp = document.querySelector('#edtComp').value.trim().toUpperCase()
+                params.num_ped = document.querySelector('#edtNumPed').value.trim()
+                params.origem = 'SAN'
+                params.cond_pgto = document.querySelector('#edtCond').value.trim()
+                params.obs = document.querySelector('#edtObs').value.trim()
+                params.desconto = document.querySelector('#edtDesc').value
+            const myPromisse = queryDB(params,28);
+            myPromisse.then((resolve)=>{
+                if(main_data.newCot.data == 'new'){
+                    const myPromisseLastID = queryDB(params,34)
+                    myPromisseLastID.then((resolve)=>{
+                        const sel = document.querySelector('#cmbCli')
+                        params.mode = 'new'
+                        params.fantasia = sel.options[sel.selectedIndex].text
+                        const json = JSON.parse(resolve)
+                        params.id = json[0].last_ped
+                        params.status = 'ABERTO'
+                        openHTML('viewCot.html','pop-up','Cotação-'+params.num_ped, params)
+                        closeModal()
+                    })
+                }else{
+                    main_data.newCot.data.id_emp = document.querySelector('#cmbCli').value
+                    main_data.newCot.data.data_ped = document.querySelector('#edtData').value
+                    main_data.newCot.data.data_ent = document.querySelector('#edtEntrega').value
+                    main_data.newCot.data.resp = document.querySelector('#edtVend').value.trim()
+                    main_data.newCot.data.comp = document.querySelector('#edtComp').value.trim().toUpperCase()
+                    main_data.newCot.data.num_ped = document.querySelector('#edtNumPed').value.trim()
+                    main_data.newCot.data.origem = 'SAN'
+                    main_data.newCot.data.cond_pgto = document.querySelector('#edtCond').value.trim()
+                    main_data.newCot.data.obs = document.querySelector('#edtObs').value.trim()
+                    main_data.newCot.data.desconto = document.querySelector('#edtDesc').value
+                    document.querySelector('#btnBusca').click()
+                    main_data.viewCot.open()
+                    closeModal()
+                }
+            })
+        }        
+    })
+
+</script>

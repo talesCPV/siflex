@@ -21,7 +21,7 @@
                     <option value="tipo" signal="=" val="FOR">Fornecedores</option>
                     <option value="cnpj" signal="=" >CNPJ</option>
                     <option value="ie" signal="=">Insc. Estadual</option>
-                    <option value="id" signal="=">Código</option>
+                    <option value="id" signal="IN">Código</option>
                 </select>
                 <input type="text" id="edtBusca" onkeypress="return getEnter(event, 'btnBusca')">
                 <button id="btnBusca">Busca</button>
@@ -45,7 +45,7 @@
         const field = sel.value
         const signal = sel.options[sel.selectedIndex].getAttribute('signal')
         let value = sel.options[sel.selectedIndex].hasAttribute('val') ? sel.options[sel.selectedIndex].getAttribute('val') : document.querySelector('#edtBusca').value.trim()
-        value = signal=='LIKE' ? '%'+value+'%' : value
+        value = signal=='LIKE' ? `"%${value}%"` : signal=='IN' ? `(${value})` : sel.value=='true'? sel.value : `"${value}"`
 
         const tbl = document.getElementById('tblEmp')
         tbl.innerHTML = ''

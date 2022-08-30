@@ -168,28 +168,30 @@ function header_pdf(lin_h = 5, font_size = 12){
 function print_etq(data){
     
     doc = new jsPDF()  
+    const x_ = 60
 
     clearTxt()
-    frame()
+//    frame()
 
-    getBarcode(data.cod.padStart(13,'0'),[25,52,40,15])
-    logo([30,10,30,10])
+    doc.rect(x_+5,5,txt.dim[0]-5*2,txt.dim[1]-5*2)
+    doc.line(x_+5,23,x_+txt.dim[0]-5,23)
+    doc.line(x_+5,45,x_+txt.dim[0]-5,45)
+
+    getBarcode(data.cod.padStart(13,'0'),[x_+25,52,40,15])
+    logo([x_+30,10,30,10])
 
     doc.setFontSize(8)
     doc.setFont(undefined, 'bold')
-    doc.text(data.descricao, 6,30);
-    doc.text('Forn.:', 6,35);
-    doc.text('Forn.:', 6,35);
-    doc.text('Cod.:', 6,40);
-    doc.text('Cod. Orig:', 40,40);
+    doc.text(data.descricao, x_+6,30);
+    doc.text('Forn.:', x_+6,35);
+    doc.text('Cod.:', x_+6,40);
+    doc.text('Cod. Orig:', x_+40,40);
 
     doc.setFont(undefined,'normal')
-    doc.text(data.nome.toUpperCase(), 15,35);
-    doc.text(data.cod.padStart(13,'0') , 15,40);
-    doc.text(data.cod_cli.padStart(13,'0') , 55,40);
+    doc.text(data.nome.toUpperCase(), x_+15,35);
+    doc.text(data.cod.padStart(13,'0') , x_+15,40);
+    doc.text(data.cod_cli.padStart(13,'0') , x_+55,40);
 
-    line(23)
-    line(45)
     doc.save('etiqueta.pdf')
 }
 
@@ -247,7 +249,7 @@ function print_pcp(tbl){
     doc.save('pcp.pdf')
 }
 
-function anaFrotaRelat(obj,tipo='analise',font=11, color= '#000000'){
+function anaFrotaRelat(obj,tipo='analise',font=11, color='#000000'){
     function postCli(data){
         doc.setFontSize(11)
         doc.setFont(undefined, 'bold')
@@ -286,12 +288,15 @@ function anaFrotaRelat(obj,tipo='analise',font=11, color= '#000000'){
 
         let head
         let colspan
+        let celWidth
         if(tipo == 'analise'){
             head =  [["Carro","Análise", "Exec.",'Valor']]
             colspan = 3
+            celWidth = 20
         }else{
             head =  [["Carro","Local", "Serviço a ser Executado"]]
             colspan = 2
+            celWidth = 100
         }
 
         pushTot(qtd+' carros','Total '+viewMoneyBR(subTot.toFixed(2)))
@@ -303,7 +308,7 @@ function anaFrotaRelat(obj,tipo='analise',font=11, color= '#000000'){
             columnStyles: {
                 0: {cellWidth: 15},
                 1: {cellWidth: 20},
-                2: {cellWidth: 100}
+                2: {cellWidth: celWidth}
             },
             styles :{fontSize: font},
             startY: txt.y
@@ -359,10 +364,9 @@ function anaFrotaRelat(obj,tipo='analise',font=11, color= '#000000'){
         }else{
             tbl_body.push([data.num_carro,data.local,data.obs])
             tbl_body.push(['','','Valor: '+viewMoneyBR(parseFloat(data.valor).toFixed(2))])
-            tbl_body.push(['','',''])
-            qtd++
+            tbl_body.push(['','',''])            
         }
-
+        qtd++
         subTot += parseFloat(data.valor)
     }
 
@@ -376,13 +380,15 @@ function anaFrotaRelat(obj,tipo='analise',font=11, color= '#000000'){
         doc.setFontSize(10)
         addLine()
     }else{
+        doc.setTextColor(color); 
         doc.setFontSize(8)
         doc.setFont(undefined, 'bold')
         center_text('Lembrando que até a data da execução poderá haver acrécimos de serviço')
-        addLine(0.5)
+        addLine(0.3)
         center_text('Recomenda-se corrigir os problemas o mais rápido possível')
         doc.setFont(undefined, 'normal')
         doc.setFontSize(10)
+        doc.setTextColor(0,0,0); 
         addLine()
     }
 
@@ -392,17 +398,15 @@ function anaFrotaRelat(obj,tipo='analise',font=11, color= '#000000'){
 
 function print_finan(obj){
   
-
     jsPDF.autoTableSetDefaults({
         headStyles: { fillColor: [37, 68, 65] },
     })
-
 
     let tbl_body = []
     let total = 0
     for(let i=1; i< obj.rows.length;i++){
         const data = obj.rows[i].data
-        tbl_body.push([data.id,data.tipo,data.origem,data.ref.maxWidth(15).toUpperCase(),data.emp.maxWidth(15).toUpperCase(),dataBR(data.data_pg),data.pgto,viewMoneyBR(data.preco)])
+        tbl_body.push([data.id,data.tipo,data.origem,data.ref.maxWidth(15).toUpperCase(),data.emp.maxWidth(15).toUpperCase(),dataBR(data.data_pg),data.pgto,viewMoneyBR(parseFloat(data.preco).toFixed(2))])
         total += data.tipo =='ENTRADA' ? parseFloat(data.preco) : -parseFloat(data.preco) 
 
     }

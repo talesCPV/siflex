@@ -94,13 +94,16 @@
                 params.obs = document.querySelector('#edtDetal').value.trim()
                 params.exec = document.querySelector('#cmbExe').value
             const myPromisse = queryDB(params,17);
-            myPromisse.then((resolve)=>{
-//                document.querySelector('#btnBusca').click()
+            myPromisse.then((resolve)=>{                
                 document.querySelector('#edtNumCarro').value = ''
                 document.querySelector('#edtDetal').value = ''
                 document.querySelector('#edtValor').value = ''
                 document.querySelector('#edtNumCarro').focus()
-//                closeModal('viewAnaFrota')
+                if(main_data.viewAnaFrota.data != 'new'){
+                    document.querySelector('#btnBusca').click()
+                    closeModal('viewAnaFrota')
+                }
+                
             })
         }
     })

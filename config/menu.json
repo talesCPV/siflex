@@ -82,7 +82,7 @@
 						},
 						{
 							"modulo" : "Novo",
-							"script" : "javascript:openHTML('viewAnaFrota.html','pop-up','Análise de Frota')",
+							"script" : "javascript:openHTML('viewAnaFrota.html','pop-up','Análise de Frota','new')",
 							"access" : [10,4,3],
 							"class"  : "",
 							"icone"  : "fa fa-archive",
@@ -125,7 +125,7 @@
 						},							
 						{
 							"modulo" : "Lançamentos",
-							"script" : "javascript:openHTML('viewFinan.html','pop-up','Financeiro',0)",
+							"script" : "javascript:openHTML('viewFinan.html','pop-up','Financeiro','new')",
 							"access" : [10,4],
 							"class"  : "",
 							"icone"  : "fa fa-archive",
@@ -162,6 +162,14 @@
 					"modulo" : "Cotações",
 					"script" : "javascript:openHTML('cotacoes.html','content-screen','Cotações e Pedidos')",
 					"access" : [10,4,3],
+					"class"  : "",
+					"icone"  : "fa fa-archive",
+					"itens"  : []
+				},
+				{
+					"modulo" : "Compras",
+					"script" : "javascript:openHTML('compras.html','content-screen','NF de Compra')",
+					"access" : [10,4],
 					"class"  : "",
 					"icone"  : "fa fa-archive",
 					"itens"  : []

@@ -15,7 +15,7 @@
                 <option value="emp.fantasia" signal="LIKE">Empresa</option>
                 <option value="ag.id" signal="=">Código</option>
             </select>
-            <input type="text" id="edtBusca" placeholder="Digite sua busca" onkeypress="return getEnter(event, 'btnBusca')">
+            <input type="text" id="edtBuscaAgd" placeholder="Digite sua busca" onkeypress="return getEnter(event, 'btnBusca')">
             <button id="btnBuscaAgd">Busca</button>
         </div>
         <button id="btnNovo">Novo Contato</button>
@@ -33,7 +33,7 @@
         const sel = document.querySelector('#cmbBuscaAgd')
         const field = sel.value
         const signal = sel.options[sel.selectedIndex].getAttribute('signal')
-        let value = document.querySelector('#edtBusca').value.trim()
+        let value = document.querySelector('#edtBuscaAgd').value.trim()
         value = signal=='LIKE' ? '%'+value+'%' : value
 
         const tbl = document.getElementById('tblAgenda')

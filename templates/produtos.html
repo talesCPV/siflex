@@ -16,7 +16,7 @@
                 <label for="edtBusca">por:</label>
                 <select id="cmbBusca">
                     <option value="p.descricao" signal="LIKE">Todos</option>
-                    <option value="p.cod" signal="=">Código</option>
+                    <option value="p.cod" signal="IN">Código</option>
                     <option value="e.nome" signal="LIKE">Fornecedor</option>
                     <option value="p.tipo" signal="=" val="SERVICO">Serviços</option>
                     <option value="p.tipo" signal="=" val="CONJ">Conjuntos</option>
@@ -49,7 +49,7 @@
         const field = sel.value
         const signal = sel.options[sel.selectedIndex].getAttribute('signal')
         let value = sel.options[sel.selectedIndex].hasAttribute('val') ? sel.options[sel.selectedIndex].getAttribute('val') : document.querySelector('#edtBusca').value.trim()
-        value = signal=='LIKE' ? '%'+value+'%' : value
+        value = signal=='LIKE' ? `"%${value}%"` : signal=='IN' ? `(${value})` : sel.value=='true'? sel.value : `"${value}"`
 
         const tbl = document.getElementById('tblProd')
         tbl.innerHTML = ''

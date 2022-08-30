@@ -110,9 +110,10 @@
                     tbl.plot(json[i],'id|mobHide,tipo|mobHide,origem|mobHide,ref,emp|mobHide,data_pg,pgto|mobHide,preco|mobHide','int,str,str,Upp,Upp,date,change 15=SIS .=**,R$.')
                 }
                 
+    
                 if(value=='"COM"'){
                     document.querySelector('#lblOrc').innerHTML = `Orçamento Mensal ${viewMoneyBR(centro_custo.toFixed(2))}`
-                    document.querySelector('#lblSaldo').innerHTML = `Saldo Atual ${viewMoneyBR((centro_custo+total).toFixed(2))}`
+                    document.querySelector('#lblSaldo').innerHTML = `Saldo Atual ${(centro_custo+total) < 0 ? '-':'+'}  ${viewMoneyBR((centro_custo+total).toFixed(2))}`
                 }else{
                     document.querySelector('#lblOrc').innerHTML = ''
                     document.querySelector('#lblSaldo').innerHTML = ''
