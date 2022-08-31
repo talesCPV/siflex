@@ -70,18 +70,17 @@
                 params.OBS = document.querySelector('#edtObs').value.trim()
             const myPromisse = queryDB(params,42);
             myPromisse.then((resolve)=>{
-                main_data.viewComp.data.OBS = params.OBS
-                main_data.viewComp.data.nf = params.nf
-                main_data.viewComp.data.id_emp = params.emp_id
-                main_data.viewComp.data.data_ent = params.data_ent
-                main_data.viewComp.data.fantasia = document.querySelector('#cmbForn').options[document.querySelector('#cmbForn').selectedIndex].text
-                main_data.viewComp.open()                
-                if(main_data.newComp.data === 'new'){
-                    openHTML('viewComp.html','pop-up','Entrada de Material',params)
+                if(main_data.newComp.data != 'new'){
+                    main_data.viewComp.data.OBS = params.OBS
+                    main_data.viewComp.data.nf = params.nf
+                    main_data.viewComp.data.id_emp = params.emp_id
+                    main_data.viewComp.data.data_ent = params.data_ent
+                    main_data.viewComp.data.fantasia = document.querySelector('#cmbForn').options[document.querySelector('#cmbForn').selectedIndex].text
+                    main_data.viewComp.open()                                    
                 }else{
-                    closeModal('newComp')
+                    document.querySelector('#btnBusca').click()
                 }
-
+                closeModal('newComp')
             })
         }        
     })

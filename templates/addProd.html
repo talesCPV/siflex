@@ -60,7 +60,11 @@
                 const json = JSON.parse(resolve);
                 tbl.head('Cod.|mobHide,Descrição,Preço')
                 for(let i=0; i<json.length;i++){
-                    tbl.plot(json[i],'cod|mobHide,descricao,preco_venda','int,Upp,R$.')
+                    if(main_data.addProd.data.callby == 'viewComp'){
+                        tbl.plot(json[i],'cod|mobHide,descricao,preco_comp','int,Upp,R$.')
+                    }else{
+                        tbl.plot(json[i],'cod|mobHide,descricao,preco_venda','int,Upp,R$.')
+                    }
                 }                
             }        
         });

@@ -107,6 +107,10 @@
             VALUES (x00,"x01","x02","x03","x04") ON DUPLICATE KEY UPDATE
             id_prod="x01", id_ent="x02", qtd="x03", preco="x04";',
          "47" => 'DELETE FROM tb_item_compra WHERE y00="x00" AND (SELECT U.class FROM tb_usuario AS U WHERE hash="x01") IN (10,4);',
+         "48" => 'UPDATE tb_entrada SET status="x02" WHERE id=x00 AND (SELECT U.class FROM tb_usuario AS U WHERE hash="x01") IN (10,4);',
+         "49" => 'UPDATE tb_produto as prod INNER JOIN tb_item_compra as item 
+            SET prod.estoque = (prod.estoque + item.qtd), prod.preco_comp = item.preco WHERE prod.id=item.id_prod AND item.id_ent = "x00";',
+
 
             
       );
