@@ -86,7 +86,7 @@
     main_data.viewComp.fillItens()
 
     document.querySelector('#btnEdit').addEventListener('click',()=>{
-        openHTML('newCot.html','pop-up',(main_data.viewComp.data.status=='ABERTO'?'Cotação-':'Pedido-') + main_data.viewComp.num_ped, main_data.viewComp.data)
+        openHTML('newComp.html','pop-up','Edição', main_data.viewComp.data)
     })
 
     document.querySelector('#btnDel').addEventListener('click',()=>{
@@ -118,6 +118,30 @@
     })
 
     document.querySelector('#btnAdd').addEventListener('click',()=>{
+        
+        main_data.viewComp.data.addItem = function(data){
+            if(data.qtd > 0){
+                const params = new Object;
+                    params.id = 'DEFAULT' 
+                    params.id_prod = data.id
+                    params.id_ent = main_data.viewComp.data.id
+                    params.qtd = data.qtd
+                    params.preco = parseFloat(data.preco_venda).toFixed(2)
+console.log(params)                    
+
+                const myPromisse = queryDB(params,46);
+                myPromisse.then((resolve)=>{
+                    if(resolve.trim() != ""){
+                        main_data.viewComp.fillItens()
+                        closeModal('addProd')
+                    }  
+                })
+                
+            }else{
+                alert('Quantidade não pode ser zero!')
+            }
+        }
+
         openHTML('addProd.html','pop-up','Adicione um Produto ou Serviço',main_data.viewComp.data,[100,30])
     })
 
@@ -159,6 +183,33 @@
         if(main_data.viewComp.data.status == 'ABERTO'){
             const data = e.target.parentNode.data
             data.mode = 'edit'
+            data.edt = function(data){
+                const params = new Object;
+                    params.id = data.id 
+                    params.id_prod = data.id_prod
+                    params.id_ent = data.id_ent
+                    params.qtd = data.qtd
+                    params.preco = data.preco
+                const myPromisse = queryDB(params,46);
+                myPromisse.then((resolve)=>{
+                    if(resolve.trim() != ""){
+                        main_data.viewComp.fillItens()
+                        closeModal('edtProd')
+                    }  
+                })
+            }
+            data.del = function(id){
+                const params = new Object;
+                    params.id = id
+                    params.hash = localStorage.getItem('hash')
+                const myPromisse = queryDB(params,47);
+                myPromisse.then((resolve)=>{
+                    if(resolve.trim() != ""){
+                        main_data.viewComp.fillItens()
+                        closeModal('edtProd')
+                    }  
+                })                
+            }                        
             openHTML('edtProd.html','pop-up','Alteração de Ítem',data)
         }
     })

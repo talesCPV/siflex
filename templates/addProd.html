@@ -71,31 +71,7 @@
             data.estoque = parseInt(data.estoque)
             data.qtd = parseInt(prompt(`Digite a quantidade desejada | estq:${data.estoque}`))
             data.qtd = data.qtd == NaN ? 0 : data.qtd
-        if(data.qtd > data.estoque){
-            alert('Estoque insuficiente!')
-            data.qtd = 0
-        }else if(data.qtd > 0){
-            const params = new Object;
-                params.id = 'DEFAULT' 
-                params.id_prod = data.id
-                params.id_ped = main_data.viewCot.data.id
-                params.qtd = data.qtd
-                params.preco = data.preco_venda 
-                params.und = data.unidade
-                params.serv = data.tipo == 'SERV' ? data.tipo : null
-
-            const myPromisse = queryDB(params,32);
-
-            myPromisse.then((resolve)=>{
-                if(resolve.trim() != ""){
-                    main_data.viewCot.fillItens()
-                    closeModal('addProd')
-                }  
-            })
-            
-        }else{
-            alert('Quantidade não pode ser zero!')
-        }
+            main_data.addProd.data.addItem(data)
     })
 
 

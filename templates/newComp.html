@@ -30,7 +30,6 @@
         </div>     
 
         <button id="btnCad">Cadastrar</button>
-        <button id="btnDel">Deletar</button>
 
     </fieldset>
 
@@ -53,19 +52,17 @@
     }else{
         document.querySelector('#edtNF').value = main_data.newComp.data.nf.toUpperCase()
         document.querySelector('#edtData').value = main_data.newComp.data.data_ent
-        document.querySelector('#edtObs').value = main_data.newComp.data.obs
+        document.querySelector('#edtObs').value = main_data.newComp.data.OBS
         document.querySelector('#edtResp').value = main_data.newComp.data.resp.toUpperCase()
-        document.querySelector('#btnDel').style.display = 'block'
         document.querySelector('#btnCad').innerHTML = 'Salvar'
-        document.querySelector('#edtNumPed').readOnly = false
     }
 
     document.querySelector('#btnCad').addEventListener('click',()=>{
 
         if(checkField(['edtData','edtNF'])){
             const params = new Object;
-                params.id = main_data.newCot.data === 'new' ? 'DEFAULT' : main_data.newCot.data.id 
-                params.nf = document.querySelector('#edtNF').value
+                params.id = main_data.newComp.data === 'new' ? 'DEFAULT' : main_data.newComp.data.id 
+                params.nf = document.querySelector('#edtNF').value.toUpperCase()
                 params.emp_id = document.querySelector('#cmbForn').value
                 params.data_ent = document.querySelector('#edtData').value
                 params.resp = document.querySelector('#edtResp').value.trim()
@@ -73,9 +70,17 @@
                 params.OBS = document.querySelector('#edtObs').value.trim()
             const myPromisse = queryDB(params,42);
             myPromisse.then((resolve)=>{
-                params.mode = 'new'
-                params.fantasia = document.querySelector('cmbForn').options[document.querySelector('cmbForn').selectedIndex].text
-                openHTML('viewComp.html','pop-up','Entrada de Material',params)
+                main_data.viewComp.data.OBS = params.OBS
+                main_data.viewComp.data.nf = params.nf
+                main_data.viewComp.data.id_emp = params.emp_id
+                main_data.viewComp.data.data_ent = params.data_ent
+                main_data.viewComp.data.fantasia = document.querySelector('#cmbForn').options[document.querySelector('#cmbForn').selectedIndex].text
+                main_data.viewComp.open()                
+                if(main_data.newComp.data === 'new'){
+                    openHTML('viewComp.html','pop-up','Entrada de Material',params)
+                }else{
+                    closeModal('newComp')
+                }
 
             })
         }        

@@ -41,6 +41,7 @@ nav {
 	font-size:14px;
 	line-height: 40px;
 	margin-top: 10px;
+	cursor: pointer;
 }
 
 #logo img{

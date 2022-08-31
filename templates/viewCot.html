@@ -75,6 +75,10 @@
             }
         }
     }
+    main_data.viewCot.btnEncerra = document.querySelector('#btnFecha')
+    main_data.viewCot.fdsRelat = document.querySelector('#fdsRelat')
+    main_data.viewCot.tblItens = document.querySelector('#tblItens')
+    main_data.viewCot.tdVal = document.querySelector('#tdVal')
 
     main_data.viewCot.fillItens = function fillItens(){
         const params = new Object;
@@ -82,23 +86,23 @@
         const myPromisse = queryDB(params,30);
         myPromisse.then((resolve)=>{
             const json = JSON.parse(resolve)
-            document.querySelector('#btnFecha').disabled = json.length > 0 ? false : true
-            document.querySelector('#fdsRelat').style.display = json.length > 0 ? 'block' : 'none'
-            const tbl = document.querySelector('#tblItens')
+            main_data.viewCot.btnEncerra.disabled = json.length > 0 ? false : true
+            main_data.viewCot.fdsRelat.style.display = json.length > 0 ? 'block' : 'none'
+            const tbl = main_data.viewCot.tblItens
             let tot = 0
             tbl.head('Cod.|mobHide,Descrição,Und.|mobHide,Qtd.,Preço Unit.,Sub Total')            
             for(let i=0; i<json.length;i++){
                 tbl.plot(json[i],'cod_prod|mobHide,descricao,und|mobHide,qtd,preco,total','str,Upp,Upp,str,R$.,R$.')
                 tot += parseFloat(json[i].total)
             }
-            document.querySelector('#tdVal').innerHTML = viewMoneyBR(tot.toFixed(2))
+            main_data.viewCot.tdVal.innerHTML = viewMoneyBR(tot.toFixed(2))
         })
     }
 
     main_data.viewCot.open()
     main_data.viewCot.fillItens()
 
-    document.querySelector('#btnEdit').addEventListener('click',()=>{
+    document.querySelector('#btnEdit').addEventListener('click',()=>{        
         openHTML('newCot.html','pop-up',(main_data.viewCot.data.status=='ABERTO'?'Cotação-':'Pedido-') + main_data.viewCot.num_ped, main_data.viewCot.data)
     })
 
@@ -121,16 +125,42 @@
                     if(main_data.viewCot.data.mode == 'edit'){
                         document.querySelector('#btnBusca').click()
                     }
-                    closeModal('viewCot') 
-                
-                })
-               
-            })
-            
+                    closeModal('viewCot')                 
+                })               
+            })            
         }                
     })
 
     document.querySelector('#btnAdd').addEventListener('click',()=>{
+
+        main_data.viewCot.data.addItem = function(data){
+            if(data.qtd > data.estoque){
+                alert('Estoque insuficiente!')
+                data.qtd = 0
+            }else if(data.qtd > 0){
+                const params = new Object;
+                    params.id = 'DEFAULT' 
+                    params.id_prod = data.id
+                    params.id_ped = main_data.viewCot.data.id
+                    params.qtd = data.qtd
+                    params.preco = data.preco_venda 
+                    params.und = data.unidade
+                    params.serv = data.tipo == 'SERV' ? data.tipo : null
+
+                const myPromisse = queryDB(params,32);
+
+                myPromisse.then((resolve)=>{
+                    if(resolve.trim() != ""){
+                        main_data.viewCot.fillItens()
+                        closeModal('addProd')
+                    }  
+                })                
+            }else{
+                alert('Quantidade não pode ser zero!')
+            }
+        }
+
+
         openHTML('addProd.html','pop-up','Adicione um Produto ou Serviço',main_data.viewCot.data,[100,30])
     })
 
@@ -173,6 +203,37 @@
         if(main_data.viewCot.data.status == 'ABERTO'){
             const data = e.target.parentNode.data
             data.mode = 'edit'
+            data.edt = function(data){
+                const params = new Object;
+                    params.id = data.id 
+                    params.id_prod = data.id_prod
+                    params.id_ped = data.id_ped
+                    params.qtd = data.qtd
+                    params.preco = data.preco
+                    params.und = data.und
+                    params.serv = data.serv                
+                const myPromisse = queryDB(params,32);
+                myPromisse.then((resolve)=>{
+                    if(resolve.trim() != ""){
+                        main_data.viewCot.fillItens()
+                        closeModal('edtProd')
+                    }  
+                })
+            }
+            data.del = function(id){
+                const params = new Object;
+                    params.id = id
+                    params.hash = localStorage.getItem('hash')
+                const myPromisse = queryDB(params,33);
+                myPromisse.then((resolve)=>{
+                    if(resolve.trim() != ""){
+                        main_data.viewCot.fillItens()
+                        closeModal('edtProd')
+                    }  
+                })                
+            }
+
+
             openHTML('edtProd.html','pop-up','Alteração de Ítem',data)
         }
     })

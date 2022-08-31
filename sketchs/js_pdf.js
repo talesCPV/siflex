@@ -249,7 +249,7 @@ function print_pcp(tbl){
     doc.save('pcp.pdf')
 }
 
-function anaFrotaRelat(obj,tipo='analise'){
+function anaFrotaRelat(obj){
     
     function postCli(data){
         doc.setFontSize(11)
@@ -290,7 +290,7 @@ function anaFrotaRelat(obj,tipo='analise'){
         let head
         let colspan
         let celWidth
-        if( tipo == 'analise'){
+        if( main_data.anafrota.data.tipo == 'analise'){
             head =  [["Carro","Análise", "Exec.",'Valor']]
             colspan = 3
             celWidth = 20
@@ -311,7 +311,7 @@ function anaFrotaRelat(obj,tipo='analise'){
                 1: {cellWidth: 20},
                 2: {cellWidth: celWidth}
             },
-            styles :{fontSize: main_data.anafrota.data.font},
+            styles :{fontSize: main_data.anafrota.data.fontsize},
             startY: txt.y
         });
 
@@ -355,12 +355,12 @@ function anaFrotaRelat(obj,tipo='analise'){
         if(data.id_emp != lastEmp){
             lastEmp = data.id_emp
             if(i!= 1){
-                postTable()
+                postTable()                
             }         
             postCli(data)
         }
 
-        if(tipo == 'analise'){
+        if(main_data.anafrota.data.tipo == 'analise'){
             tbl_body.push([data.num_carro,dataBR(data.data_analise),data.exec=='1'?'SIM':'NÃO',viewMoneyBR(parseFloat(data.valor).toFixed(2))])            
         }else{
             tbl_body.push([data.num_carro,data.local,data.obs])
@@ -373,7 +373,7 @@ function anaFrotaRelat(obj,tipo='analise'){
 
     postTable()
     addLine()
-    if(tipo == 'analise'){
+    if(main_data.anafrota.data.tipo == 'analise'){
         doc.setFontSize(11)
         doc.setFont(undefined, 'bold')
         right_text('Total '+ viewMoneyBR(total.toFixed(2)),17)
@@ -381,17 +381,21 @@ function anaFrotaRelat(obj,tipo='analise'){
         doc.setFontSize(10)
         addLine()
     }else{
+
+        doc.setTextColor(main_data.anafrota.data.cor); 
+        
+        doc.setFont(undefined, 'bold')
         if(main_data.anafrota.data.desc > 0){
-            addLine()
+            doc.setFontSize(11)
             right_text('Desconto: '+ viewMoneyBR(main_data.anafrota.data.desc.toFixed(2)),17)
             addLine(0.4)
             line(txt.y,'h',150,15)
             addLine()            
             right_text('Total '+ viewMoneyBR((total-main_data.anafrota.data.desc).toFixed(2)),17)
-        }
-        doc.setTextColor(main_data.anafrota.data.cor); 
-        doc.setFontSize(8)
-        doc.setFont(undefined, 'bold')
+            addLine(2) 
+        } 
+        addLine()
+        doc.setFontSize(8)       
         center_text('Lembrando que até a data da execução poderá haver acrécimos de serviço')
         addLine(0.3)
         center_text('Recomenda-se corrigir os problemas o mais rápido possível')

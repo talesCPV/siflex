@@ -102,6 +102,12 @@
             ON PROD.id = IC.id_prod
             AND id_ent="x00";',
          "44" => 'UPDATE tb_entrada SET path="x01" WHERE id=x00;',
+         "45" => 'DELETE FROM tb_entrada WHERE id="x00" AND (SELECT U.class FROM tb_usuario AS U WHERE hash="x01") IN (10,4); ',
+         "46" => 'INSERT INTO tb_item_compra (id, id_prod, id_ent, qtd, preco)
+            VALUES (x00,"x01","x02","x03","x04") ON DUPLICATE KEY UPDATE
+            id_prod="x01", id_ent="x02", qtd="x03", preco="x04";',
+         "47" => 'DELETE FROM tb_item_compra WHERE y00="x00" AND (SELECT U.class FROM tb_usuario AS U WHERE hash="x01") IN (10,4);',
+
             
       );
 

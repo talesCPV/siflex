@@ -50,11 +50,15 @@
         upload.then(function (resolve){
             if(resolve != '0'){
                 console.log(resolve) 
-                const myPromisse = queryDB(main_data.uploadFile.data.params,main_data.uploadFile.data.query);
-                myPromisse.then((resolve)=>{
-                    document.querySelector('#btnBusca').click()
-                    closeModal('uploadFile')
-                })
+                if(main_data.uploadFile.data.hasOwnProperty('func')){
+                    main_data.uploadFile.data.func(resolve)
+                }else{
+                    const myPromisse = queryDB(main_data.uploadFile.data.params,main_data.uploadFile.data.query);
+                    myPromisse.then((resolve)=>{
+                        document.querySelector('#btnBusca').click()
+                        closeModal('uploadFile')
+                    })
+                }
             }
         })
     })
