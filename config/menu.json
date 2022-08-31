@@ -169,7 +169,7 @@
 				{
 					"modulo" : "Compras",
 					"script" : "javascript:openHTML('compras.html','content-screen','NF de Compra')",
-					"access" : [10],
+					"access" : [10,4],
 					"class"  : "",
 					"icone"  : "fa fa-archive",
 					"itens"  : []
