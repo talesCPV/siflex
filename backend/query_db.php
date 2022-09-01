@@ -110,6 +110,18 @@
          "48" => 'UPDATE tb_entrada SET status="x02" WHERE id=x00 AND (SELECT U.class FROM tb_usuario AS U WHERE hash="x01") IN (10,4);',
          "49" => 'UPDATE tb_produto as prod INNER JOIN tb_item_compra as item 
             SET prod.estoque = (prod.estoque + item.qtd), prod.preco_comp = item.preco WHERE prod.id=item.id_prod AND item.id_ent = "x00";',
+         "50" => 'INSERT INTO tb_serv_exec (id, id_emp, data_exec, num_carro, func, obs, nf, pedido, valor) 
+            VALUES (x00,"x01","x02","x03","x04","x05","x06","x07","x08") ON DUPLICATE KEY
+            UPDATE id_emp="x01" ,data_exec="x02" ,num_carro="x03" ,func="x04" ,obs="x05" ,nf="x06" ,pedido="x07" ,valor="x08";',
+         "51" => 'DELETE FROM tb_serv_exec WHERE id="x00" AND (SELECT U.class FROM tb_usuario AS U WHERE hash="x01") IN (10,4);',
+         "52" => 'SELECT SERV.*, EMP.fantasia, EMP.id AS id_emp , EMP.cnpj, EMP.endereco, EMP.num, EMP.estado, EMP.cidade, EMP.ie
+            FROM tb_serv_exec as SERV
+            INNER JOIN tb_empresa as EMP
+            ON SERV.id_emp = EMP.id
+            AND x00 x01 x02
+            AND SERV.data_exec >= "x03" 
+            AND SERV.data_exec <= "x04"
+            ORDER BY SERV.data_exec DESC;',
 
 
             

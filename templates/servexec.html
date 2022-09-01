@@ -16,24 +16,21 @@
     </style>
 
     <div class="form-base">
-        <h1>Análise de Frota</h1>
+        <h1>Serviços Executados</h1>
 
         <fieldset>
             <legend>Busca Por:</legend>
             <div class="inline">
                 <select id="cmbBusca">
-                    <option value="true" signal="="  val="true">Todos</option>
-                    <option value="E.nome" signal="LIKE">Cliente</option>
-                    <option value="E.id" signal="=">Código do Cliente</option>
-                    <option value="A.num_carro" signal="LIKE">Num. do Carro</option>
-                    <option value="A.id" signal="IN">Cod.</option>
+                    <option value="true"   signal="="  val="true">Todos</option>
+                    <option value="EMP.fantasia" signal="LIKE">Cliente</option>
+                    <option value="EMP.id" signal="=">Código do Cliente</option>
+                    <option value="SERV.num_carro" signal="LIKE">Num. do Carro</option>
+                    <option value="SERV.nf" signal="IN">NF</option>
+                    <option value="SERV.pedido" signal="IN">Pedido</option>
+                    <option value="SERV.id" signal="IN">Cod. Serv. Executado</option>
                 </select>
                 <input type="text" id="edtBusca"placeholder="Digite sua Busca" onkeypress="return getEnter(event, 'btnBusca')">
-                <select id="cmbExec">
-                    <option value="1">Todos</option>
-                    <option value="2">Executados</option>
-                    <option value="3" selected>Não Executados</option>
-                </select>
                 <button id="btnBusca">Busca</button>
             </div>
             <div class="inline center-itens">
@@ -45,16 +42,15 @@
                 <input type="date" id="edtFin" onkeypress="return getEnter(event, 'btnBusca')">
             </div>
 
-
         </fieldset>
 
-        <table id="tblAnaFrota"></table>
+        <table id="tblServExec"></table>
 
         <fieldset id="fdsRelat">
             <legend>Relatórios</legend>
             <div class="inline">
                 <label for="edtTitle">Título</label>
-                <input type="text" id="edtTitle" placeholder="Título do relatório" value="Análise de Frota">
+                <input type="text" id="edtTitle" placeholder="Título do relatório" value="Serviços Executados">
                 <label for="edtFont">Fonte</label>
                 <input type="text" id="edtFont" class="mob-wide" onkeyup="return valFloat(this,0)" value="11" style="width: 80px;">
                 <label for="edtCor">Cor</label>
@@ -81,11 +77,6 @@
 </template>
 <script>
     
-    getConfig('config').then((txt)=>{    
-        const json =  JSON.parse(txt)
-        document.querySelector('#edtObs').value = json.ana_frota
-    })
-
     document.querySelector('#edtIni').value = today.iniMonth()
     document.querySelector('#edtFin').value = today.finMonth()
 
@@ -98,7 +89,7 @@
         let value = sel.options[sel.selectedIndex].hasAttribute('val') ? sel.options[sel.selectedIndex].getAttribute('val') : document.querySelector('#edtBusca').value.trim()
         value = signal=='LIKE' ? `"%${value}%"` : signal=='IN' ? `(${value})` : sel.value=='true'? sel.value : `"${value}"`
 
-        const tbl = document.getElementById('tblAnaFrota')
+        const tbl = document.getElementById('tblServExec')
         const params = new Object;
             params.field = field
             params.signal = signal
@@ -106,41 +97,41 @@
             params.ini = ckb ? document.querySelector('#edtIni').value : '2000-01-01';
             params.fin = ckb ? document.querySelector('#edtFin').value : '2100-12-31';
 
-        const myPromisse = queryDB(params,18);
+        const myPromisse = queryDB(params,52);
 
         myPromisse.then((resolve)=>{
             if(resolve.trim() != ""){
                 const json = JSON.parse(resolve);                
                 document.querySelector('#fdsRelat').style.display = json.length > 0 ? 'block' : 'none'
-                tbl.head('Cod.|mobHide,Cliente,Carro,Visita.,Exec.|mobHide,Valor R$|mobHide')                                             
+                tbl.head('Cod.|mobHide,Cliente,Carro,Data|mobHide,NF|mobHide,Valor R$|mobHide')                                             
                 for(let i=0; i<json.length;i++){
-                    tbl.plot(json[i],'id|mobHide,fantasia,num_carro,data_analise,exec|mobHide,valor|mobHide','int,Upp,str,date,change 0=NÃO 1=SIM .=,R$.')
+                    tbl.plot(json[i],'id|mobHide,fantasia,num_carro,data_exec,nf|mobHide,valor|mobHide','int,Upp,str,date,str,R$.')
                 }                               
             }        
         })
     })
 
-    document.querySelector('#tblAnaFrota').addEventListener('click',(e)=>{
+    document.querySelector('#tblServExec').addEventListener('click',(e)=>{
         data = e.target.parentNode.data
         data.mode = 'edit'
-        openHTML('viewAnaFrota.html','pop-up','Editar Análise de Frota',data)
+        openHTML('viewServExec.html','pop-up','Editar Serviço Executado',data)
 
     })
 
     document.querySelector('#btnRelat').addEventListener('click',()=>{
-        main_data.anafrota.data = new Object
-        main_data.anafrota.data.desc = parseFloat(document.querySelector('#edtDesc').value)
-        main_data.anafrota.data.cor = document.querySelector('#edtCor').value
-        main_data.anafrota.data.fontsize = parseFloat(document.querySelector('#edtFont').value)
-        carrosRelat(document.getElementById('tblAnaFrota'),'AnaFrota' )
+        main_data.servexec.data = new Object
+        main_data.servexec.data.desc = parseFloat(document.querySelector('#edtDesc').value)
+        main_data.servexec.data.cor = document.querySelector('#edtCor').value
+        main_data.servexec.data.fontsize = parseFloat(document.querySelector('#edtFont').value)
+        carrosRelat(document.getElementById('tblServExec'),'ServExec')
     })
 
     document.querySelector('#btnOrc').addEventListener('click',()=>{
-        main_data.anafrota.data = new Object
-        main_data.anafrota.data.desc = parseFloat(document.querySelector('#edtDesc').value)
-        main_data.anafrota.data.cor = document.querySelector('#edtCor').value
-        main_data.anafrota.data.fontsize = parseFloat(document.querySelector('#edtFont').value)
-        carrosRelat(document.getElementById('tblAnaFrota'), 'AnaFrotaOrc')
+        main_data.servexec.data = new Object
+        main_data.servexec.data.desc = parseFloat(document.querySelector('#edtDesc').value)
+        main_data.servexec.data.cor = document.querySelector('#edtCor').value
+        main_data.servexec.data.fontsize = parseFloat(document.querySelector('#edtFont').value)
+        carrosRelat(document.getElementById('tblServExec'),'ServOrc')
     })
 
 

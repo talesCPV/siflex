@@ -249,9 +249,12 @@ function print_pcp(tbl){
     doc.save('pcp.pdf')
 }
 
-function anaFrotaRelat(obj){
-    
+function carrosRelat(obj, origem='AnaFrota'){
+    let color = [0,0,0]
+    let fontSize = 11
+    let desc = 0
     function postCli(data){
+console.log(data)        
         doc.setFontSize(11)
         doc.setFont(undefined, 'bold')
         doc.text('Cliente:' + data.fantasia.trim().toUpperCase() ,15,txt.y)
@@ -262,10 +265,19 @@ function anaFrotaRelat(obj){
         data.endereco.trim() != '' ? doc.text('End. '+ data.endereco.trim().toUpperCase()+','+data.num.trim(),15,txt.y) :0
         data.cidade.trim()!= '' ? doc.text(data.cidade.trim().toUpperCase()+'-'+data.estado,130,txt.y) :0    
         addLine()
-        doc.text('Data da Avaliação:'+ dataBR(data.data_analise),15,txt.y)
+        if(['AnaFrota','AnaFrotaOrc'].includes(origem)){
+            doc.text('Data da Avaliação:'+ dataBR(data.data_analise),15,txt.y)
+            color = main_data.anafrota.data.cor
+            desc = main_data.anafrota.data.desc
+            doc.setTextColor(color); 
+        }else{
+            doc.text('Data da Execução:'+ dataBR(data.data_exec),15,txt.y)
+            color = main_data.servexec.data.cor
+            desc = main_data.servexec.data.desc
+            doc.setTextColor(color); 
+        }
         addLine()
         //  TEXTO DE OBS
-        doc.setTextColor(main_data.anafrota.data.cor); 
         if(document.querySelector('#edtObs').value.trim() != ''){
             addLine()
             doc.setFontSize(8)
@@ -290,14 +302,26 @@ function anaFrotaRelat(obj){
         let head
         let colspan
         let celWidth
-        if( main_data.anafrota.data.tipo == 'analise'){
+        if(origem == 'AnaFrota'){
             head =  [["Carro","Análise", "Exec.",'Valor']]
             colspan = 3
             celWidth = 20
-        }else{
+            fontSize = main_data.anafrota.data.fontsize
+        }else if(origem == 'AnaFrotaOrc'){
             head =  [["Carro","Local", "Serviço a ser Executado"]]
             colspan = 2
             celWidth = 100
+            fontSize = main_data.anafrota.data.fontsize
+        }else if(origem == 'ServExec'){
+            head =  [["Carro","Pedido", "NF.",'Valor']]
+            colspan = 3
+            celWidth = 20
+            fontSize = main_data.servexec.data.fontsize
+        }else{
+            head =  [["Carro","NF","Pedido","Serviço Executado"]]
+            colspan = 3
+            celWidth = 20
+            fontSize = main_data.servexec.data.fontsize
         }
 
         pushTot(qtd+' carros','Total '+viewMoneyBR(subTot.toFixed(2)))
@@ -307,11 +331,11 @@ function anaFrotaRelat(obj){
             head: head,
             body: tbl_body,
             columnStyles: {
-                0: {cellWidth: 15},
-                1: {cellWidth: 20},
-                2: {cellWidth: celWidth}
+                0: {cellWidth: fontSize+10},
+                1: {cellWidth: fontSize+15},
+                2: {cellWidth: fontSize+celWidth}
             },
-            styles :{fontSize: main_data.anafrota.data.fontsize},
+            styles :{fontSize: fontSize},
             startY: txt.y
         });
 
@@ -360,12 +384,18 @@ function anaFrotaRelat(obj){
             postCli(data)
         }
 
-        if(main_data.anafrota.data.tipo == 'analise'){
-            tbl_body.push([data.num_carro,dataBR(data.data_analise),data.exec=='1'?'SIM':'NÃO',viewMoneyBR(parseFloat(data.valor).toFixed(2))])            
-        }else{
+        if(origem == 'AnaFrota'){
+            tbl_body.push([data.num_carro,dataBR(data.data_analise),data.exec=='1'?'SIM':'NÃO',viewMoneyBR(parseFloat(data.valor).toFixed(2))]) 
+        }else if(origem == 'AnaFrotaOrc'){
             tbl_body.push([data.num_carro,data.local,data.obs])
             tbl_body.push(['','','Valor: '+viewMoneyBR(parseFloat(data.valor).toFixed(2))])
-            tbl_body.push(['','',''])            
+            tbl_body.push(['','',''])
+        }else if(origem == 'ServExec'){
+            tbl_body.push([data.num_carro,data.pedido,data.nf,viewMoneyBR(parseFloat(data.valor).toFixed(2))]) 
+        }else{
+            tbl_body.push([data.num_carro,data.nf,data.pedido,data.obs])
+            tbl_body.push(['','','','Valor: '+viewMoneyBR(parseFloat(data.valor).toFixed(2))])
+            tbl_body.push(['','','',''])
         }
         qtd++
         subTot += parseFloat(data.valor)
@@ -373,27 +403,19 @@ function anaFrotaRelat(obj){
 
     postTable()
     addLine()
-    if(main_data.anafrota.data.tipo == 'analise'){
+    doc.setFont(undefined, 'bold')
+    if(desc > 0){
         doc.setFontSize(11)
-        doc.setFont(undefined, 'bold')
-        right_text('Total '+ viewMoneyBR(total.toFixed(2)),17)
-        doc.setFont(undefined, 'normal')
-        doc.setFontSize(10)
-        addLine()
-    }else{
+        right_text('Desconto: '+ viewMoneyBR(desc.toFixed(2)),17)
+        addLine(0.4)
+        line(txt.y,'h',150,15)
+        addLine()            
+        right_text('Total '+ viewMoneyBR((total-desc).toFixed(2)),17)
+        addLine(2) 
+    } 
 
-        doc.setTextColor(main_data.anafrota.data.cor); 
-        
-        doc.setFont(undefined, 'bold')
-        if(main_data.anafrota.data.desc > 0){
-            doc.setFontSize(11)
-            right_text('Desconto: '+ viewMoneyBR(main_data.anafrota.data.desc.toFixed(2)),17)
-            addLine(0.4)
-            line(txt.y,'h',150,15)
-            addLine()            
-            right_text('Total '+ viewMoneyBR((total-main_data.anafrota.data.desc).toFixed(2)),17)
-            addLine(2) 
-        } 
+    if(['AnaFrotaOrc','ServOrc'].includes(origem)){
+        doc.setTextColor(color); 
         addLine()
         doc.setFontSize(8)       
         center_text('Lembrando que até a data da execução poderá haver acrécimos de serviço')

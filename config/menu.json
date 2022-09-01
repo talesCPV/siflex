@@ -89,7 +89,32 @@
 							"itens"  : []
 						}
 					]
-				}				
+				},
+				{
+					"modulo" : "Serv. Executados",
+					"script" : "#",
+					"access" : [10,4],
+					"class"  : "",
+					"icone"  : "fa fa-industry",
+					"itens"  : [
+						{
+							"modulo" : "Pesquisa",
+							"script" : "javascript:openHTML('servexec.html','content-screen','CADASTRO',0)",
+							"access" : [10,4],
+							"class"  : "",
+							"icone"  : "fa fa-archive",
+							"itens"  : []
+						},
+						{
+							"modulo" : "Novo",
+							"script" : "javascript:openHTML('viewServExec.html','pop-up','Serviços Executados','new')",
+							"access" : [10,4],
+							"class"  : "",
+							"icone"  : "fa fa-archive",
+							"itens"  : []
+						}
+					]
+				}							
 			]
 		},		
 
@@ -116,21 +141,21 @@
 					"icone"  : "fa fa-cogs",
 					"itens"  : [
 						{
-							"modulo" : "Análise",
-							"script" : "javascript:openHTML('financeiro.html','content-screen','CADASTRO',0)",
-							"access" : [10,4],
-							"class"  : "",
-							"icone"  : "fa fa-archive",
-							"itens"  : []
-						},							
-						{
 							"modulo" : "Lançamentos",
 							"script" : "javascript:openHTML('viewFinan.html','pop-up','Financeiro','new')",
 							"access" : [10,4],
 							"class"  : "",
 							"icone"  : "fa fa-archive",
 							"itens"  : []
-						}		
+						},
+						{
+							"modulo" : "Análise",
+							"script" : "javascript:openHTML('financeiro.html','content-screen','CADASTRO',0)",
+							"access" : [10,4],
+							"class"  : "",
+							"icone"  : "fa fa-archive",
+							"itens"  : []
+						}
 					]
 				},				
 				{
