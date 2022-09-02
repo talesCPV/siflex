@@ -127,11 +127,11 @@
             VALUES (x00,"x01","x02","x03","x04") ON DUPLICATE KEY
             UPDATE cargo="x01",tipo="x02",cbo="x03",salario="x04";',
          "55" => 'DELETE FROM tb_cargos WHERE id="x00" AND (SELECT U.class FROM tb_usuario AS U WHERE hash="x01") IN (10,4);',
-         "56" => 'SELECT FUNC.*, CAR.cargo, CAR.salario, CAR.tipo FROM tb_funcionarios AS FUNC
+         "56" => 'SELECT FUNC.*, CAR.cargo, CAR.salario, CAR.tipo FROM tb_funcionario AS FUNC
             INNER JOIN tb_cargos AS CAR
             ON FUNC.id_cargo = CAR.id
             AND x00 x01 x02
-            AND (SELECT U.class FROM tb_usuario AS U WHERE hash="x03") IN (10,4) ORDER BY nome',
+            AND (SELECT U.class FROM tb_usuario AS U WHERE hash="x03") IN (10,4) ORDER BY nome;',
             
       );
 
