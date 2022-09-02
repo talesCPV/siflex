@@ -36,6 +36,10 @@ function checkRepass(fields){
     return true
 }
 
+function valInt(edt){
+    edt.value = getNum(edt.value)
+}
+
 function valFloat(edt,dec=2){
     edt.value = getFloat(edt.value,dec)
 }

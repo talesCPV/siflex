@@ -1,0 +1,49 @@
+
+<template>
+    <style>
+        #btnNovo{
+            width: 98%;
+        }
+    </style>
+
+    <div class="form-base">
+        <h1>Cargos e Funções</h1>
+        <button id="btnNovo">Novo</button>
+        <table id="tblCargos"></table>
+    </div>
+
+</template>
+<script>
+   
+
+     main_data.cargos.data = new Object    
+     main_data.cargos.data.query = function(){
+        const tbl = document.querySelector('#tblCargos')
+        const params = new Object;
+            params.hash = localStorage.getItem('hash')
+
+        const myPromisse = queryDB(params,53);
+        myPromisse.then((resolve)=>{
+            const json = JSON.parse(resolve)
+            tbl.head('Cargo,CBO|mobHide,Tipo|mobHide,Salário R$')                                             
+            for(let i=0; i<json.length;i++){
+                tbl.plot(json[i],'cargo,cbo|mobHide,tipo|mobHide,salario','Upp,str,change HORA=HORISTA MENSAL=MENSALISTA .=*,R$.')
+            }          
+        })
+    }
+
+    main_data.cargos.data.query()
+
+    document.querySelector('#tblCargos').addEventListener('click',(e)=>{
+        data = e.target.parentNode.data
+        data.callby = 'edit'
+        openHTML('viewCargo.html','pop-up','Cargos e Funções',data)
+    })
+
+    document.querySelector('#btnNovo').addEventListener('click',()=>{
+        const data = new Object
+        data.callby = 'new'
+        openHTML('viewCargo.html','pop-up','Cargos e Funções',data)
+    })
+
+</script>

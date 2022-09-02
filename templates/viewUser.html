@@ -89,18 +89,17 @@
                 params.email = document.querySelector('#edtEmail').value.trim()
                 params.cel = document.querySelector('#edtCel').value.trim()
             
-                const myPromisse = queryDB(params,2);
+            const myPromisse = queryDB(params,2);
 
-                myPromisse.then((resolve)=>{
-                    closeModal('viewUser')
-                    if(main_data.viewUser.data.mode != 'user'){
-                        openHTML('usuarios.html','pop-up','Cadastro de Usuários')
-                    }else{
-                        localStorage.clear();
-                        window.location.reload(true);
-                    }
-                })
-
+            myPromisse.then((resolve)=>{
+                closeModal('viewUser')
+                if(main_data.viewUser.data.mode != 'user'){
+                    openHTML('usuarios.html','pop-up','Cadastro de Usuários')
+                }else{
+                    localStorage.clear();
+                    window.location.reload(true);
+                }
+            })
         }   
              
     })

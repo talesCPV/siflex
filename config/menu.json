@@ -208,7 +208,32 @@
 					"itens"  : []
 				}				
 			]
-		},		
+		},	
+		{
+			"modulo" : "RH",
+			"script" : "#",
+			"access" : [10],
+			"class"  : "",
+			"icone"  : "fa fa-cogs",
+			"itens"  : [
+				{
+					"modulo" : "Cargos e Funções",
+					"script" : "javascript:openHTML('cargos.html','content-screen','Cargos e Funções')",
+					"access" : [10],
+					"class"  : "",
+					"icone"  : "fa fa-archive",
+					"itens"  : []
+				},
+				{
+					"modulo" : "Funcionários",
+					"script" : "javascript:openHTML('funcionarios.html','content-screen','Cargos e Funções')",
+					"access" : [10],
+					"class"  : "",
+					"icone"  : "fa fa-archive",
+					"itens"  : []
+				}				
+			]
+		},				
 		{
 			"modulo" : "Logout",
 			"script" : "javascript:localStorage.clear();this.location.reload(true);",
