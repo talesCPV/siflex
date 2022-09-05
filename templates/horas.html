@@ -75,8 +75,7 @@
         today.change(-1)
     }
 
-    function somaHora(ent,sai){
-        
+    function somaHora(ent,sai){        
         let H = 0
         let M = 0
         let ini_H = parseInt(ent.substring(0,2))
@@ -85,9 +84,9 @@
         let fin_M = parseInt(sai.substring(3,5))
 
         while(ini_H != fin_H){
-            ini_H++
             H++
-            ini_H = ini_H>=23 ? 0 : ini_H
+            ini_H++
+            ini_H = ini_H>=24 ? 0 : ini_H
         }
 
         while(ini_M != fin_M){
@@ -121,10 +120,18 @@
             }
         }
 // cabeçalho
+        funcionarios = []
         const tbl = ['<tr><th colspan="2"></th>','<tr><th colspan="2">DATA</th>'] 
         for(let i=0; i<func.length; i++){
             tbl[0] += `<th colspan="2">${func[i].nome.split(' ')[0]}</th>`
             tbl[1] += '<th>Ent.</th><th>Sai.</th>'
+            const f = new Object
+                f.id = func[i].id
+                f.nome = func[i].nome.split(' ')[0]
+                f.horas = 0
+                f.he = 0
+                f.ad_nt = 0
+            funcionarios.push(f)
         }
 // dias funcionarios
         while(date <= date_fin){ 
