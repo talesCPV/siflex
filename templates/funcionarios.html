@@ -56,6 +56,8 @@
             params.signal = signal
             params.value = value        
             params.hash = localStorage.getItem('hash')
+            params.field_2 = 1
+            params.value_2 = 1
 
         const myPromisse = queryDB(params,56);
         myPromisse.then((resolve)=>{
@@ -72,13 +74,13 @@
     document.querySelector('#tblFunc').addEventListener('click',(e)=>{
         data = e.target.parentNode.data
         data.callby = 'edit'
-        openHTML('viewCargo.html','pop-up','Cargos e Funções',data)
+        openHTML('viewFunc.html','pop-up','Dados do Funcionário',data)
     })
 
     document.querySelector('#btnNovo').addEventListener('click',()=>{
         const data = new Object
         data.callby = 'new'
-        openHTML('viewCargo.html','pop-up','Cargos e Funções',data)
+        openHTML('viewFunc.html','pop-up','Cadastro de Funcionário',data)
     })
 
 </script>

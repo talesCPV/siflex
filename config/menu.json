@@ -212,14 +212,14 @@
 		{
 			"modulo" : "RH",
 			"script" : "#",
-			"access" : [10],
+			"access" : [10,4,1],
 			"class"  : "",
 			"icone"  : "fa fa-cogs",
 			"itens"  : [
 				{
 					"modulo" : "Cargos e Funções",
 					"script" : "javascript:openHTML('cargos.html','content-screen','Cargos e Funções')",
-					"access" : [10],
+					"access" : [10,4,1],
 					"class"  : "",
 					"icone"  : "fa fa-archive",
 					"itens"  : []
@@ -227,7 +227,23 @@
 				{
 					"modulo" : "Funcionários",
 					"script" : "javascript:openHTML('funcionarios.html','content-screen','Cargos e Funções')",
-					"access" : [10],
+					"access" : [10,4,1],
+					"class"  : "",
+					"icone"  : "fa fa-archive",
+					"itens"  : []
+				},
+				{
+					"modulo" : "Feriados",
+					"script" : "javascript:openHTML('feriados.html','content-screen','Cargos e Funções')",
+					"access" : [10,4,1],
+					"class"  : "",
+					"icone"  : "fa fa-archive",
+					"itens"  : []
+				},				
+				{
+					"modulo" : "Horas",
+					"script" : "javascript:openHTML('horas.html','content-screen','Horas')",
+					"access" : [10,4,1],
 					"class"  : "",
 					"icone"  : "fa fa-archive",
 					"itens"  : []

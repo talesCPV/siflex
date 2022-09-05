@@ -45,29 +45,19 @@ function valFloat(edt,dec=2){
 }
 
 function valCPF(edt){
-    const ok_chr = ['1','2','3','4','5','6','7','8','9','0'];
-    var num = edt.value;
-    var count = 0;
-    var out = '';
-
-    for(i=0;i<num.length;i++){
-        chr = num[i]
-        if(ok_chr.includes(chr)){
-            count++;
-            if(count == 4 || count == 7){
-                out += '.' ;
-            }else if(count == 10){
-                out += '-' ;
-            }
-            out += chr;	
-        }
-		
-    }
-    edt.value = out;
+    edt.value = getCPF(getNum(edt.value))
 }
 
 function valCEP(edt){
     edt.value = getCEP(getNum(edt.value))
+}
+
+function valPIS(edt){
+    edt.value = getPIS(getNum(edt.value))
+}
+
+function valRG(edt){
+    edt.value = getRG(getNum(edt.value))
 }
 
 function valCNPJ(edt){
@@ -106,6 +96,54 @@ function getNum(V){
     for(let i=0; i< V.length; i++){
         if(ok_chr.includes(V[i])){
             out+=V[i]
+        }
+    }
+    return out
+}
+
+function getPIS(V){
+    const ok_chr = ['1','2','3','4','5','6','7','8','9','0'];
+    let out = ''
+    for(let i=0; i< V.length; i++){
+        if(ok_chr.includes(V[i])){
+            if(i==3 || i==8){
+                out+='.'
+            }else if(i==10){
+                out+='-'
+            }
+            out+=V[i]            
+        }
+    }
+    return out
+}
+
+function getCPF(V){
+    const ok_chr = ['1','2','3','4','5','6','7','8','9','0'];
+    let out = ''
+    for(let i=0; i< V.length; i++){
+        if(ok_chr.includes(V[i])){
+            if(i==3 || i==6){
+                out+='.'
+            }else if(i==9){
+                out+='-'
+            }
+            out+=V[i]            
+        }
+    }
+    return out
+}
+
+function getRG(V){
+    const ok_chr = ['1','2','3','4','5','6','7','8','9','0'];
+    let out = ''
+    for(let i=0; i< V.length; i++){
+        if(ok_chr.includes(V[i])){
+            if(i==2 || i==5){
+                out+='.'
+            }else if(i==8){
+                out+='-'
+            }
+            out+=V[i]            
         }
     }
     return out

@@ -1,0 +1,162 @@
+
+<template>
+    <style>
+        #btnDel{
+            display: none;
+        }
+    </style>
+  
+  <fieldset>
+    <legend>Dados do Funcionário</legend>
+    <div class="inline">
+        <label for="edtNome">Nome *</label>
+        <input type="text" id="edtNome" maxlength="30">
+        <div class="control-size" style="width: 40%;">
+            <label for="edtNasc">Nascimento</label>
+            <input type="date" id="edtNasc">
+        </div>
+    </div>
+    <div class="inline">
+        <label for="edtRG">RG</label>
+        <input type="text" id="edtRG" maxlength="12" onkeyup="return valRG(this)">
+        <label for="edtCPF">CPF</label>
+        <input type="text" id="edtCPF" maxlength="14" onkeyup="return valCPF(this)">
+        <label for="edtPIS">PIS</label>
+        <input type="text" id="edtPIS" maxlength="16" onkeyup="return valPIS(this)">        
+    </div>
+    <div class="inline">
+        <label for="edtEnd">Endereço</label>
+        <input type="text" id="edtEnd" maxlength="60"> 
+    </div>       
+    <div class="inline">
+        <label for="edtCidade">Cidade</label>
+        <input type="text" id="edtCidade" maxlength="30">
+        <label for="cmbEstado">Estado</label>
+        <select id="cmbEstado">
+            <option value="AC">Acre</option>
+            <option value="AL">Alagoas</option>
+            <option value="AP">Amapa</option>
+            <option value="AM">Amazonas</option>
+            <option value="BA">Bahia</option>
+            <option value="CE">Ceara</option>
+            <option value="ES">Espirito Santo</option>
+            <option value="DF">Distrito Federal</option>
+            <option value="MA">Maranhao</option>
+            <option value="MT">Mato Grosso</option>
+            <option value="MS">Mato Grosso do Sul</option>
+            <option value="MG">Minas Gerais</option>
+            <option value="PA">Para</option>
+            <option value="PB">Paraiba</option>
+            <option value="PR">Parana</option>
+            <option value="PE">Pernambuco</option>
+            <option value="PI">Piaui</option>
+            <option value="RJ">Rio de Janeiro</option>
+            <option value="RN">Rio Grande do Norte</option>
+            <option value="RS">Rio Grande do Sul</option>
+            <option value="RO">Rondonia</option>
+            <option value="RR">Roraima</option>
+            <option value="SC">Santa Catarina</option>
+            <option selected="selected" value="SP">Sao Paulo</option>
+            <option value="SE">Sergipe</option>
+            <option value="TO">Tocantins</option>              
+        </select>
+        <label for="edtCEP">CEP</label>
+        <input type="text" id="edtCEP" maxlength="10" onkeyup="return valCEP(this)">        
+    </div>
+    <div class="inline">
+        <label for="edtFone">Fone</label>
+        <input type="text" id="edtFone" maxlength="15" onkeyup="return phone(this)">
+        <label for="edtCel">Cel</label>
+        <input type="text" id="edtCel" maxlength="15" onkeyup="return phone(this)">   
+    </div>
+    <div class="inline">
+        <label for="cmbCargo">Cargo</label>
+        <select id="cmbCargo"></select>
+
+            <label for="edtAdm">Admissão</label>
+            <input type="date" id="edtAdm">        
+
+            <label for="edtStatus">Status</label>
+            <select id="edtStatus">
+                <option value="ATIVO">Ativo</option>
+                <option value="DEMIT">Demitido</option>
+            </select>            
+    
+    </div>
+    <button id="btnSalvar">Salvar</button>
+    <button id="btnDel">Deletar</button>
+  </fieldset>
+
+
+</template>
+<script>
+    console.log(main_data.viewFunc.data)
+    const params = new Object;
+            params.hash = localStorage.getItem('hash')
+    fillCombo('cmbCargo',params,53,['id','cargo'], main_data.viewFunc.data.callby == 'edit' ? main_data.viewFunc.data.id_cargo :'' )
+
+
+    if(main_data.viewFunc.data.callby == 'edit'){
+        document.querySelector('#edtNome').value = main_data.viewFunc.data.nome
+        document.querySelector('#edtNasc').value = main_data.viewFunc.data.data_nasc
+        document.querySelector('#edtRG').value = getRG(main_data.viewFunc.data.rg)
+        document.querySelector('#edtCPF').value = getCPF(main_data.viewFunc.data.cpf)
+        document.querySelector('#edtPIS').value = getPIS(main_data.viewFunc.data.pis)
+        document.querySelector('#edtEnd').value = main_data.viewFunc.data.endereco
+        document.querySelector('#edtCidade').value = main_data.viewFunc.data.cidade
+        document.querySelector('#cmbEstado').value = main_data.viewFunc.data.estado
+        document.querySelector('#edtCEP').value = main_data.viewFunc.data.cep
+        document.querySelector('#edtFone').value = main_data.viewFunc.data.tel
+        document.querySelector('#edtCel').value = main_data.viewFunc.data.cel
+        document.querySelector('#edtAdm').value = main_data.viewFunc.data.data_adm
+        document.querySelector('#edtStatus').value = main_data.viewFunc.data.status
+        document.querySelector('#btnDel').style.display = 'block'
+    }else{
+        document.querySelector('#edtNome').focus()
+        document.querySelector('#edtAdm').value = today.getFormatDate()
+    }
+
+    document.querySelector('#btnSalvar').addEventListener('click',()=>{
+        if(checkField(['edtNome'])){
+            const params = new Object;
+                params.id = main_data.viewFunc.data.callby == 'edit' ? main_data.viewFunc.data.id :'DEFAULT'
+                params.nome = document.querySelector('#edtNome').value.toUpperCase()
+                params.rg = getNum(document.querySelector('#edtRG').value)
+                params.cpf = getNum(document.querySelector('#edtCPF').value)
+                params.pis = getNum(document.querySelector('#edtPIS').value)
+                params.end = document.querySelector('#edtEnd').value.toUpperCase()
+                params.cidade = document.querySelector('#edtCidade').value.toUpperCase()
+                params.estado = document.querySelector('#cmbEstado').value
+                params.cep = document.querySelector('#edtCEP').value
+                params.data_adm = document.querySelector('#edtAdm').value
+                params.id_cargo = document.querySelector('#cmbCargo').value
+                params.tel = document.querySelector('#edtFone').value
+                params.cel = document.querySelector('#edtCel').value
+                params.status = document.querySelector('#edtStatus').value
+                params.data_nasc = document.querySelector('#edtNasc').value
+             
+            const myPromisse = queryDB(params,57);
+            myPromisse.then((resolve)=>{
+                main_data.funcionarios.data.query()
+                closeModal('viewFunc')
+            })
+        }
+    })
+
+    document.querySelector('#btnDel').addEventListener('click',()=>{
+        if (confirm('Deseja realmente deletar este Funcionário?')) {
+            
+            const params = new Object;
+                params.id = main_data.viewFunc.data.id
+                params.hash = localStorage.getItem('hash')
+
+            const myPromisse = queryDB(params,58);
+            myPromisse.then((resolve)=>{
+                main_data.funcionarios.data.query()
+                closeModal('viewFunc')               
+            })
+            
+        } 
+    })
+
+</script>

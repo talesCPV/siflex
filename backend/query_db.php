@@ -127,11 +127,31 @@
             VALUES (x00,"x01","x02","x03","x04") ON DUPLICATE KEY
             UPDATE cargo="x01",tipo="x02",cbo="x03",salario="x04";',
          "55" => 'DELETE FROM tb_cargos WHERE id="x00" AND (SELECT U.class FROM tb_usuario AS U WHERE hash="x01") IN (10,4);',
-         "56" => 'SELECT FUNC.*, CAR.cargo, CAR.salario, CAR.tipo FROM tb_funcionario AS FUNC
+         "56" => 'SELECT FUNC.*, CAR.cargo, CAR.salario, CAR.tipo, CAR.id AS id_cargo FROM tb_funcionario AS FUNC
             INNER JOIN tb_cargos AS CAR
             ON FUNC.id_cargo = CAR.id
             AND x00 x01 x02
+            AND x04 = "x05"
             AND (SELECT U.class FROM tb_usuario AS U WHERE hash="x03") IN (10,4) ORDER BY nome;',
+         "57" => 'INSERT INTO tb_funcionario (id,nome,rg,cpf,pis,endereco,cidade,estado,cep,data_adm,id_cargo,tel,cel,status,data_nasc)
+            VALUES(x00,"x01","x02","x03","x04","x05","x06","x07","x08","x09","x10","x11","x12","x13","x14")
+            ON DUPLICATE KEY UPDATE
+            nome="x01",rg="x02",cpf="x03",pis="x04",endereco="x05",cidade="x06",estado="x07",cep="x08",data_adm="x09",id_cargo="x10",tel="x11",cel="x12",status="x13",data_nasc="x14";',
+         "58" => 'DELETE FROM tb_funcionario WHERE id="x00" AND (SELECT U.class FROM tb_usuario AS U WHERE hash="x01") IN (10,4);',
+         "59" => 'SELECT HE.*, FUNC.nome, CAR.cargo, CAR.salario, CAR.tipo 
+            FROM tb_funcionario AS FUNC
+            INNER JOIN tb_cargos AS CAR
+            INNER JOIN tb_hora_extra AS HE
+            ON HE.id_func = FUNC.id
+            AND FUNC.id_cargo = CAR.id    
+            AND HE.entrada >= "x06"
+            AND HE.saida <= "x07"
+            ORDER BY HE.entrada ASC,FUNC.nome ASC;',
+         "60" => 'SELECT id, LPAD(dia,2,"0") AS dia,LPAD(mes,2,"0") AS mes, ano, nome FROM tb_feriados WHERE (SELECT U.class FROM tb_usuario AS U WHERE hash="x00") IN (10,4) ORDER BY mes,dia;',
+         "61" => 'INSERT INTO tb_feriados (id,dia,mes,ano,nome) 
+            VALUES (x00,"x01","x02","x03","x04") ON DUPLICATE KEY
+            UPDATE dia="x01",mes="x02",ano="x03",nome="x04";',
+         "62" => 'DELETE FROM tb_feriados WHERE id="x00" AND (SELECT U.class FROM tb_usuario AS U WHERE hash="x01") IN (10,4);',
             
       );
 

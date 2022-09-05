@@ -1,0 +1,63 @@
+
+<template>
+    <style>
+        #btnDel{
+            display: none;
+        }
+    </style>
+  
+  <fieldset>
+    <legend>Cadastro Feriados</legend>
+
+    <div class="inline">
+        <label for="edtData">Data *</label>
+        <input type="date" id="edtData">
+        <label for="edtDesc">Descrição *</label>
+        <input type="text" id="edtDesc">
+    </div>
+    <button id="btnSalvar">Salvar</button>
+    <button id="btnDel">Deletar</button>
+  </fieldset>
+
+
+</template>
+<script>
+    if(main_data.viewFeriado.data.callby == 'edit'){
+        document.querySelector('#edtData').value = '2000-'+ main_data.viewFeriado.data.mes.padStart(2,'0')+'-'+main_data.viewFeriado.data.dia.padStart(2,'0')
+        document.querySelector('#edtDesc').value = main_data.viewFeriado.data.nome
+        document.querySelector('#btnDel').style.display = 'block'
+    }else{
+        document.querySelector('#edtDesc').focus()
+    }
+
+    document.querySelector('#btnSalvar').addEventListener('click',()=>{
+        if(checkField(['edtData','edtDesc'])){
+            const params = new Object;
+                params.id = main_data.viewFeriado.data.callby == 'edit' ? main_data.viewFeriado.data.id :'DEFAULT'
+                params.dia = document.querySelector('#edtData').value.substring(8,10)
+                params.mes = document.querySelector('#edtData').value.substring(5,7)
+                params.ano = document.querySelector('#edtData').value.substring(0,4)
+                params.nome = document.querySelector('#edtDesc').value.toUpperCase()
+            const myPromisse = queryDB(params,61);
+            myPromisse.then((resolve)=>{
+                main_data.feriados.data.query()
+                closeModal('viewFeriado')
+            })
+        }
+    })
+
+    document.querySelector('#btnDel').addEventListener('click',()=>{
+        if (confirm('Deseja realmente deletar este feriado?')) {
+            const params = new Object;
+                params.id = main_data.viewFeriado.data.id
+                params.hash = localStorage.getItem('hash')
+
+            const myPromisse = queryDB(params,62);
+            myPromisse.then((resolve)=>{
+                main_data.feriados.data.query()
+                closeModal('viewFeriado')               
+            })
+        } 
+    })
+
+</script>

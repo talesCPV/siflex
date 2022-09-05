@@ -4,7 +4,7 @@
 var main_data = new Object
 var today = new Date()
 var meses = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro']
-
+var semana = ['Dom','Seg','Ter','Qua','Qui','Sex','Sab']
 /*  PROTOTYPES  */
 
 /*  STRING  */
@@ -141,7 +141,16 @@ HTMLTableElement.prototype.plot = function(obj, fields,type='',file=false){
                 case 'cal':
                     op = type[i].split(' ')                   
                     html = eval(op[1])
-                    break;                  
+                    break;
+                case 'con':
+                    op =   arr[0].split('#')
+                    const campo = op[0].split(' ')
+                    html = ''
+                    for(let j=0; j< campo.length; j++){
+                        html +=  obj[campo[j]] 
+                        html += j<campo.length-1 ? op[1] : ''
+                    }
+                    break;                     
                 default:
                   html = obj[arr[0]] != null ? obj[arr[0]] :''
             }            
