@@ -1,0 +1,40 @@
+
+<template>
+    <style>
+
+    </style>
+
+    <fieldset>
+        <legend id="lgdHoras"></legend>
+        <div class="inline">
+            <label for="edtEnt">Entrada</label>
+            <input type="text" id="edtEnt">
+            <input type="date" id="edtDiaEnt">
+        </div>
+        <div class="inline">
+            <label for="edtSai">Saída</label>
+            <input type="text" id="edtSai">
+            <input type="date" id="edtDiaSai">
+        </div>
+        <button id="btnSave">Salvar</button>
+        <button id="btnClear">Limpar</button>
+    </fieldset>
+
+
+
+</template>
+<script>
+
+    const data = main_data.viewHora.data
+
+    document.querySelector('#lgdHoras').innerHTML = data.nome
+    document.querySelector('#edtEnt').value = data.hora_ent
+    document.querySelector('#edtDiaEnt').value = data.data_ent
+    document.querySelector('#edtSai').value = data.hora_sai
+    document.querySelector('#edtDiaSai').value = data.data_sai
+
+
+//    console.log(main_data.viewHora.data)
+
+
+</script>

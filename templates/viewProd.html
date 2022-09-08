@@ -200,7 +200,9 @@
 
         const myPromisse = queryDB(params,12);
         myPromisse.then((resolve)=>{
-            document.querySelector('#btnBusca').click()
+            if (main_data.viewProd.data != 'new'){
+                document.querySelector('#btnBusca').click()
+            }
             closeModal('viewProd')
         })
 

@@ -4,10 +4,18 @@
         th{
             text-align: center;
         }
-        
+
+        .tr-center td{
+            text-align: center;
+        }
+
         #tblHoras tr{
             font-size: 0.8em; 
             line-height: 10px;           
+        }
+
+        #fdsResumo{
+            display: none;
         }
 
         .weekend{
@@ -23,9 +31,12 @@
         }
 
         .nowork{
-            background-color: #db6666 !important;
+            background-color: #b44040 !important;
         }
 
+        .zebra{
+            background-color: #e4e4e4 !important;
+        }
 
     </style>
 
@@ -53,12 +64,34 @@
     
         </fieldset>
         <table id="tblHoras"></table>
+        <fieldset id="fdsResumo">
+            <legend>Resumo</legend>
+            <table id="tblResumo"></table>
+        </fieldset>
     </div>
 
     
 
 </template>
 <script>
+
+    class Func {
+        constructor(){
+            this.hr = 0
+            this.he = 0
+            this.adn = 0
+            this.he_adn = 0
+            this.fal = 0
+        }
+    }
+
+    Func.prototype.add = function(obj){
+        this.hr += (obj.hr/60)
+        this.he += (obj.he/60)
+        this.adn += (obj.adn/60)
+        this.he_adn += (obj.he_adn/60)
+        this.fal += (obj.fal/60)
+    }
 
     main_data.horas.data = new Object
 
@@ -75,88 +108,142 @@
         today.change(-1)
     }
 
-    function somaHora(ent,sai){        
-        let H = 0
-        let M = 0
-        let ini_H = parseInt(ent.substring(0,2))
-        let ini_M = parseInt(ent.substring(3,5))
-        let fin_H = parseInt(sai.substring(0,2))
-        let fin_M = parseInt(sai.substring(3,5))
+    function somaHora(HF,almoco = true){
+        const func = new Func()
+        const ent = new Date(HF.entrada)
+        const cursor = new Date(HF.entrada)
+        const sai = new Date(HF.saida)
+        const normal = [0,540,540,540,540,480,0][ent.getDay()]
+        let status = 'hr'
+        
+        almoco ? cursor.addMin(60) : 0
+        
+        function change_status(){
+            const hr = cursor.getHours()
 
-        while(ini_H != fin_H){
-            H++
-            ini_H++
-            ini_H = ini_H>=24 ? 0 : ini_H
+            if((func.hr + func.adn) < normal){
+                if(hr >= 22 || (hr < 6 && (func.adn + func.he_adn) > 0)){
+                    status = 'adn'
+                }else if(hr >= 6){
+                    status = 'hr'
+                }
+            }else{
+                if(status == 'hr'){
+                    status = 'he'
+                }
+                if(hr >= 22 || (hr < 6 && (func.adn + func.he_adn) > 0)){
+                    status = 'he_adn'
+                }else if(hr >= 6){
+                    status = 'he'
+                }
+            }
+                        
         }
 
-        while(ini_M != fin_M){
-            ini_M++
-            M++
-            ini_M = ini_M>=60 ? 0 : ini_M
+        while(cursor < sai){
+            change_status()
+            cursor.addMin(5)
+            func[status]+=5
         }
-//        console.log([ini_H, fin_H, H])
-//        console.log([ini_M, fin_M, M])
-//        console.log(`${H}.${M/60}`)
-        return parseFloat(H)+parseFloat(M/60)
 
+        const tot_work = func.hr + func.adn + func.he + func.he_adn
+
+        if((tot_work) < normal){
+            func.fal = normal - tot_work
+        }
+
+        return func
     }
-
 
     function grid(){
         const func = main_data.horas.data.func
         const he = main_data.horas.data.he
+        const fer = main_data.horas.data.feriados
         const date_ini = new Date(document.querySelector('#edtIni').value)
         date_ini.change(1)
         const date_fin = new Date(document.querySelector('#edtFin').value)
         date_fin.change(1)
         const date = date_ini
+        let weekDay = getWeekDay(date)
         let he_pointer = 0
 
-        function fillBlank(D){
-            if([0,6].includes(D)){
-                return '<td>00:00</td><td>00:00</td>'
+        function getWeekDay(date){
+            let out = date.getDay()
+            const dia = date.getDate()
+            const mes = date.getMonth() +1            
+            for(let h=0; h<fer.length; h++){
+                if(dia == fer[h].dia && mes == fer[h].mes){
+                    out = 0
+                }
+            }
+            return out
+        }
+
+        function fillBlank(D,func){
+            if([0,6].includes(weekDay) || D > today){
+                return `<td data_ent="${D.getFormatDate()}" id="${func.id}" nome="${func.nome}">00:00</td><td data_sai="${D.getFormatDate()}">00:00</td>`
             }else{
-                return '<td>07:00</td><td>17:00</td>'
+                if(weekDay == 5){
+                    func.horas.hr += 8
+                    return `<td data_ent="${D.getFormatDate()}" id="${func.id}" nome="${func.nome}">07:00</td><td data_sai="${D.getFormatDate()}">16:00</td>`
+                }else{
+                    func.horas.hr += 9
+                    return `<td data_ent="${D.getFormatDate()}" id="${func.id}" nome="${func.nome}">07:00</td><td data_sai="${D.getFormatDate()}">17:00</td>`
+                }
             }
         }
-// cabeçalho
-        funcionarios = []
-        const tbl = ['<tr><th colspan="2"></th>','<tr><th colspan="2">DATA</th>'] 
+        
+        document.querySelector('#fdsResumo').style.display = func.length>0 ? 'block' : 'none'
+        const tbl_resumo = document.querySelector('#tblResumo')
+// cabeçalho        
+        const tbl = ['<tr><th colspan="2"></th>','<tr><th colspan="2">DATA</th>']
+        tbl_resumo.innerHTML = '<tr><th>Nome</th><th>Horas</th><th>Ad. Not</th><th>H. Extra</th><th>HE+ADN</th><th>Faltas</th></tr>'   
         for(let i=0; i<func.length; i++){
             tbl[0] += `<th colspan="2">${func[i].nome.split(' ')[0]}</th>`
             tbl[1] += '<th>Ent.</th><th>Sai.</th>'
-            const f = new Object
-                f.id = func[i].id
-                f.nome = func[i].nome.split(' ')[0]
-                f.horas = 0
-                f.he = 0
-                f.ad_nt = 0
-            funcionarios.push(f)
+            func[i].horas = new Func()
+            tbl_resumo.innerHTML += `<tr class="tr-center" id="resumo-${func[i].id}"><th>${func[i].nome.split(' ')[0]}</th><td></td><td></td><td></td><td></td><td></td></tr>`
         }
 // dias funcionarios
-        while(date <= date_fin){ 
-            let tr = [0,6].includes(date.getDay()) ? '<tr class="weekend">' : '<tr class="workday">'
+        while(date <= date_fin){
+            weekDay = getWeekDay(date) 
+            let tr = [0,6].includes(weekDay) ? `<tr id="${date.getFormatBR()}" class="weekend tr-center">` : [2,4].includes(date.getDay()) ? `<tr id="${date.getFormatDate()}" class="zebra tr-center">` :`<tr id="${date.getFormatDate()}" class="workday tr-center">`
                 tr += `${tr}<th>${date.getFormatBR()}</th><th>${semana[date.getDay()]}</th>`
             for(let i=0; i<func.length; i++){
                 if(he.length > 0 && he_pointer < he.length){
                     const next = new Date(he[he_pointer].entrada)
-                    if(date.getFormatDate() == next.getFormatDate() && he[he_pointer].id_func == func[i].id ){
-                        console.log(func[i].nome + ' - ' + next.getFormatBR())
+                    if(date.getFormatDate() == next.getFormatDate() && he[he_pointer].id_func == func[i].id){
+
+                        func[i].horas.add(somaHora(he[he_pointer]))
+
                         const ent = he[he_pointer].entrada.substring(11,16)
                         const sai = he[he_pointer].saida.substring(11,16)
-                        console.log(somaHora(ent,sai))
-                        tr += `<td class="workHE">${ent}</td>`
-                        tr += `<td class="workHE">${sai}</td>`
+                        if(func[i].horas.fal == 0){
+                            tr += `<td data_ent="${he[he_pointer].entrada.substring(0,10)}" id="${func[i].id}" nome="${func[i].nome}" class="workHE">${ent}</td>`
+                            tr += `<td data_sai="${he[he_pointer].saida.substring(0,10)}" class="workHE">${sai}</td>`
+                        }else{
+                            tr += `<td data_ent="${he[he_pointer].entrada.substring(0,10)}" id="${func[i].id}" nome="${func[i].nome}" class="nowork">${ent}</td>`
+                            tr += `<td data_sai="${he[he_pointer].saida.substring(0,10)}" class="nowork">${sai}</td>`
+                        }
                         he_pointer++
                     }else{
-                        tr += fillBlank(date.getDay())
+                        tr += fillBlank(date,func[i])
                     }
                 }else{
-                    tr += fillBlank(date.getDay())
+                    tr += fillBlank(date,func[i])
                 }  
             }
             tbl.push(tr)            
             date.change(1)            
+        }
+
+        for(let i=0; i<func.length; i++){
+            const row = document.querySelector('#resumo-'+func[i].id)
+            row.cells[1].innerHTML = func[i].horas.hr.toFixed(2)
+            row.cells[2].innerHTML = func[i].horas.adn.toFixed(2)
+            row.cells[3].innerHTML = func[i].horas.he.toFixed(2)
+            row.cells[4].innerHTML = func[i].horas.he_adn.toFixed(2)
+            row.cells[5].innerHTML = func[i].horas.fal.toFixed(2)         
         }
 
         document.querySelector('#tblHoras').innerHTML =''
@@ -166,8 +253,7 @@
     }
 
 
-
-    document.querySelector('#btnBusca').addEventListener('click',()=>{
+    main_data.horas.query = ()=>{
         const sel = document.querySelector('#cmbBusca')
         const field = sel.value
         const signal = sel.options[sel.selectedIndex].getAttribute('signal')
@@ -184,26 +270,54 @@
             params.field_2 = field_2
             params.value_2 = val_2
             params.ini = document.querySelector('#edtIni').value
-            params.fin = document.querySelector('#edtFin').value   
+            params.fin = document.querySelector('#edtFin').value  
 
         const myPromisse = queryDB(params,56);
-
         myPromisse.then((resolve)=>{
             if(resolve.trim() != ""){
                 main_data.horas.data.func = JSON.parse(resolve);
                 const myPromisse_2 = queryDB(params,59)
-                myPromisse_2.then((resolve_2)=>{
+                myPromisse_2.then((resolve_2)=>{                    
                     main_data.horas.data.he = JSON.parse(resolve_2)
-                    grid()
+                    const myPromisse_3 = queryDB(params,60)
+                    myPromisse_3.then((resolve_3)=>{ 
+                        main_data.horas.data.feriados = JSON.parse(resolve_3)
+                        grid()
+                    })
+
                 })                
             }        
         })
+    }
 
+
+    document.querySelector('#btnBusca').addEventListener('click',()=>{
+        main_data.horas.query()
     })
 
     document.querySelector('#tblHoras').addEventListener('click',(e)=>{
-        data = e.target.parentNode.data
-        data.mode = 'edit'
+        const cell = e.target
+        const row = cell.parentNode
+        const index = Array.prototype.indexOf.call(row.children, cell);
+        const data = new Object
+            data.data = row.id
+
+        if(index%2==0){
+            data.hora_ent = row.children[index].innerHTML
+            data.data_ent = row.children[index].getAttribute('data_ent')
+            data.hora_sai = row.children[index+1].innerHTML
+            data.data_sai = row.children[index+1].getAttribute('data_sai')
+            data.id_func = row.children[index].id
+            data.nome = row.children[index].getAttribute('nome')
+        }else{
+            data.hora_ent = row.children[index-1].innerHTML
+            data.data_ent = row.children[index-1].getAttribute('data_ent')
+            data.hora_sai = row.children[index].innerHTML
+            data.data_sai = row.children[index].getAttribute('data_sai')
+            data.id_func = row.children[index-1].id
+            data.nome = row.children[index-1].getAttribute('nome')
+        }
+//        console.log(data)
         openHTML('viewHora.html','pop-up','Relógio de Ponto',data)
     })
 

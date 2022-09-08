@@ -20,6 +20,9 @@
      main_data.feriados.data.query = function(){
         const tbl = document.querySelector('#tblFeriados')
         const params = new Object;
+            params.a = 0
+            params.b = 0
+            params.c = 0
             params.hash = localStorage.getItem('hash')
 
         const myPromisse = queryDB(params,60);

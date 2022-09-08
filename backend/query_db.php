@@ -143,11 +143,15 @@
             INNER JOIN tb_cargos AS CAR
             INNER JOIN tb_hora_extra AS HE
             ON HE.id_func = FUNC.id
-            AND FUNC.id_cargo = CAR.id    
+            AND FUNC.id_cargo = CAR.id
+            AND x00 x01 x02
+            AND x04 = "x05"
             AND HE.entrada >= "x06"
-            AND HE.saida <= "x07"
+            AND HE.entrada <= DATE_ADD("x07", INTERVAL 2 DAY)
             ORDER BY HE.entrada ASC,FUNC.nome ASC;',
-         "60" => 'SELECT id, LPAD(dia,2,"0") AS dia,LPAD(mes,2,"0") AS mes, ano, nome FROM tb_feriados WHERE (SELECT U.class FROM tb_usuario AS U WHERE hash="x00") IN (10,4) ORDER BY mes,dia;',
+         "60" => 'SELECT id, LPAD(dia,2,"0") AS dia,LPAD(mes,2,"0") AS mes, ano, nome 
+            FROM tb_feriados 
+            WHERE (SELECT U.class FROM tb_usuario AS U WHERE hash="x03") IN (10,4) ORDER BY mes,dia;',
          "61" => 'INSERT INTO tb_feriados (id,dia,mes,ano,nome) 
             VALUES (x00,"x01","x02","x03","x04") ON DUPLICATE KEY
             UPDATE dia="x01",mes="x02",ano="x03",nome="x04";',

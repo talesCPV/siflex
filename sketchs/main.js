@@ -49,6 +49,10 @@ Date.prototype.change = function(N=1){
     this.setDate(this.getDate()+N)
  }
  
+Date.prototype.addMin = function(N=1){
+    this.setTime(this.getTime() + N*60000)
+}
+
 Date.prototype.iniMonth = function(){
     const day = this.getDate() -1
     this.change(-day)
