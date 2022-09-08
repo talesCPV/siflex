@@ -34,6 +34,22 @@
     document.querySelector('#edtDiaSai').value = data.data_sai
 
 
+    document.querySelector('#btnSave').addEventListener('click',()=>{
+        if(checkField(['edtEnt','edtDiaEnt','edtSai','edtDiaSai'])){
+            const params = new Object;
+//                params.id = main_data.viewFeriado.data.callby == 'edit' ? main_data.viewFeriado.data.id :'DEFAULT'
+
+/*
+            const myPromisse = queryDB(params,61);
+            myPromisse.then((resolve)=>{
+                main_data.horas.query()
+                closeModal('viewFeriado')
+            })
+*/            
+        }        
+    })
+
+
 //    console.log(main_data.viewHora.data)
 
 
