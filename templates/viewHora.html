@@ -8,19 +8,17 @@
         <legend id="lgdHoras"></legend>
         <div class="inline">
             <label for="edtEnt">Entrada</label>
-            <input type="text" id="edtEnt">
+            <input type="text" id="edtEnt" maxlength="5" onkeyup="return valTime(this)">
             <input type="date" id="edtDiaEnt">
         </div>
         <div class="inline">
             <label for="edtSai">Saída</label>
-            <input type="text" id="edtSai">
+            <input type="text" id="edtSai" maxlength="5" onkeyup="return valTime(this)">
             <input type="date" id="edtDiaSai">
         </div>
         <button id="btnSave">Salvar</button>
         <button id="btnClear">Limpar</button>
     </fieldset>
-
-
 
 </template>
 <script>
@@ -33,24 +31,26 @@
     document.querySelector('#edtSai').value = data.hora_sai
     document.querySelector('#edtDiaSai').value = data.data_sai
 
-
     document.querySelector('#btnSave').addEventListener('click',()=>{
         if(checkField(['edtEnt','edtDiaEnt','edtSai','edtDiaSai'])){
             const params = new Object;
-//                params.id = main_data.viewFeriado.data.callby == 'edit' ? main_data.viewFeriado.data.id :'DEFAULT'
+                params.id = data.id
+                params.id_func = data.id_func
+                params.entrada = `${document.querySelector('#edtDiaEnt').value} ${document.querySelector('#edtEnt').value}:00`
+                params.saida = `${document.querySelector('#edtDiaSai').value} ${document.querySelector('#edtSai').value}:00`
+                
 
-/*
-            const myPromisse = queryDB(params,61);
+            const myPromisse = queryDB(params,64);
             myPromisse.then((resolve)=>{
                 main_data.horas.query()
                 closeModal('viewFeriado')
             })
-*/            
+                console.log(params)
+
         }        
     })
 
-
-//    console.log(main_data.viewHora.data)
+    console.log(main_data.viewHora.data)
 
 
 </script>

@@ -181,14 +181,14 @@
 
         function fillBlank(D,func){
             if([0,6].includes(weekDay) || D > today){
-                return `<td data_ent="${D.getFormatDate()}" id="${func.id}" nome="${func.nome}">00:00</td><td data_sai="${D.getFormatDate()}">00:00</td>`
+                return `<td id="DEFAULT" data_ent="${D.getFormatDate()}" id_func="${func.id}" nome="${func.nome}">00:00</td><td data_sai="${D.getFormatDate()}">00:00</td>`
             }else{
                 if(weekDay == 5){
                     func.horas.hr += 8
-                    return `<td data_ent="${D.getFormatDate()}" id="${func.id}" nome="${func.nome}">07:00</td><td data_sai="${D.getFormatDate()}">16:00</td>`
+                    return `<td id="DEFAULT" data_ent="${D.getFormatDate()}" id_func="${func.id}" nome="${func.nome}">07:00</td><td data_sai="${D.getFormatDate()}">16:00</td>`
                 }else{
                     func.horas.hr += 9
-                    return `<td data_ent="${D.getFormatDate()}" id="${func.id}" nome="${func.nome}">07:00</td><td data_sai="${D.getFormatDate()}">17:00</td>`
+                    return `<td id="DEFAULT" data_ent="${D.getFormatDate()}" id_func="${func.id}" nome="${func.nome}">07:00</td><td data_sai="${D.getFormatDate()}">17:00</td>`
                 }
             }
         }
@@ -219,10 +219,10 @@
                         const ent = he[he_pointer].entrada.substring(11,16)
                         const sai = he[he_pointer].saida.substring(11,16)
                         if(func[i].horas.fal == 0){
-                            tr += `<td data_ent="${he[he_pointer].entrada.substring(0,10)}" id="${func[i].id}" nome="${func[i].nome}" class="workHE">${ent}</td>`
+                            tr += `<td id="${he[he_pointer].id}" data_ent="${he[he_pointer].entrada.substring(0,10)}" id_func="${func[i].id}" nome="${func[i].nome}" class="workHE">${ent}</td>`
                             tr += `<td data_sai="${he[he_pointer].saida.substring(0,10)}" class="workHE">${sai}</td>`
                         }else{
-                            tr += `<td data_ent="${he[he_pointer].entrada.substring(0,10)}" id="${func[i].id}" nome="${func[i].nome}" class="nowork">${ent}</td>`
+                            tr += `<td id="${he[he_pointer].id}" data_ent="${he[he_pointer].entrada.substring(0,10)}" id_func="${func[i].id}" nome="${func[i].nome}" class="nowork">${ent}</td>`
                             tr += `<td data_sai="${he[he_pointer].saida.substring(0,10)}" class="nowork">${sai}</td>`
                         }
                         he_pointer++
@@ -307,15 +307,17 @@
             data.data_ent = row.children[index].getAttribute('data_ent')
             data.hora_sai = row.children[index+1].innerHTML
             data.data_sai = row.children[index+1].getAttribute('data_sai')
-            data.id_func = row.children[index].id
+            data.id_func = row.children[index].getAttribute('id_func')
             data.nome = row.children[index].getAttribute('nome')
+            data.id = row.children[index].id
         }else{
             data.hora_ent = row.children[index-1].innerHTML
             data.data_ent = row.children[index-1].getAttribute('data_ent')
             data.hora_sai = row.children[index].innerHTML
             data.data_sai = row.children[index].getAttribute('data_sai')
-            data.id_func = row.children[index-1].id
+            data.id_func = row.children[index-1].getAttribute('id_func')
             data.nome = row.children[index-1].getAttribute('nome')
+            data.id = row.children[index-1].id
         }
 //        console.log(data)
         openHTML('viewHora.html','pop-up','Relógio de Ponto',data)

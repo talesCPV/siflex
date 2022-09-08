@@ -156,6 +156,10 @@
             VALUES (x00,"x01","x02","x03","x04") ON DUPLICATE KEY
             UPDATE dia="x01",mes="x02",ano="x03",nome="x04";',
          "62" => 'DELETE FROM tb_feriados WHERE id="x00" AND (SELECT U.class FROM tb_usuario AS U WHERE hash="x01") IN (10,4);',
+         "63" => 'INSERT INTO tb_hora_extra (id,id_func,entrada,saida)
+            VALUES(x00,"x01","x02","x03") ON DUPLICATE KEY
+            UPDATE id_func="x01", entrada="x02", saida="x03";',
+         "64" => 'DELETE FROM tb_hora_extra WHERE id="x00" AND (SELECT U.class FROM tb_usuario AS U WHERE hash="x01") IN (10,4);',
             
       );
 
