@@ -72,6 +72,10 @@ function valTime(edt){
     edt.value = getTime(getNum(edt.value))
 }
 
+function fillTime(edt){
+    edt.value = getTime(getNum(edt.value)+'0000')
+}
+
 function getFloat(text,dec=2){
     const ok_chr = ['1','2','3','4','5','6','7','8','9','0']
     let before_dot = '0';
@@ -203,28 +207,26 @@ function getCEP(V){
 
 function getTime(V){
     let out = ''
-console.log(V)
     for(let i=0; i< V.length; i++){
-
+        let print = true
         if(i == 0){
             if(!['0','1','2'].includes(V[i])){
-                alert(i)
-                V[i] = ''
+               print = false
             }
         }else if(i==1){
             if(V[0] == 2 && !['0','1','2','3'].includes(V[i])){
-                alert(i)
-                V[i] = ''
+                print = false
             }
         }else if(i==2){
             out+=':'
             if(!['0','1','2','3','4','5'].includes(V[i])){
-                alert(i)
-                V[i] = ''
+                print = false
             }
         }
 
-        out+=V[i]            
+        print ? out+=V[i] : 0        
+        out.length>=5 ?  i = V.length : 0
+
     }
     return out
 }

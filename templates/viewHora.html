@@ -8,12 +8,12 @@
         <legend id="lgdHoras"></legend>
         <div class="inline">
             <label for="edtEnt">Entrada</label>
-            <input type="text" id="edtEnt" maxlength="5" onkeyup="return valTime(this)">
+            <input type="text" id="edtEnt" maxlength="5" onkeyup="return valTime(this)" onfocusout="return fillTime(this)">
             <input type="date" id="edtDiaEnt">
         </div>
         <div class="inline">
             <label for="edtSai">Saída</label>
-            <input type="text" id="edtSai" maxlength="5" onkeyup="return valTime(this)">
+            <input type="text" id="edtSai" maxlength="5" onkeyup="return valTime(this)" onfocusout="return fillTime(this)">
             <input type="date" id="edtDiaSai">
         </div>
         <button id="btnSave">Salvar</button>
