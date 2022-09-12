@@ -157,6 +157,10 @@
 
     @media all and (max-width : 768px) {
 
+        fieldset button {
+            width: 94%;
+        }
+
         input[type=date]{
             max-width: none;
         }

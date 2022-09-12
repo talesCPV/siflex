@@ -9,6 +9,11 @@
             text-align: center;
         }
 
+        .form-table{
+            max-width: 1200px;
+            overflow: scroll;
+        }
+
         #tblHoras tr{
             font-size: 0.8em; 
             line-height: 10px;           
@@ -19,7 +24,7 @@
         }
 
         .weekend{
-            background-color: #FAE7E8 !important;
+            background-color: #fac4c7 !important;
         }
 
         .workday{
@@ -27,11 +32,13 @@
         }
 
         .workHE{
-            background-color: #acc1f1 !important;
+            background-color: #547ee0 !important;
+            color: #e4e4e4;
         }
 
         .nowork{
             background-color: #b44040 !important;
+            color: #e4e4e4;
         }
 
         .zebra{
@@ -54,16 +61,18 @@
                     <option value="FUNC.status" signal="=" val="ATIVOS" field_2="1" val_2="1">Ativos</option>                    
                     <option value="FUNC.status" signal="=" val="DEMIT" field_2="1" val_2="1">Inativos</option>                    
                 </select>
-                <input type="text" id="edtBusca" placeholder="Digite sua busca">
+                <input type="text" id="edtBusca" placeholder="Digite sua busca" onkeypress="return getEnter(event, 'btnBusca')">
                 <button id="btnBusca">Busca</button>
             </div>
             <div class="inline center-itens">
-                <input type="date" id="edtIni">
-                <input type="date" id="edtFin">
+                <input type="date" id="edtIni" onkeypress="return getEnter(event, 'btnBusca')">
+                <input type="date" id="edtFin" onkeypress="return getEnter(event, 'btnBusca')">
             </div>
     
         </fieldset>
-        <table id="tblHoras"></table>
+        <div class="form-table">
+            <table id="tblHoras"></table>
+        </div>
         <fieldset id="fdsResumo">
             <legend>Resumo</legend>
             <table id="tblResumo"></table>
@@ -108,12 +117,12 @@
         today.change(-1)
     }
 
-    function somaHora(HF,almoco = true){
+    function somaHora(HF,weekday,almoco = true){
         const func = new Func()
         const ent = new Date(HF.entrada)
         const cursor = new Date(HF.entrada)
         const sai = new Date(HF.saida)
-        const normal = [0,540,540,540,540,480,0][ent.getDay()]
+        const normal = [0,540,540,540,540,480,0][weekday]
         let status = 'hr'
         
         almoco ? cursor.addMin(60) : 0
@@ -180,9 +189,8 @@
         }
 
         function fillBlank(D,func){
-            if([0,6].includes(weekDay) || D > today){
-                return `<td id="DEFAULT" data_ent="${D.getFormatDate()}" id_func="${func.id}" nome="${func.nome}">00:00</td><td data_sai="${D.getFormatDate()}">00:00</td>`
-            }else{
+
+            function fillWork(){
                 if(weekDay == 5){
                     func.horas.hr += 8
                     return `<td id="DEFAULT" data_ent="${D.getFormatDate()}" id_func="${func.id}" nome="${func.nome}">07:00</td><td data_sai="${D.getFormatDate()}">16:00</td>`
@@ -191,10 +199,28 @@
                     return `<td id="DEFAULT" data_ent="${D.getFormatDate()}" id_func="${func.id}" nome="${func.nome}">07:00</td><td data_sai="${D.getFormatDate()}">17:00</td>`
                 }
             }
+
+            if([0,6].includes(weekDay) || D > today){
+                return `<td id="DEFAULT" data_ent="${D.getFormatDate()}" id_func="${func.id}" nome="${func.nome}">00:00</td><td data_sai="${D.getFormatDate()}">00:00</td>`
+            }else{
+                if(func.status == "ATIVO"){
+                    return fillWork()
+                }else{
+                    const dem = new Date(func.data_dem)
+                    dem.change(1)
+                    if(D <= dem){
+                        return fillWork()
+                    }else{
+                        return `<td id="DEFAULT" data_ent="${D.getFormatDate()}" id_func="${func.id}" nome="${func.nome}">00:00</td><td data_sai="${D.getFormatDate()}">00:00</td>`
+                    }
+                }
+            }
         }
         
         document.querySelector('#fdsResumo').style.display = func.length>0 ? 'block' : 'none'
         const tbl_resumo = document.querySelector('#tblResumo')
+        tbl_resumo.data = func
+
 // cabeçalho        
         const tbl = ['<tr><th colspan="2"></th>','<tr><th colspan="2">DATA</th>']
         tbl_resumo.innerHTML = '<tr><th>Nome</th><th>Horas</th><th>Ad. Not</th><th>H. Extra</th><th>HE+ADN</th><th>Faltas</th></tr>'   
@@ -202,7 +228,14 @@
             tbl[0] += `<th colspan="2">${func[i].nome.split(' ')[0]}</th>`
             tbl[1] += '<th>Ent.</th><th>Sai.</th>'
             func[i].horas = new Func()
-            tbl_resumo.innerHTML += `<tr class="tr-center" id="resumo-${func[i].id}"><th>${func[i].nome.split(' ')[0]}</th><td></td><td></td><td></td><td></td><td></td></tr>`
+            const tr = document.createElement('tr')
+            tr.className = 'tr-center'
+            tr.id = `resumo-${func[i].id}`
+            tr.innerHTML = `<th>${func[i].nome.split(' ')[0]}</th><td></td><td></td><td></td><td></td><td></td>`
+            tr.data = func[i]
+            tr.data.data = date
+            tbl_resumo.appendChild(tr)
+//            tbl_resumo.innerHTML += `<tr class="tr-center" id="resumo-${func[i].id}"><th>${func[i].nome.split(' ')[0]}</th><td></td><td></td><td></td><td></td><td></td></tr>`
         }
 // dias funcionarios
         while(date <= date_fin){
@@ -214,11 +247,12 @@
                     const next = new Date(he[he_pointer].entrada)
                     if(date.getFormatDate() == next.getFormatDate() && he[he_pointer].id_func == func[i].id){
 
-                        func[i].horas.add(somaHora(he[he_pointer]))
+                        const dia = somaHora(he[he_pointer],weekDay)
+                        func[i].horas.add(dia)
 
                         const ent = he[he_pointer].entrada.substring(11,16)
                         const sai = he[he_pointer].saida.substring(11,16)
-                        if(func[i].horas.fal == 0){
+                        if(dia.fal == 0){
                             tr += `<td id="${he[he_pointer].id}" data_ent="${he[he_pointer].entrada.substring(0,10)}" id_func="${func[i].id}" nome="${func[i].nome}" class="workHE">${ent}</td>`
                             tr += `<td data_sai="${he[he_pointer].saida.substring(0,10)}" class="workHE">${sai}</td>`
                         }else{
@@ -292,7 +326,9 @@
 
 
     document.querySelector('#btnBusca').addEventListener('click',()=>{
-        main_data.horas.query()
+        if(checkField(['edtIni','edtFin'])){
+            main_data.horas.query()
+        }
     })
 
     document.querySelector('#tblHoras').addEventListener('click',(e)=>{
@@ -319,10 +355,23 @@
             data.nome = row.children[index-1].getAttribute('nome')
             data.id = row.children[index-1].id
         }
-//        console.log(data)
-        openHTML('viewHora.html','pop-up','Relógio de Ponto',data)
+
+        openHTML('viewHora.html','pop-up','Relógio de Ponto',data,[100,30])
     })
 
+
+
+
+    document.querySelector('#tblResumo').addEventListener('click',(e)=>{
+        const data = e.target.parentNode.data
+        data.mode = 'viewProd'
+//        console.log(data)
+
+        holerite(data)
+
+//        openHTML('viewHolerite.html','pop-up','Holerite - '+data.nome,data)
+
+    })
 
 
 

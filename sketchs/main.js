@@ -3,7 +3,7 @@
 
 var main_data = new Object
 var today = new Date()
-var meses = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro']
+var meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
 var semana = ['Dom','Seg','Ter','Qua','Qui','Sex','Sab']
 /*  PROTOTYPES  */
 

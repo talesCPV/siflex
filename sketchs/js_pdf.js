@@ -78,6 +78,12 @@ function addLine(N=1, botton=0, top=46){
     return true
 }
 
+function backLine(N=1, botton=0, top=46){
+    txt.y -= txt.lineHeigth * N
+    return true
+}
+
+
 function box(text,x,y,w,lh=0.8){
     const h = txt.lineHeigth * lh   
     text = text.trim().split('\n')
@@ -646,5 +652,88 @@ function print_cotacao(ped,itens,emp,tipo='cot'){
     }
 
     doc.save('cotacao.pdf')
+
+}
+
+function holerite(func){
+
+    function drawFrame(Y=5,mode='ADTO'){
+        const date =  meses[func.data.getMonth()-1] +'/'+ func.data.getFullYear()
+        const pageWidth = doc.internal.pageSize.getWidth()
+        txt.y = Y+5
+//        doc.rect(Y,5,doc.internal.pageSize.getWidth()-10,Y+100)        
+        logo([10,Y+5,20,5])
+        doc.setFontSize(8)
+        doc.setFont(undefined, 'bold')    
+        doc.text('Flexibus Sanfonados LTDA.',35,txt.y)
+        center_text('RECIDO DE PAGAMENTO',[165,pageWidth-5])
+        backLine()
+        addLine(0.7)
+        doc.text('Rua Dr. Rosalvo de Almeida Telles, 2070',35,txt.y)
+        doc.text('Caçapava-SP',105,txt.y)
+        center_text(mode,[165,pageWidth-5])
+        backLine()
+        addLine(0.7)
+        doc.text('00.519.547/0001-06',35,txt.y)
+        center_text(date,[165,pageWidth-5])
+        backLine(0.5)
+        line(txt.y)
+        addLine()
+        doc.text(func.nome,10,txt.y)
+        doc.text(func.cbo,105,txt.y)
+        addLine(0.7)
+        doc.text(func.cargo,10,txt.y)
+        doc.text('ADMISSÂO '+dataBR(func.data_adm),105,txt.y)
+        addLine(0.7)
+        line(txt.y)
+        addLine(0.7)
+        doc.text('Descrição',10,txt.y)
+        doc.text('Referência',90,txt.y)
+        doc.text('Vencimentos',135,txt.y)
+        doc.text('Descontos',180,txt.y)
+        addLine()
+
+
+        const sal = parseFloat(func.salario)
+        const H_normal = func.horas.hr + func.horas.adn
+        const sal_base = sal * 220
+        const sal_bruto = sal * (func.horas.hr + (func.horas.adn * 1.2) + (func.horas.he * 2) + (func.horas.he_adn * 2.2) )
+
+        const adto = (sal_base*0.4).toFixed(2)
+
+        if(mode=='ADTO'){
+            doc.text('ADIANTAMENTO SALARIAL',10,txt.y)
+            doc.text(H_normal.toFixed(2),90,txt.y)
+            doc.text(adto,135,txt.y)
+
+
+
+        }
+
+
+
+
+
+
+        doc.setFont(undefined, 'normal')
+
+    }
+
+
+    console.log(func)
+    alert(1)
+    jsPDF.autoTableSetDefaults({
+        headStyles: { fillColor: [37, 68, 65] },
+    })
+
+    doc = new jsPDF();
+
+    clearTxt(37,10,[210,297])
+
+    drawFrame()
+    drawFrame(150)
+
+    doc.save('holerite.pdf')
+
 
 }

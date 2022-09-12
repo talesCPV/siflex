@@ -71,17 +71,18 @@
     </div>
     <div class="inline">
         <label for="cmbCargo">Cargo</label>
-        <select id="cmbCargo"></select>
-
-            <label for="edtAdm">Admissão</label>
-            <input type="date" id="edtAdm">        
-
-            <label for="edtStatus">Status</label>
-            <select id="edtStatus">
-                <option value="ATIVO">Ativo</option>
-                <option value="DEMIT">Demitido</option>
-            </select>            
-    
+        <select id="cmbCargo"></select>      
+        <label for="edtStatus">Status</label>
+        <select id="edtStatus">
+            <option value="ATIVO">Ativo</option>
+            <option value="DEMIT">Demitido</option>
+        </select>            
+    </div>
+    <div class="inline">
+        <label for="edtAdm">Admissão</label>
+        <input type="date" id="edtAdm">          
+        <label for="edtDem">Desligamento</label>
+        <input type="date" id="edtDem">
     </div>
     <button id="btnSalvar">Salvar</button>
     <button id="btnDel">Deletar</button>
@@ -109,6 +110,7 @@
         document.querySelector('#edtFone').value = main_data.viewFunc.data.tel
         document.querySelector('#edtCel').value = main_data.viewFunc.data.cel
         document.querySelector('#edtAdm').value = main_data.viewFunc.data.data_adm
+        document.querySelector('#edtDem').value = main_data.viewFunc.data.data_dem
         document.querySelector('#edtStatus').value = main_data.viewFunc.data.status
         document.querySelector('#btnDel').style.display = 'block'
     }else{
@@ -134,6 +136,7 @@
                 params.cel = document.querySelector('#edtCel').value
                 params.status = document.querySelector('#edtStatus').value
                 params.data_nasc = document.querySelector('#edtNasc').value
+                params.data_dem = (document.querySelector('#edtDem').value == '' && params.status == "DEMIT") ? today.getFormatDate() : document.querySelector('#edtDem').value 
              
             const myPromisse = queryDB(params,57);
             myPromisse.then((resolve)=>{

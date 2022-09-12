@@ -136,7 +136,7 @@
 				{
 					"modulo" : "Financeiro",
 					"script" : "#",
-					"access" : [10,4],
+					"access" : [10,4,1],
 					"class"  : "",
 					"icone"  : "fa fa-cogs",
 					"itens"  : [
@@ -151,11 +151,19 @@
 						{
 							"modulo" : "Análise",
 							"script" : "javascript:openHTML('financeiro.html','content-screen','CADASTRO',0)",
-							"access" : [10,4],
+							"access" : [10,4,1],
 							"class"  : "",
 							"icone"  : "fa fa-archive",
 							"itens"  : []
-						}
+						},
+						{
+							"modulo" : "Impostos",
+							"script" : "javascript:openHTML('impostos.html','content-screen','IMPOSTOS',0)",
+							"access" : [10,4,1],
+							"class"  : "",
+							"icone"  : "fa fa-archive",
+							"itens"  : []
+						}						
 					]
 				},				
 				{

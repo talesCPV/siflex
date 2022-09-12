@@ -24,10 +24,10 @@
             ON DUPLICATE KEY UPDATE 
             descricao ="x01", estoque="x02", etq_min="x03", unidade="x04", cod="x05", cod_bar="x06", cfop="x07", id_emp="x08", ncm="x09", preco_comp="x10", margem="x11", tipo="x12", cod_cli="x13";',
          "13" => 'DELETE FROM tb_produto WHERE id="x00" AND (SELECT U.class FROM tb_usuario AS U WHERE hash="x01") IN (10,4);',
-         "14" => 'SELECT * FROM tb_pcp WHERE(SELECT U.class FROM tb_usuario AS U WHERE hash="x00") IN (10,4) AND data_serv >="x01" AND data_serv<="x02" ORDER BY data_serv;',
+         "14" => 'SELECT * FROM tb_pcp WHERE(SELECT U.class FROM tb_usuario AS U WHERE hash="x00") IN (10,4,3) AND data_serv >="x01" AND data_serv<="x02" ORDER BY data_serv;',
          "15" => 'INSERT INTO tb_pcp (id, data_serv, suporte, frente, costura, montagem) VALUES(x00,"x01","x02","x03","x04","x05")
             ON DUPLICATE KEY UPDATE suporte="x02", frente="x03", costura="x04", montagem="x05";',
-         "16" => 'DELETE FROM tb_pcp WHERE id="x00" AND (SELECT U.class FROM tb_usuario AS U WHERE hash="x01") IN (10,4);',
+         "16" => 'DELETE FROM tb_pcp WHERE id="x00" AND (SELECT U.class FROM tb_usuario AS U WHERE hash="x01") IN (10,4,3);',
          "17" => 'INSERT INTO tb_analise_frota (id, id_emp, data_analise, num_carro, func, local, valor, obs, exec) 
             VALUES ("x00","x01", "x02", "x03", "x04", "x05", "x06", "x07", "x08") ON DUPLICATE KEY UPDATE 
             id_emp="x01", data_analise="x02", num_carro="x03", func="x04", local="x05", valor="x06", obs="x07", exec="x08";',
@@ -127,16 +127,16 @@
             VALUES (x00,"x01","x02","x03","x04") ON DUPLICATE KEY
             UPDATE cargo="x01",tipo="x02",cbo="x03",salario="x04";',
          "55" => 'DELETE FROM tb_cargos WHERE id="x00" AND (SELECT U.class FROM tb_usuario AS U WHERE hash="x01") IN (10,4);',
-         "56" => 'SELECT FUNC.*, CAR.cargo, CAR.salario, CAR.tipo, CAR.id AS id_cargo FROM tb_funcionario AS FUNC
+         "56" => 'SELECT FUNC.*, CAR.cargo, CAR.salario, CAR.tipo, CAR.id AS id_cargo, CAR.cbo FROM tb_funcionario AS FUNC
             INNER JOIN tb_cargos AS CAR
             ON FUNC.id_cargo = CAR.id
             AND x00 x01 x02
             AND x04 = "x05"
-            AND (SELECT U.class FROM tb_usuario AS U WHERE hash="x03") IN (10,4) ORDER BY nome;',
-         "57" => 'INSERT INTO tb_funcionario (id,nome,rg,cpf,pis,endereco,cidade,estado,cep,data_adm,id_cargo,tel,cel,status,data_nasc)
-            VALUES(x00,"x01","x02","x03","x04","x05","x06","x07","x08","x09","x10","x11","x12","x13","x14")
+            AND (SELECT U.class FROM tb_usuario AS U WHERE hash="x03") IN (10,4,1) ORDER BY nome;',
+         "57" => 'INSERT INTO tb_funcionario (id,nome,rg,cpf,pis,endereco,cidade,estado,cep,data_adm,id_cargo,tel,cel,status,data_nasc, data_dem)
+            VALUES(x00,"x01","x02","x03","x04","x05","x06","x07","x08","x09","x10","x11","x12","x13","x14","x15")
             ON DUPLICATE KEY UPDATE
-            nome="x01",rg="x02",cpf="x03",pis="x04",endereco="x05",cidade="x06",estado="x07",cep="x08",data_adm="x09",id_cargo="x10",tel="x11",cel="x12",status="x13",data_nasc="x14";',
+            nome="x01",rg="x02",cpf="x03",pis="x04",endereco="x05",cidade="x06",estado="x07",cep="x08",data_adm="x09",id_cargo="x10",tel="x11",cel="x12",status="x13",data_nasc="x14", data_dem="x15";',
          "58" => 'DELETE FROM tb_funcionario WHERE id="x00" AND (SELECT U.class FROM tb_usuario AS U WHERE hash="x01") IN (10,4);',
          "59" => 'SELECT HE.*, FUNC.nome, CAR.cargo, CAR.salario, CAR.tipo 
             FROM tb_funcionario AS FUNC
@@ -160,6 +160,20 @@
             VALUES(x00,"x01","x02","x03") ON DUPLICATE KEY
             UPDATE id_func="x01", entrada="x02", saida="x03";',
          "64" => 'DELETE FROM tb_hora_extra WHERE id="x00" AND (SELECT U.class FROM tb_usuario AS U WHERE hash="x01") IN (10,4);',
+         "65" => 'SELECT * FROM tb_imposto WHERE (SELECT U.class FROM tb_usuario AS U WHERE hash="x00") IN (10,4,1);',
+         "66" => 'SELECT IMP.nome, ALQ.* FROM tb_imposto AS IMP
+            INNER JOIN tb_aliquota AS ALQ
+            ON ALQ.id_imp = IMP.id
+            AND IMP.id = "x00"
+            AND (SELECT U.class FROM tb_usuario AS U WHERE hash="x01") IN (10,4,1)
+            ORDER BY ALQ.ini_range ASC',
+         "67" => 'INSERT INTO tb_imposto (id,nome) VALUES (x00,"x01")
+            ON DUPLICATE KEY UPDATE nome="x01";',
+         "68" => 'INSERT INTO tb_aliquota (id,id_imp,tipo,ini_range,fin_range,valor)
+            VALUES (x00,"x01","x02","x03","x04","x05") ON DUPLICATE KEY 
+            UPDATE tipo="x02",ini_range="x03",fin_range="x04",valor="x05";',
+         "69" => 'DELETE FROM tb_aliquota WHERE y00="x00" AND (SELECT U.class FROM tb_usuario AS U WHERE hash="x01") IN (10,4,1);',
+         "70" => 'DELETE FROM tb_imposto WHERE y02="x02" AND (SELECT U.class FROM tb_usuario AS U WHERE hash="x01") IN (10,4,1);',
             
       );
 

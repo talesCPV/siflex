@@ -1,0 +1,56 @@
+
+<template>
+    <style>
+
+        #btnNovo{
+            width: 98%;
+        }
+
+    </style>
+
+    <div class="form-base">
+        <h1>Impostos</h1>
+
+        <div>
+            <table id="tblImpostos"></table>
+        </div>
+
+        <button id="btnNovo">Novo</button>
+
+    </div>
+
+
+</template>
+<script>
+
+    main_data.impostos.query = function(){
+        const tbl = document.querySelector('#tblImpostos')
+        const params = new Object;     
+            params.hash = localStorage.getItem('hash')
+
+        const myPromisse = queryDB(params,65);
+        myPromisse.then((resolve)=>{
+            const json = JSON.parse(resolve)
+            tbl.head('Cod,Nome')
+            for(let i=0; i<json.length;i++){
+                tbl.plot(json[i],'id,nome','int,Upp')
+            }          
+        })
+    }
+
+    main_data.impostos.query()
+
+    document.querySelector('#btnNovo').addEventListener('click',()=>{
+        const data = new Object
+        data.callby = 'new'
+        openHTML('viewImp.html','pop-up','Cadastro de Impostos',data)
+
+    })
+
+    document.querySelector('#tblImpostos').addEventListener('click',(e)=>{
+        data = e.target.parentNode.data
+        data.callby = 'edit'
+        openHTML('viewImp.html','pop-up','Dados do Imposto',data)
+    })
+
+</script>

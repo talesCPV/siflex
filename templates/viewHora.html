@@ -38,19 +38,30 @@
                 params.id_func = data.id_func
                 params.entrada = `${document.querySelector('#edtDiaEnt').value} ${document.querySelector('#edtEnt').value}:00`
                 params.saida = `${document.querySelector('#edtDiaSai').value} ${document.querySelector('#edtSai').value}:00`
-                
-
-            const myPromisse = queryDB(params,64);
+            
+            const myPromisse = queryDB(params,63);
             myPromisse.then((resolve)=>{
                 main_data.horas.query()
-                closeModal('viewFeriado')
-            })
-                console.log(params)
-
+                closeModal('viewHora')
+            })               
         }        
     })
 
-    console.log(main_data.viewHora.data)
+    document.querySelector('#btnClear').addEventListener('click',()=>{
+        if (confirm('Deseja realmente deletar esta hora?')) {
+            const params = new Object;
+                    params.id = data.id
+                    params.hash = localStorage.getItem('hash')
+                
+            const myPromisse = queryDB(params,64);
+            myPromisse.then((resolve)=>{
+                main_data.horas.query()
+                closeModal('viewHora')
+            })
+        }
+    })
+
+
 
 
 </script>

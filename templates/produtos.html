@@ -75,7 +75,7 @@
 
 
     document.querySelector('#tblProd').addEventListener('click',(e)=>{
-        data = e.target.parentNode.data
+        const data = e.target.parentNode.data
         data.mode = 'viewProd'
         openHTML('viewProd.html','pop-up',data.descricao+"-"+data.cod,data)
     })
