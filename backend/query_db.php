@@ -164,7 +164,7 @@
          "66" => 'SELECT IMP.nome, ALQ.* FROM tb_imposto AS IMP
             INNER JOIN tb_aliquota AS ALQ
             ON ALQ.id_imp = IMP.id
-            AND IMP.id = "x00"
+            AND IMP.id IN (x00)
             AND (SELECT U.class FROM tb_usuario AS U WHERE hash="x01") IN (10,4,1)
             ORDER BY ALQ.ini_range ASC',
          "67" => 'INSERT INTO tb_imposto (id,nome) VALUES (x00,"x01")

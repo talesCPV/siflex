@@ -63,7 +63,7 @@
     main_data.pcp.viewWeek = ()=>{
         const week = new Date(document.querySelector('#edtSem').value)
         tbl.innerHTML = ''
-        tbl.head('Dia,Equipe de Frente,Equipe de Suporte,Costura,Montagem')
+        tbl.head('DIA,EQUIPE DE FRENTE,EQUIPE DE SUPORTE,COSTURA,MONTAGEM')
         week.change(-week.getDay()+1)
         document.querySelector('#lgdSem').innerHTML = `Semana de ${week.getFormatBR()}`
 

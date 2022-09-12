@@ -694,34 +694,157 @@ function holerite(func){
         addLine()
 
 
-        const sal = parseFloat(func.salario)
-        const H_normal = func.horas.hr + func.horas.adn
-        const sal_base = sal * 220
-        const sal_bruto = sal * (func.horas.hr + (func.horas.adn * 1.2) + (func.horas.he * 2) + (func.horas.he_adn * 2.2) )
+//        const sal = parseFloat(func.salario)
+//        const H_normal = func.horas.hr + func.horas.adn
+//        const sal_base = sal * 220
+//        const sal_bruto = sal * (func.horas.hr + (func.horas.adn * 1.2) + (func.horas.he * 2) + (func.horas.he_adn * 2.2) )
 
-        const adto = (sal_base*0.4).toFixed(2)
+        const salario = new Object
+            salario.tipo = func.tipo
+            salario.valor = parseFloat(func.salario)
+            salario.impostos = new Object
+            if(salario.tipo == 'HORA'){
+                salario.adto = (salario.valor * 88).toFixed(2)
+                salario.bruto = salario.valor * (func.horas.hr + (func.horas.adn * 1.2) + (func.horas.he * 2) + (func.horas.he_adn * 2.2) )
+                salario.liq = salario.bruto
+                salario.h_trab = func.horas.hr + func.horas.adn    
+            }else{
+                salario.adto = (salario.valor * 88).toFixed(2)
+                salario.bruto = salario.valor
+                salario.liq = salario.bruto - (salario.valor * 88)
+                salario.h_trab = 220
+            }
 
-        if(mode=='ADTO'){
-            doc.text('ADIANTAMENTO SALARIAL',10,txt.y)
-            doc.text(H_normal.toFixed(2),90,txt.y)
-            doc.text(adto,135,txt.y)
-
-
+        for(let i=0; i<imp.length; i++){
+            if(salario.bruto >= parseFloat(imp[i].ini_range) && salario.bruto <= parseFloat(imp[i].fin_range)){
+                salario.impostos[imp[i].nome] = new Object
+                salario.impostos[imp[i].nome].base = parseFloat(imp[i].valor)
+                salario.impostos[imp[i].nome].tipo = imp[i].tipo == 'PERC' ? '%' : 'R$'
+                salario.impostos[imp[i].nome].val = imp[i].tipo == 'PERC' ? salario.bruto * (parseFloat(imp[i].valor) / 100)  : parseFloat(imp[i].valor)
+                salario.liq -= salario.impostos[imp[i].nome].val
+            }
 
         }
 
+        if(mode=='ADTO'){
+
+            doc.setFont(undefined, 'normal')
+
+            doc.text('ADIANTAMENTO SALARIAL',10,txt.y)
+            doc.text(salario.h_trab.toFixed(2),90,txt.y)
+            doc.text(salario.adto,135,txt.y)
+
+            doc.setFont(undefined, 'bold')    
+
+            txt.y = Y+80
+            line(txt.y)
+            addLine(0.7)
+            doc.text('Total Venc.',135,txt.y)
+            doc.text('Total Desc.',180,txt.y)
+            addLine(0.7)
+            doc.text(salario.adto,135,txt.y)
+            doc.text('0',180,txt.y)
+            addLine(0.7)
+            doc.text('Total Liq. ->',135,txt.y)
+            doc.text(viewMoneyBR(salario.adto),180,txt.y)
+            addLine(0.7)
+            line(txt.y)
+            addLine(0.7)
+            doc.text('Salario Base',10,txt.y)
+            doc.text('SalContr.INSS',60,txt.y)
+            doc.text('Base Calc. FGTS',90,txt.y)
+            doc.text('FGTS do MES',120,txt.y)
+            doc.text('Base Calc. IRRF',150,txt.y)
+            doc.text('Faixa IRRF',180,txt.y)
+            addLine(0.7)
+            doc.text(viewMoneyBR(salario.valor.toFixed(2)),10,txt.y)
+            doc.text('*****',65,txt.y)
+            doc.text('*****',95,txt.y)
+            doc.text('*****',125,txt.y)
+            doc.text('*****',155,txt.y)
+            doc.text('*****',185,txt.y)
+
+            addLine(0.7)
+            line(txt.y)
+            addLine(0.7)
+
+        }else{
+
+            doc.setFont(undefined, 'normal')
+
+            doc.text('SALARIO',10,txt.y)
+            doc.text(salario.h_trab.toFixed(2),90,txt.y)
+            doc.text(salario.bruto.toFixed(2),135,txt.y)
+            addLine(0.7)
+            doc.text('INSS SOBRE SALÁRIO',10,txt.y)
+            doc.text(salario.impostos.INSS.tipo+salario.impostos.INSS.base,90,txt.y)
+            doc.text(salario.impostos.INSS.val.toFixed(2),180,txt.y)
+            addLine(0.7)
+            doc.text('IRRF SOBRE SALÁRIO',10,txt.y)
+            doc.text(salario.impostos.IRRF.tipo+salario.impostos.IRRF.base,90,txt.y)
+            doc.text(salario.impostos.IRRF.val.toFixed(2),180,txt.y)
+            addLine(0.7)
+            doc.text('ADIANTAMENTO',10,txt.y)
+            doc.text(salario.adto,180,txt.y)
+            addLine(0.7)
+
+
+            doc.setFont(undefined, 'bold')   
 
 
 
+            txt.y = Y+80
+            line(txt.y)
+            addLine(0.7)
+            doc.text('Total Venc.',135,txt.y)
+            doc.text('Total Desc.',180,txt.y)
+            addLine(0.7)
+            doc.text(salario.adto,135,txt.y)
+            doc.text('0',180,txt.y)
+            addLine(0.7)
+            doc.text('Total Liq. ->',135,txt.y)
+            doc.text(viewMoneyBR(salario.liq.toFixed(2)),180,txt.y)
+            addLine(0.7)
+            line(txt.y)
+            addLine(0.7)
+            doc.text('Salario Base',10,txt.y)
+            doc.text('SalContr.INSS',60,txt.y)
+            doc.text('Base Calc. FGTS',90,txt.y)
+            doc.text('FGTS do MES',120,txt.y)
+            doc.text('Base Calc. IRRF',150,txt.y)
+            doc.text('Faixa IRRF',180,txt.y)
+            addLine(0.7)
+            doc.text(viewMoneyBR(salario.valor.toFixed(2)),10,txt.y)
+            doc.text(salario.bruto.toFixed(2),65,txt.y)
+            doc.text(salario.bruto.toFixed(2),95,txt.y)
+            doc.text(salario.impostos.FGTS.val.toFixed(2),125,txt.y)
+            doc.text(salario.impostos.IRRF.val.toFixed(2),155,txt.y)
+            doc.text(salario.impostos.IRRF.base.toFixed(2),185,txt.y)
+
+            addLine(0.7)
+            line(txt.y)
+            addLine(0.7)
+
+        }
+
+        addLine(2)
+        center_text('______________________________________________',[20,125])
+        center_text('Assinatura',[20,125])    
+        backLine(2)
+        center_text('_______/_______/_______',[130,185])
+        center_text('Data',[130,185])
+        if(Y==5){
+            addLine()
+            line(txt.y)    
+        }
 
 
         doc.setFont(undefined, 'normal')
 
     }
 
-
+    let imp
     console.log(func)
-    alert(1)
     jsPDF.autoTableSetDefaults({
         headStyles: { fillColor: [37, 68, 65] },
     })
@@ -730,10 +853,30 @@ function holerite(func){
 
     clearTxt(37,10,[210,297])
 
-    drawFrame()
-    drawFrame(150)
+    const params = new Object; 
+        params.id = '1,2,5'
+        params.hash = localStorage.getItem('hash')
 
-    doc.save('holerite.pdf')
+    const myPromisse = queryDB(params,66);
+    myPromisse.then((resolve)=>{
+        imp = JSON.parse(resolve)
+        drawFrame()
+        drawFrame(150)
+        
+        doc.addPage();
+        txt.y = 46
+    
+        drawFrame(5,'PGTO')
+        drawFrame(150,'PGTO')
+    
+        doc.save('holerite.pdf')
+
+    })
+
+
+
+
+
 
 
 }
