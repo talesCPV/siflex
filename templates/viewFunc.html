@@ -83,6 +83,8 @@
         <input type="date" id="edtAdm">          
         <label for="edtDem">Desligamento</label>
         <input type="date" id="edtDem">
+        <label for="edtImp">Impostos</label>
+        <input type="text" id="edtImp">
     </div>
     <button id="btnSalvar">Salvar</button>
     <button id="btnDel">Deletar</button>
@@ -111,11 +113,13 @@
         document.querySelector('#edtCel').value = main_data.viewFunc.data.cel
         document.querySelector('#edtAdm').value = main_data.viewFunc.data.data_adm
         document.querySelector('#edtDem').value = main_data.viewFunc.data.data_dem
+        document.querySelector('#edtImp').value = main_data.viewFunc.data.impostos
         document.querySelector('#edtStatus').value = main_data.viewFunc.data.status
         document.querySelector('#btnDel').style.display = 'block'
     }else{
         document.querySelector('#edtNome').focus()
         document.querySelector('#edtAdm').value = today.getFormatDate()
+        document.querySelector('#edtImp').value = '1,2,5'
     }
 
     document.querySelector('#btnSalvar').addEventListener('click',()=>{
@@ -137,6 +141,7 @@
                 params.status = document.querySelector('#edtStatus').value
                 params.data_nasc = document.querySelector('#edtNasc').value
                 params.data_dem = (document.querySelector('#edtDem').value == '' && params.status == "DEMIT") ? today.getFormatDate() : document.querySelector('#edtDem').value 
+                params.impostos = document.querySelector('#edtImp').value
              
             const myPromisse = queryDB(params,57);
             myPromisse.then((resolve)=>{

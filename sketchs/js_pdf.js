@@ -658,7 +658,7 @@ function print_cotacao(ped,itens,emp,tipo='cot'){
 function holerite(func){
 
     function drawFrame(Y=5,mode='ADTO'){
-        const date =  meses[func.data.getMonth()-1] +'/'+ func.data.getFullYear()
+        const date =  meses[func.data.getMonth()] +'/'+ func.data.getFullYear()
         const pageWidth = doc.internal.pageSize.getWidth()
         txt.y = Y+5
 //        doc.rect(Y,5,doc.internal.pageSize.getWidth()-10,Y+100)        
@@ -693,39 +693,29 @@ function holerite(func){
         doc.text('Descontos',180,txt.y)
         addLine()
 
-
-//        const sal = parseFloat(func.salario)
-//        const H_normal = func.horas.hr + func.horas.adn
-//        const sal_base = sal * 220
-//        const sal_bruto = sal * (func.horas.hr + (func.horas.adn * 1.2) + (func.horas.he * 2) + (func.horas.he_adn * 2.2) )
-
         const salario = new Object
             salario.tipo = func.tipo
             salario.valor = parseFloat(func.salario)
             salario.impostos = new Object
             if(salario.tipo == 'HORA'){
                 salario.adto = (salario.valor * 88).toFixed(2)
-                salario.bruto = salario.valor * (func.horas.hr + (func.horas.adn * 1.2) + (func.horas.he * 2) + (func.horas.he_adn * 2.2) )
-                salario.liq = salario.bruto
+                salario.bruto = salario.valor * (func.horas.hr + (func.horas.adn * 1.5) + (func.horas.he * 2) + (func.horas.he_adn * 2.5) )
+                salario.descontos = salario.valor * 88
                 salario.h_trab = func.horas.hr + func.horas.adn    
             }else{
-                salario.adto = (salario.valor * 88).toFixed(2)
+                salario.adto = (salario.valor * 0.4).toFixed(2)
                 salario.bruto = salario.valor
-                salario.liq = salario.bruto - (salario.valor * 88)
+                salario.descontos = salario.valor * 0.4
                 salario.h_trab = 220
             }
 
         for(let i=0; i<imp.length; i++){
             if(salario.bruto >= parseFloat(imp[i].ini_range) && salario.bruto <= parseFloat(imp[i].fin_range)){
-                salario.impostos[imp[i].nome] = new Object
-                salario.impostos[imp[i].nome].base = parseFloat(imp[i].valor)
-                salario.impostos[imp[i].nome].tipo = imp[i].tipo == 'PERC' ? '%' : 'R$'
-                salario.impostos[imp[i].nome].val = imp[i].tipo == 'PERC' ? salario.bruto * (parseFloat(imp[i].valor) / 100)  : parseFloat(imp[i].valor)
-                salario.liq -= salario.impostos[imp[i].nome].val
+                salario.impostos[imp[i].nome] = imp[i]
             }
 
         }
-
+console.log(salario)
         if(mode=='ADTO'){
 
             doc.setFont(undefined, 'normal')
@@ -769,29 +759,81 @@ function holerite(func){
             addLine(0.7)
 
         }else{
-
+//            salario.descontos = parseFloat(salario.adto)
             doc.setFont(undefined, 'normal')
 
-            doc.text('SALARIO',10,txt.y)
-            doc.text(salario.h_trab.toFixed(2),90,txt.y)
-            doc.text(salario.bruto.toFixed(2),135,txt.y)
-            addLine(0.7)
-            doc.text('INSS SOBRE SALÁRIO',10,txt.y)
-            doc.text(salario.impostos.INSS.tipo+salario.impostos.INSS.base,90,txt.y)
-            doc.text(salario.impostos.INSS.val.toFixed(2),180,txt.y)
-            addLine(0.7)
-            doc.text('IRRF SOBRE SALÁRIO',10,txt.y)
-            doc.text(salario.impostos.IRRF.tipo+salario.impostos.IRRF.base,90,txt.y)
-            doc.text(salario.impostos.IRRF.val.toFixed(2),180,txt.y)
-            addLine(0.7)
+            if(salario.tipo == 'HORA'){
+                doc.text('SALARIO',10,txt.y)
+                doc.text(salario.h_trab.toFixed(2),90,txt.y)
+                doc.text((salario.h_trab * salario.valor).toFixed(2),135,txt.y)
+                addLine(0.7)
+//                salario.bruto = salario.valor * (func.horas.hr + (func.horas.adn * 1.2) + (func.horas.he * 2) + (func.horas.he_adn * 2.2) )
+                if(func.horas.hr > 0){
+                    doc.text('HORA EXTRA 100%',10,txt.y)
+                    doc.text(func.horas.he.toFixed(2),90,txt.y)
+                    doc.text((func.horas.he * 2 * salario.valor).toFixed(2),135,txt.y)
+                    addLine(0.7)    
+                }
+                if(func.horas.adn > 0){
+                    doc.text('ADICIONAL NOTURNO 50%',10,txt.y)
+                    doc.text(func.horas.adn.toFixed(2),90,txt.y)
+                    doc.text((func.horas.adn * 0.5 * salario.valor).toFixed(2),135,txt.y)
+                    addLine(0.7)    
+                }
+                if(func.horas.he_adn > 0){
+                    doc.text('H. EXTRA 100% AD. NOTURNO 50%',10,txt.y)
+                    doc.text(func.horas.he_adn.toFixed(2),90,txt.y)
+                    doc.text((func.horas.he_adn * 2.5 * salario.valor).toFixed(2),135,txt.y)
+                    addLine(0.7)    
+                }
+
+            }else{
+                doc.text('SALARIO',10,txt.y)
+                doc.text(salario.h_trab.toFixed(2),90,txt.y)
+                doc.text(salario.bruto.toFixed(2),135,txt.y)
+                addLine(0.7)    
+            }
+
             doc.text('ADIANTAMENTO',10,txt.y)
             doc.text(salario.adto,180,txt.y)
             addLine(0.7)
+            if(salario.impostos.FGTS != undefined){
+                salario.impostos.FGTS.base = viewMoneyBR(salario.valor.toFixed(2))
+                salario.impostos.FGTS.val = salario.impostos.FGTS.tipo == 'PERC' ? (salario.bruto - parseFloat(salario.impostos.FGTS.ini_range)) * (parseFloat(salario.impostos.FGTS.valor) / 100) + parseFloat(salario.impostos.FGTS.acumulado) : parseFloat(salario.impostos.FGTS.valor)
+            }
+
+            if(salario.impostos.INSS != undefined){
+                salario.impostos.INSS.base = salario.impostos.INSS.tipo == 'PERC' ? parseFloat(salario.bruto) : parseFloat(salario.impostos.INSS.ini_range)
+                salario.impostos.INSS.val = salario.impostos.INSS.tipo == 'PERC' ? (salario.bruto - parseFloat(salario.impostos.INSS.ini_range)) * (parseFloat(salario.impostos.INSS.valor) / 100) + parseFloat(salario.impostos.INSS.acumulado) : parseFloat(salario.impostos.INSS.valor)
+                salario.descontos += salario.impostos.INSS.val
+                doc.text('INSS SOBRE SALÁRIO',10,txt.y)
+                doc.text(salario.impostos.INSS.base.toFixed(2),90,txt.y)
+                doc.text(salario.impostos.INSS.val.toFixed(2),180,txt.y)
+                addLine(0.7)
+            }
+            if(salario.impostos.IRRF != undefined){
+                salario.impostos.IRRF.base = salario.impostos.IRRF.tipo == 'PERC' ? parseFloat(salario.impostos.IRRF.valor) : parseFloat(salario.impostos.IRRF.ini_range)
+                salario.impostos.IRRF.val = salario.impostos.IRRF.tipo == 'PERC' ? (salario.bruto - salario.impostos.INSS.val - parseFloat(salario.impostos.IRRF.ini_range)) * (parseFloat(salario.impostos.IRRF.valor) / 100) + parseFloat(salario.impostos.IRRF.acumulado) : parseFloat(salario.impostos.IRRF.valor)
+                salario.descontos += salario.impostos.IRRF.val
+                doc.text('IRRF SOBRE SALÁRIO',10,txt.y)
+                doc.text(salario.impostos.IRRF.base.toFixed(2),90,txt.y)
+                doc.text(salario.impostos.IRRF.val.toFixed(2),180,txt.y)
+                addLine(0.7)
+            }
+            if(salario.impostos.VALE_TRANSP != undefined){
+                salario.impostos.VALE_TRANSP.base = salario.impostos.VALE_TRANSP.tipo == 'PERC' ? parseFloat(salario.impostos.VALE_TRANSP.valor) : parseFloat(salario.impostos.VALE_TRANSP.ini_range)
+                salario.impostos.VALE_TRANSP.val = salario.impostos.VALE_TRANSP.tipo == 'PERC' ? (salario.bruto - parseFloat(salario.impostos.VALE_TRANSP.ini_range)) * (parseFloat(salario.impostos.VALE_TRANSP.valor) / 100) + parseFloat(salario.impostos.VALE_TRANSP.acumulado) : parseFloat(salario.impostos.VALE_TRANSP.valor)
+                salario.descontos += salario.impostos.VALE_TRANSP.val
+                doc.text('VALE TRANSPOSTE',10,txt.y)
+                doc.text(salario.impostos.VALE_TRANSP.base.toFixed(2),90,txt.y)
+                doc.text(salario.impostos.VALE_TRANSP.val.toFixed(2),180,txt.y)
+                addLine(0.7)
+            }
+
+            console.log()
 
 
             doc.setFont(undefined, 'bold')   
-
-
 
             txt.y = Y+80
             line(txt.y)
@@ -799,11 +841,11 @@ function holerite(func){
             doc.text('Total Venc.',135,txt.y)
             doc.text('Total Desc.',180,txt.y)
             addLine(0.7)
-            doc.text(salario.adto,135,txt.y)
-            doc.text('0',180,txt.y)
+            doc.text(salario.bruto.toFixed(2),135,txt.y)
+            doc.text(salario.descontos.toFixed(2),180,txt.y)
             addLine(0.7)
             doc.text('Total Liq. ->',135,txt.y)
-            doc.text(viewMoneyBR(salario.liq.toFixed(2)),180,txt.y)
+            doc.text(viewMoneyBR((salario.bruto-salario.descontos).toFixed(2)),180,txt.y)
             addLine(0.7)
             line(txt.y)
             addLine(0.7)
@@ -815,16 +857,15 @@ function holerite(func){
             doc.text('Faixa IRRF',180,txt.y)
             addLine(0.7)
             doc.text(viewMoneyBR(salario.valor.toFixed(2)),10,txt.y)
-            doc.text(salario.bruto.toFixed(2),65,txt.y)
-            doc.text(salario.bruto.toFixed(2),95,txt.y)
-            doc.text(salario.impostos.FGTS.val.toFixed(2),125,txt.y)
-            doc.text(salario.impostos.IRRF.val.toFixed(2),155,txt.y)
-            doc.text(salario.impostos.IRRF.base.toFixed(2),185,txt.y)
+            doc.text(salario.impostos.INSS != undefined ? salario.impostos.INSS.base.toFixed(2) : '*****',65,txt.y)
+            doc.text(salario.impostos.FGTS != undefined ? salario.bruto.toFixed(2) : '*****',95,txt.y)     
+            doc.text(salario.impostos.FGTS != undefined ? salario.impostos.FGTS.val.toFixed(2) : '*****',125,txt.y)
+            doc.text(salario.impostos.IRRF != undefined ? salario.bruto.toFixed(2) : '*****',155,txt.y)
+            doc.text(salario.impostos.IRRF != undefined ? salario.impostos.IRRF.base.toFixed(2) : '*****',185,txt.y)
 
             addLine(0.7)
             line(txt.y)
             addLine(0.7)
-
         }
 
         addLine(2)
@@ -837,7 +878,6 @@ function holerite(func){
             addLine()
             line(txt.y)    
         }
-
 
         doc.setFont(undefined, 'normal')
 
@@ -854,7 +894,7 @@ function holerite(func){
     clearTxt(37,10,[210,297])
 
     const params = new Object; 
-        params.id = '1,2,5'
+        params.id = func.impostos
         params.hash = localStorage.getItem('hash')
 
     const myPromisse = queryDB(params,66);

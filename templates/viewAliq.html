@@ -9,6 +9,8 @@
   <fieldset>
     <legend>Margens de Alíquotas</legend>
     <div class="inline">
+        <label for="edtAcu">Acumulado(R$)</label>
+        <input type="text" id="edtAcu" onkeyup="return valFloat(this)">        
         <label for="edtIni">Inicio(R$)</label>
         <input type="text" id="edtIni" onkeyup="return valFloat(this)">
         <label for="edtFin">Final(R$)</label>
@@ -36,6 +38,7 @@
 
     if(main_data.viewAliq.data.callby == 'edit'){
         document.querySelector('#cmbTipo').value = main_data.viewAliq.data.tipo
+        document.querySelector('#edtAcu').value = main_data.viewAliq.data.acumulado
         document.querySelector('#edtIni').value = main_data.viewAliq.data.ini_range
         document.querySelector('#edtFin').value = main_data.viewAliq.data.fin_range
         document.querySelector('#edtVal').value = main_data.viewAliq.data.valor
@@ -53,6 +56,7 @@
                 params.ini_range = document.querySelector('#edtIni').value
                 params.fin_range = document.querySelector('#edtFin').value
                 params.valor = document.querySelector('#edtVal').value
+                params.acumulado = document.querySelector('#edtAcu').value
 
             const myPromisse = queryDB(params,68);
             myPromisse.then((resolve)=>{
