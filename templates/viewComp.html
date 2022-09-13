@@ -37,6 +37,17 @@
         <legend>Ítens</legend>
         <table id="tblItens"></table>
         <button id="btnAdd" disabled>Adicionar Ítens</button>
+        <div class="inline">
+            <div class="ckBOX">
+                <label for="ckbValor">Mostrar Valor</label>
+                <input type="checkbox" id="ckbValor" disabled>
+            </div>
+            <button id="btnPed" disabled>Pedido de Compra</button>
+            <button id="btnCot" disabled>Solicitação de Cotação</button>
+        </div>
+
+
+
     </fieldset>
 
 </template>
@@ -52,12 +63,18 @@
             document.querySelector('#btnEdit').disabled = false
             document.querySelector('#btnDel').disabled = false
             document.querySelector('#btnAdd').disabled = false
+            document.querySelector('#btnPed').disabled = false
+            document.querySelector('#btnCot').disabled = false
+            document.querySelector('#ckbValor').disabled = false
             document.querySelector('#btnFecha').innerHTML = 'Encerrar'
         }else{
             document.querySelector('#btnFecha').innerHTML = 'Upload NF' 
             document.querySelector('#btnEdit').disabled = true
             document.querySelector('#btnDel').disabled = true
             document.querySelector('#btnAdd').disabled = true            
+            document.querySelector('#btnPed').disabled = true
+            document.querySelector('#btnCot').disabled = true
+            document.querySelector('#ckbValor').disabled = true
             if(main_data.viewComp.data.path !=  null){
                 document.querySelector('#btnVerNF').style.display = 'block'
             }
@@ -69,14 +86,14 @@
             params.ped_id = main_data.viewComp.data.id
         const myPromisse = queryDB(params,43);
         myPromisse.then((resolve)=>{
-            const json = JSON.parse(resolve)
-            document.querySelector('#btnFecha').disabled = json.length > 0 ? false : true
+            main_data.viewComp.data.itens = JSON.parse(resolve)
+            document.querySelector('#btnFecha').disabled = main_data.viewComp.data.itens.length > 0 ? false : true
             const tbl = document.querySelector('#tblItens')
             let tot = 0
             tbl.head('Cod.|mobHide,Descrição,Und.|mobHide,Qtd.,Preço Unit.,Sub Total')            
-            for(let i=0; i<json.length;i++){
-                tbl.plot(json[i],'id|mobHide,descricao,unidade|mobHide,qtd,preco,total','str,Upp,Upp,str,R$.,R$.')
-                tot += parseFloat(json[i].total)
+            for(let i=0; i<main_data.viewComp.data.itens.length;i++){
+                tbl.plot(main_data.viewComp.data.itens[i],'id|mobHide,descricao,unidade|mobHide,qtd,preco,total','str,Upp,Upp,str,R$.,R$.')
+                tot += parseFloat(main_data.viewComp.data.itens[i].total)
             }
             document.querySelector('#tdTot').innerHTML = viewMoneyBR(tot.toFixed(2))
         })
@@ -227,5 +244,14 @@
         window.open('../'+main_data.viewComp.data.path, '_blank');
     })
 
+    document.querySelector('#btnPed').addEventListener('click',()=>{
+        main_data.viewComp.data.label = 'PEDIDO DE COMPRA - ' + main_data.viewComp.data.nf.toUpperCase()
+        print_pedcomp()
+    })
+
+    document.querySelector('#btnCot').addEventListener('click',()=>{
+        main_data.viewComp.data.label = 'SOLICITAÇÃO DE COTAÇÃO'
+        print_pedcomp()
+    })
 
 </script>

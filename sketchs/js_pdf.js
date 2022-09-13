@@ -83,7 +83,6 @@ function backLine(N=1, botton=0, top=46){
     return true
 }
 
-
 function box(text,x,y,w,lh=0.8){
     const h = txt.lineHeigth * lh   
     text = text.trim().split('\n')
@@ -654,6 +653,100 @@ function print_cotacao(ped,itens,emp,tipo='cot'){
     doc.save('cotacao.pdf')
 
 }
+
+function print_pedcomp(){
+   
+    const show_val = document.querySelector('#ckbValor').checked
+    const data = main_data.viewComp.data
+
+
+    jsPDF.autoTableSetDefaults({
+        headStyles: { fillColor: [37, 68, 65] },
+    })
+
+    doc = new jsPDF();
+    
+    clearTxt(37,10,[210,297])
+    frame()
+    header_pdf()
+    line(txt.y)
+    addLine()
+
+//  CABEÇALHO    
+    doc.setFontSize(10)
+    doc.text(data.label,10,txt.y)
+    doc.text('Data:' + dataBR(data.data_ent) ,172,txt.y)
+    addLine()
+    doc.setFontSize(11)
+    doc.setFont(undefined, 'bold')
+    doc.text('Solicitante: Flexibus Sanfonados LTDA',10,txt.y)
+    doc.setFont(undefined, 'normal')
+    doc.setFontSize(10)
+    addLine()
+    doc.text('End. Av. Dr. Rosalvo de Almeida Telles, 2070',10,txt.y)
+    doc.text('Caçapava-SP',120,txt.y)
+    addLine()
+    doc.text('CEP: 12.283-020',10,txt.y)
+    doc.text('Tel: (12)3653-2230',80,txt.y)
+    doc.text('CNPJ: 00.519.547/0001-06',120,txt.y)
+    doc.text('IE: 234.033.845.113',170,txt.y)
+    addLine()
+    doc.setFontSize(11)
+    doc.setFont(undefined, 'bold')
+    doc.text('Fornecedor:' + data.fantasia.trim().toUpperCase() ,10,txt.y)
+    doc.setFont(undefined, 'normal')
+    doc.setFontSize(10)
+    addLine()
+    doc.text('Comprador:'+data.resp.trim().toUpperCase(),10,txt.y)
+    addLine()
+    doc.text('Obs:',10,txt.y)
+    addLine()
+    doc.setFont(undefined, 'bold')
+    box(data.OBS,10,txt.y,170)
+    doc.setFont(undefined, 'normal')
+    line(txt.y)
+    addLine(2)
+    doc.setFontSize(15)
+    doc.setFont(undefined, 'bold')
+    center_text(data.label)
+    
+//    TABELA
+
+    let tbl_body = []
+    let total = 0
+    let head
+    for(let i=0; i< data.itens.length;i++){
+//        const data = itens.rows[i].data
+        if(show_val){
+            tbl_body.push([data.itens[i].cod_cli,data.itens[i].descricao.maxWidth(40).toUpperCase(),data.itens[i].unidade,data.itens[i].qtd,viewMoneyBR(parseFloat(data.itens[i].preco).toFixed(2)),viewMoneyBR(data.itens[i].total)])
+            head= [["Cod","Descrição",'Und.','Qtd.',"Preço Unit.",'Sub Total.']]
+        }else{
+            tbl_body.push([data.itens[i].cod_cli,data.itens[i].descricao.maxWidth(50).toUpperCase(),data.itens[i].unidade,data.itens[i].qtd])
+            head= [["Cod","Descrição",'Und.','Qtd.']]
+        }
+        total += parseFloat(data.itens[i].total)
+    }
+
+    doc.autoTable({
+        head: head,
+        body: tbl_body,
+        startY: txt.y      
+    });
+
+    txt.y = doc.previousAutoTable.finalY
+    addLine()
+
+
+//  TOTAL  
+    doc.setFontSize(12)
+    if(show_val){  
+        right_text('Total '+ viewMoneyBR((total).toFixed(2)),17)
+    }
+
+    doc.save('pedcompra.pdf')
+
+}
+
 
 function holerite(func){
 

@@ -96,7 +96,7 @@
          "42" => 'INSERT INTO tb_entrada (id, nf, id_emp, data_ent, resp, status, OBS)
             VALUES (x00,"x01","x02","x03","x04","x05","x06") ON DUPLICATE KEY UPDATE
             nf="x01", id_emp="x02", data_ent="x03", resp="x04", status="x05", OBS="x06";',
-         "43" => 'SELECT IC.*, PROD.descricao, PROD.unidade, ROUND((IC.qtd * IC.preco),2) as total
+         "43" => 'SELECT IC.*, PROD.descricao, PROD.unidade, PROD.cod, PROD.cod_bar AS cod_cli, ROUND((IC.qtd * IC.preco),2) as total
             FROM tb_item_compra AS IC 
             INNER JOIN tb_produto AS PROD
             ON PROD.id = IC.id_prod

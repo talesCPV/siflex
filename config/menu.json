@@ -257,7 +257,32 @@
 					"itens"  : []
 				}				
 			]
-		},				
+		},
+		{
+			"modulo" : "NFe",
+			"script" : "#",
+			"access" : [10,4],
+			"class"  : "",
+			"icone"  : "fa fa-cogs",
+			"itens"  : [
+				{
+					"modulo" : "NFe - Venda",
+					"script" : "javascript:openHTML('nfe.html','content-screen','Nota Fiscal de Venda')",
+					"access" : [10,4],
+					"class"  : "",
+					"icone"  : "fa fa-archive",
+					"itens"  : []
+				},
+				{
+					"modulo" : "NFs - Serviço",
+					"script" : "javascript:openHTML('nfs.html','content-screen','Nota Fiscal de Serviço')",
+					"access" : [10,4],
+					"class"  : "",
+					"icone"  : "fa fa-archive",
+					"itens"  : []
+				}
+			]
+		},			
 		{
 			"modulo" : "Logout",
 			"script" : "javascript:localStorage.clear();this.location.reload(true);",
