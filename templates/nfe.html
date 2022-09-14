@@ -30,7 +30,7 @@
     .tab-screen{
         overflow: scroll;
         border: solid;
-        width: 60vw;
+        width: 100%;
         height: 80vh;
         margin-top: 0px;
     }
@@ -67,6 +67,7 @@
         margin: 10px;
         float: right;
         padding: 5px 10px;
+        width: 98%;
     }
 
 
@@ -77,7 +78,7 @@
     <div style="margin: 50px;">
     
         <div class="tab-bar">
-            <div class="tab-item tab-emitente" style="background: #3F5954; color:#FFF8DC;"> Emitente</div>
+            <div class="tab-item tab-emitente" style="background: #3F5954; color:#FFF8DC;" > Emitente</div>
             <div class="tab-item tab-fiscal" >Fiscal</div>
             <div class="tab-item tab-pedido" >Pedido</div>
             <div class="tab-item tab-cliente" >Cliente</div>            
@@ -91,62 +92,62 @@
 <!--                <h2>Emitente</h2>               -->
                 <div class="inline">
                     <label> Razão Social *</label>
-                    <input type="text" id="xNome" maxlength="60" value="" />
+                    <input type="text" id="xNome" maxlength="60" />
                 </div>
                 <div class="inline">
                     <label> Nome Fantasia </label>
-                    <input type="text" id="xFant" maxlength="60" value=""/>
+                    <input type="text" id="xFant" maxlength="60" />
                 </div>
                 <div class="inline">
                     <label> Insc. Estadual </label>
-                    <input type="text" id="IE" maxlength="14" value="" />
-                    <input type="hidden" id="IEST" value=""  >                
+                    <input type="text" id="IE" maxlength="14" />
+                    <input type="hidden" id="IEST" >                
                     <label> Insc. Municipal </label>
-                    <input type="text" id="IM" maxlength="15" value="" />
+                    <input type="text" id="IM" maxlength="15" />
                     <label> CNAE </label>
-                    <input type="text" id="CNAE" maxlength="7"  value=""/>
+                    <input type="text" id="CNAE" maxlength="7" />
                 </div>
                 <div class="inline">
-                    <label> Regime Tributário </label>
+                    <label> Regime Trib. </label>
                     <select id="CRT" >
                       <option value="1" selected>Simples Nacional</option>
                       <option value="2" >Simples Nacional - excesso de sublimite de receita bruta</option>
                       <option value="3" >Regime Normal.</option>
                     </select>
                     <label> CNPJ </label>
-                    <input type="text" id="CNPJ" maxlength="14" value=""/>
+                    <input type="text" id="CNPJ" maxlength="14" />
                 </div>
                 <div class="inline">
                     <label> Endereço </label>
-                    <input type="text" id="xLgr" maxlength="60" value="" />
+                    <input type="text" id="xLgr" maxlength="60" />
                     <label> Número: </label>
-                    <input type="text" id="nro" maxlength="5" value="" />
+                    <input type="text" id="nro" maxlength="5" style="max-width: 100px;" />
                 </div>
                 <div class="inline">
                     <label> Bairro </label>
-                    <input type="text" id="bairro" maxlength="60" value="" />
+                    <input type="text" id="bairro" maxlength="60" />
                     <label> Complemento </label>
-                    <input type="text" id="cpl" maxlength="60"  value=""/>
+                    <input type="text" id="cpl" maxlength="60" style="max-width: 200px;" />
                 </div>
                 <div class="inline">
-                    <label> Nome do Municipio</label>
-                    <input type="text" id="xMun" maxlength="60" value=""/>
-                    <label> Código do Municipio </label>
-                    <input type="text" id="cMun" maxlength="60" value=""/>
+                    <label> Municipio</label>
+                    <input type="text" id="xMun" maxlength="60" />
+                    <label> Código</label>
+                    <input type="text" id="cMun" maxlength="15" style="max-width: 150px;" />
                     <label> Sigla da UF </label>
-                    <input type="text" id="UF" maxlength="60" value="" />
+                    <input type="text" id="UF" maxlength="2" style="max-width: 50px;" />
                 </div>
                 <div class="inline">
                     <label> Nome do País </label>
-                    <input type="text" id="xPais" maxlength="60" value=""/>
-                    <label> Código do País  </label>
-                    <input type="text" id="cPais" maxlength="4" value=""/>
+                    <input type="text" id="xPais" maxlength="60" />
+                    <label> Código </label>
+                    <input type="text" id="cPais" maxlength="4" />
                 </div>
                 <div class="inline">
                     <label> CEP </label>
-                    <input type="text" id="CEP" maxlength="8" value=""/>
+                    <input type="text" id="CEP" maxlength="8" />
                     <label> Telefone </label>
-                    <input type="text" id="fone" maxlength="14" value="" />
+                    <input type="text" id="fone" maxlength="14" />
                 </div>
                 <button id="btnSaveEmit">Salvar</button>
                                 
@@ -385,13 +386,39 @@
 </template>
 <script>
 
+    importData()
+
+    function openTab(tab) {
+        let x = document.getElementsByClassName("tab");
+        
+        for (let i = 0; i < x.length; i++) {
+            x[i].style.display = "none";  
+        }
+        x = document.getElementsByClassName(tab);
+        for (let i = 0; i < x.length; i++) {
+            x[i].style.display = "block";          
+        } 
+        x = document.getElementsByClassName("tab-item");
+        for (let i = 0; i < x.length; i++) {
+            x[i].style.background = "#FFF8DC";  
+            x[i].style.color = "#3F5954";         
+        }                     
+        x = document.getElementsByClassName("tab-"+tab);
+        for (let i = 0; i < x.length; i++) {
+            x[i].style.background = "#3F5954"; 
+            x[i].style.color = "#FFF8DC";         
+        }       
+                    
+    }
+
+
+
            /* DECLARAÇÃO GLOBAL */
            const today = new Date();        
                 let dadosNF;
                 let numPed = "";
             /* CHAMADA DE FUNÇÕES INICIAL */    
             
-                importData();
             
             /* CHAMADA DE FUNÇÕES DO DOM */    
             
@@ -413,8 +440,10 @@
                 document.querySelector('.tab-fatura').addEventListener('click',()=>{
                     openTab('fatura')
                 })
+                
                 document.querySelector('.tab-export').addEventListener('click',()=>{
                     openTab('export');
+/*                    
                     const data = new URLSearchParams();        
                         data.append("path", `../NF_txt`);
             
@@ -432,13 +461,73 @@
                             sel.appendChild(opt);
 
                         }
-                    })                    
+                    })             
+*/                           
                 })
+
+
+    function importData(){
+        getConfig('NFe').then((txt)=>{    
+            const json = JSON.parse(txt)
+
+            const emit = JSON.parse(json.emitente)
+
+            document.querySelector('#xNome').value = emit.xNome
+            document.querySelector('#xFant').value = emit.xFant
+            document.querySelector('#IE').value = emit.IE
+            document.querySelector('#IEST').value = emit.IEST
+            document.querySelector('#IM').value = emit.IM
+            document.querySelector('#CNAE').value = emit.CNAE
+            document.querySelector('#CRT').value = emit.CRT
+            document.querySelector('#CNPJ').value = emit.CNPJ
+            document.querySelector('#xLgr').value = emit.xLgr
+            document.querySelector('#nro').value = emit.nro
+            document.querySelector('#bairro').value = emit.bairro
+            document.querySelector('#cpl').value = emit.cpl
+            document.querySelector('#xMun').value = emit.xMun
+            document.querySelector('#cMun').value = emit.cMun
+            document.querySelector('#UF').value = emit.UF
+            document.querySelector('#xPais').value = emit.xPais
+            document.querySelector('#cPais').value = emit.cPais
+            document.querySelector('#CEP').value = emit.CEP
+            document.querySelector('#fone').value = emit.fone
+            document.querySelector('#xMun').value = emit.xMun
+
+
+            console.log(emit)
+
+
+        })
+
+    }
+
                 document.getElementById('btnSaveEmit').addEventListener('click',(event)=>{
-                    salvaNF("C",3);
-                    salvaNF("C02",4);
-                    salvaNF("C05",5);
+                    const emit = new Object
+                    emit.xNome = document.querySelector('#xNome').value.trim()
+                    emit.xFant = document.querySelector('#xFant').value.trim()
+                    emit.IE = document.querySelector('#IE').value.trim()
+                    emit.IEST = document.querySelector('#IEST').value.trim()
+                    emit.IM = document.querySelector('#IM').value.trim()
+                    emit.CNAE = document.querySelector('#CNAE').value.trim()
+                    emit.CRT = document.querySelector('#CRT').value.trim()
+                    emit.CNPJ = document.querySelector('#CNPJ').value.trim()
+                    emit.xLgr = document.querySelector('#xLgr').value.trim()
+                    emit.nro = document.querySelector('#nro').value.trim()
+                    emit.bairro = document.querySelector('#bairro').value.trim()
+                    emit.cpl = document.querySelector('#cpl').value.trim()
+                    emit.xMun = document.querySelector('#xMun').value.trim()
+                    emit.cMun = document.querySelector('#cMun').value.trim()
+                    emit.UF = document.querySelector('#UF').value.trim()
+                    emit.xPais = document.querySelector('#xPais').value.trim()
+                    emit.cPais = document.querySelector('#cPais').value.trim()
+                    emit.CEP = document.querySelector('#CEP').value.trim()
+                    emit.fone = document.querySelector('#fone').value.trim()
+                    emit.xMun = document.querySelector('#xMun').value.trim()
+
+                    getConfig('NFe',JSON.stringify(emit),'emitente')
+
                 })
+/*                
                 document.getElementById('btnSaveFiscal').addEventListener('click',(event)=>{
                     document.getElementById('cNF').value = Math.floor(Math.random() * (99999999 - 10000000) + 10000000) ; // novo cNF
                     salvaNF("B",2);     
@@ -845,31 +934,8 @@
                 document.getElementById('btnTeste').addEventListener('click',()=>{                          
             })
              #3F5954; color:#FFF8DC
-*/            
-            /* DECLARAÇÃO DE FUNÇÕES */
-            
-                function openTab(tab) {
-                    let x = document.getElementsByClassName("tab");
-                    
-                    for (let i = 0; i < x.length; i++) {
-                        x[i].style.display = "none";  
-                    }
-                    x = document.getElementsByClassName(tab);
-                    for (let i = 0; i < x.length; i++) {
-                        x[i].style.display = "block";          
-                    } 
-                    x = document.getElementsByClassName("tab-item");
-                    for (let i = 0; i < x.length; i++) {
-                        x[i].style.background = "#FFF8DC";  
-                        x[i].style.color = "#3F5954";         
-                    }                     
-                    x = document.getElementsByClassName("tab-"+tab);
-                    for (let i = 0; i < x.length; i++) {
-                        x[i].style.background = "#3F5954"; 
-                        x[i].style.color = "#FFF8DC";         
-                    }       
-                             
-                }
+
+
             
                 function importData(){
                     const data = new URLSearchParams();        
@@ -1159,6 +1225,6 @@
                         return 'NFe'+chave+dv;
             
                 }
-
+*/
 
 </script>
