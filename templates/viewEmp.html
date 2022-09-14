@@ -9,6 +9,12 @@
             display: none;
         }
 
+        @media all and (max-width : 768px) {
+            .frm input, .frm select{
+                width: 98% !important;
+            }
+        }
+
     </style>
   
     <fieldset class="frm" >
@@ -19,15 +25,13 @@
             <input type="text" id="edtNome" maxlength="50" disabled>
         </div>
         <div class="inline">
-            <label for="edtFant">Fantasia</label>
-            <input type="text" id="edtFant" maxlength="40" disabled>
-            <div class="control-size" style="width: 40%;">
-                <label for="cmbTipo">Tipo</label>
-                <select id="cmbTipo">
-                    <option value="FOR">Fornecedor</option>
-                    <option value="CLI">Cliente</option>
-                </select>
-            </div>
+        <label for="edtFant">Fantasia</label>
+        <input type="text" id="edtFant" maxlength="40" disabled>
+            <label for="cmbTipo">Tipo</label>
+            <select id="cmbTipo" style="width: 150px;">
+                <option value="FOR">Fornecedor</option>
+                <option value="CLI">Cliente</option>
+            </select>
         </div>
         <div class="inline">
             <label for="edtCNPJ">CNPJ</label>
@@ -40,60 +44,55 @@
         <div class="inline">
             <label for="edtEnd">Endereço</label>
             <input type="text" id="edtEnd" maxlength="60" disabled>
-            <div class="control-size" style="width: 30%;">
-                <label for="edtNum">Num.</label>
-                <input type="text" id="edtNum" maxlength="5" disabled>    
-            </div>
+            <label for="edtNum">Num.</label>
+            <input type="text" id="edtNum" maxlength="5" style="width: 150px;" disabled>    
         </div>
         <div class="inline">
             <label for="edtCidade">Cidade</label>
             <input type="text" id="edtCidade" maxlength="30" disabled>
-            <div class="control-size" style="width: 50%;">
-                <label for="cmbEstado">Estado</label> 
-                <select id="cmbEstado">
-                    <option value="AC">Acre</option>
-                    <option value="AL">Alagoas</option>
-                    <option value="AP">Amapa</option>
-                    <option value="AM">Amazonas</option>
-                    <option value="BA">Bahia</option>
-                    <option value="CE">Ceara</option>
-                    <option value="ES">Espirito Santo</option>
-                    <option value="DF">Distrito Federal</option>
-                    <option value="MA">Maranhao</option>
-                    <option value="MT">Mato Grosso</option>
-                    <option value="MS">Mato Grosso do Sul</option>
-                    <option value="MG">Minas Gerais</option>
-                    <option value="PA">Para</option>
-                    <option value="PB">Paraiba</option>
-                    <option value="PR">Parana</option>
-                    <option value="PE">Pernambuco</option>
-                    <option value="PI">Piaui</option>
-                    <option value="RJ">Rio de Janeiro</option>
-                    <option value="RN">Rio Grande do Norte</option>
-                    <option value="RS">Rio Grande do Sul</option>
-                    <option value="RO">Rondonia</option>
-                    <option value="RR">Roraima</option>
-                    <option value="SC">Santa Catarina</option>
-                    <option selected="selected" value="SP">Sao Paulo</option>
-                    <option value="SE">Sergipe</option>
-                    <option value="TO">Tocantins</option>                    
-                </select>   
-            </div>
+            <label for="cmbEstado">Estado</label> 
+            <select id="cmbEstado" style="width: 200px;">
+                <option value="AC">Acre</option>
+                <option value="AL">Alagoas</option>
+                <option value="AP">Amapa</option>
+                <option value="AM">Amazonas</option>
+                <option value="BA">Bahia</option>
+                <option value="CE">Ceara</option>
+                <option value="ES">Espirito Santo</option>
+                <option value="DF">Distrito Federal</option>
+                <option value="MA">Maranhao</option>
+                <option value="MT">Mato Grosso</option>
+                <option value="MS">Mato Grosso do Sul</option>
+                <option value="MG">Minas Gerais</option>
+                <option value="PA">Para</option>
+                <option value="PB">Paraiba</option>
+                <option value="PR">Parana</option>
+                <option value="PE">Pernambuco</option>
+                <option value="PI">Piaui</option>
+                <option value="RJ">Rio de Janeiro</option>
+                <option value="RN">Rio Grande do Norte</option>
+                <option value="RS">Rio Grande do Sul</option>
+                <option value="RO">Rondonia</option>
+                <option value="RR">Roraima</option>
+                <option value="SC">Santa Catarina</option>
+                <option selected="selected" value="SP">Sao Paulo</option>
+                <option value="SE">Sergipe</option>
+                <option value="TO">Tocantins</option>                    
+            </select>   
         </div>
         <div class="inline">            
             <label for="edtBairro">Bairro</label>
             <input type="text" id="edtBairro" maxlength="60" disabled>
-            <div class="control-size" style="width: 100%;">
-                <label for="edtCEP">CEP</label>
-                <input type="text" id="edtCEP" maxlength="10" onkeyup="valCEP(this)" disabled>
-                <label for="edtTel">Tel</label>
-                <input type="text" id="edtTel" onkeyup="phone(this)" maxlength="15" disabled>            
-            </div>
+            <label for="edtCEP">CEP</label>
+            <input type="text" id="edtCEP" maxlength="10" onkeyup="valCEP(this)" style="width: 200px;" disabled>
+            <label for="edtTel">Tel</label>
+            <input type="text" id="edtTel" onkeyup="phone(this)" maxlength="15" style="width: 200px;" disabled>            
 
         </div>
         <button id="btnSave">Salvar</button>
         <button id="btnDel">Deletar</button>
         <button id="btnEdit">Editar</button>
+        <button id="btnCNPJ">Cartão CNPJ</button>
     </fieldset>
 
 
@@ -127,6 +126,7 @@
             if(perm[0].access == '1'){
                 if (main_data.viewEmp.data != 'new'){
                     document.querySelector('#btnEdit').style.display = 'block'                
+                    document.querySelector('#btnCNPJ').style.display = 'block'
                 }else{
                     document.querySelector('#btnEdit').click()
                     document.querySelector('#btnDel').style.display = 'none'
@@ -190,7 +190,9 @@
         }
     })
 
-
+    document.querySelector('#btnCNPJ').addEventListener('click',()=>{
+        window.open('https://servicos.receita.fazenda.gov.br/servicos/cnpjreva/Cnpjreva_Solicitacao.asp?cnpj='+main_data.viewEmp.data.cnpj,'_blank')
+    })
 
 
 

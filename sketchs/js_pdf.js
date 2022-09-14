@@ -560,8 +560,9 @@ function print_cotacao(ped,itens,emp,tipo='cot'){
     emp.ie  == null || emp.ie.trim()  == '' ? 0 : doc.text('IE:'+ getIE(emp.ie),172,txt.y)
     addLine()
     ped.comp != null ? doc.text('Comprador:'+ped.comp.trim().toUpperCase(),10,txt.y) :0    
-    ped.resp != null ? doc.text('Vendedor:'+ ped.resp.trim().toUpperCase(),80,txt.y) :0
+    ped.resp != null ? doc.text('Vendedor:'+ ped.resp.trim().split(' ')[0].toUpperCase(),80,txt.y) :0
     doc.text('Prev. Entrega:'+ dataBR(ped.data_ent),157,txt.y)
+    addLine(0.7)
     if(ped.obs != null && ped.obs.trim() != ''){
         addLine()
         doc.text('Obs:',10,txt.y)
@@ -747,8 +748,7 @@ function print_pedcomp(){
 
 }
 
-
-function holerite(func){
+function holerite(func,tipo='holerite'){
 
     function drawFrame(Y=5,mode='ADTO'){
         const date =  meses[func.data.getMonth()] +'/'+ func.data.getFullYear()
@@ -808,7 +808,7 @@ function holerite(func){
             }
 
         }
-console.log(salario)
+//console.log(salario)
         if(mode=='ADTO'){
 
             doc.setFont(undefined, 'normal')
@@ -851,7 +851,7 @@ console.log(salario)
             line(txt.y)
             addLine(0.7)
 
-        }else{
+        }else if(mode=='PGTO'){
 //            salario.descontos = parseFloat(salario.adto)
             doc.setFont(undefined, 'normal')
 
@@ -959,6 +959,47 @@ console.log(salario)
             addLine(0.7)
             line(txt.y)
             addLine(0.7)
+        }else{
+            doc.setFont(undefined, 'normal')
+
+            doc.text('VALE',10,txt.y)
+//            doc.text(parseFloat(func.horas.vale).toFixed(2),90,txt.y)
+            doc.text(parseFloat(func.horas.vale).toFixed(2),135,txt.y)
+
+            doc.setFont(undefined, 'bold')    
+
+            txt.y = Y+80
+            line(txt.y)
+            addLine(0.7)
+            doc.text('Total Venc.',135,txt.y)
+            doc.text('Total Desc.',180,txt.y)
+            addLine(0.7)
+            doc.text(parseFloat(func.horas.vale).toFixed(2),135,txt.y)
+            doc.text('0',180,txt.y)
+            addLine(0.7)
+            doc.text('Total Liq. ->',135,txt.y)
+            doc.text(viewMoneyBR(parseFloat(func.horas.vale).toFixed(2)),180,txt.y)
+            addLine(0.7)
+            line(txt.y)
+            addLine(0.7)
+            doc.text('Salario Base',10,txt.y)
+            doc.text('SalContr.INSS',60,txt.y)
+            doc.text('Base Calc. FGTS',90,txt.y)
+            doc.text('FGTS do MES',120,txt.y)
+            doc.text('Base Calc. IRRF',150,txt.y)
+            doc.text('Faixa IRRF',180,txt.y)
+            addLine(0.7)
+            doc.text(viewMoneyBR(salario.valor.toFixed(2)),10,txt.y)
+            doc.text('*****',65,txt.y)
+            doc.text('*****',95,txt.y)
+            doc.text('*****',125,txt.y)
+            doc.text('*****',155,txt.y)
+            doc.text('*****',185,txt.y)
+
+            addLine(0.7)
+            line(txt.y)
+            addLine(0.7)
+
         }
 
         addLine(2)
@@ -993,14 +1034,19 @@ console.log(salario)
     const myPromisse = queryDB(params,66);
     myPromisse.then((resolve)=>{
         imp = JSON.parse(resolve)
-        drawFrame()
-        drawFrame(150)
+
+        if(tipo == 'holerite'){
+            drawFrame()
+            drawFrame(150)
+            doc.addPage();
+            txt.y = 46        
+            drawFrame(5,'PGTO')
+            drawFrame(150,'PGTO')
+        }else{
+            drawFrame(5,tipo)
+            drawFrame(150,tipo)
+        }
         
-        doc.addPage();
-        txt.y = 46
-    
-        drawFrame(5,'PGTO')
-        drawFrame(150,'PGTO')
     
         doc.save('holerite.pdf')
 

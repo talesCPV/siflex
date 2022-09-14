@@ -88,6 +88,7 @@
     </div>
     <button id="btnSalvar">Salvar</button>
     <button id="btnDel">Deletar</button>
+    <button id="btnRecibo">Recibo</button>
   </fieldset>
 
 
@@ -166,5 +167,19 @@
             
         } 
     })
+
+    document.querySelector('#btnRecibo').addEventListener('click',()=>{
+
+        main_data.viewFunc.data.data = today
+        main_data.viewFunc.data.impostos = ''
+        main_data.viewFunc.data.horas = new Object
+        main_data.viewFunc.data.horas.vale =  parseInt(prompt(`Digite o valor:`))
+
+        console.log(main_data.viewFunc.data)
+
+        holerite(main_data.viewFunc.data,'VALE')
+
+    })
+
 
 </script>
