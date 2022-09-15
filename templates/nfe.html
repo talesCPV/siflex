@@ -100,12 +100,12 @@
                 </div>
                 <div class="inline">
                     <label> Insc. Estadual </label>
-                    <input type="text" id="IE" maxlength="14" />
+                    <input type="text" id="IE" maxlength="15" onkeyup="valIE(this)"/>
                     <input type="hidden" id="IEST" >                
                     <label> Insc. Municipal </label>
-                    <input type="text" id="IM" maxlength="15" />
+                    <input type="text" id="IM" maxlength="15" onkeyup="valInt(this)"/>
                     <label> CNAE </label>
-                    <input type="text" id="CNAE" maxlength="7" />
+                    <input type="text" id="CNAE" maxlength="7" onkeyup="valInt(this)"/>
                 </div>
                 <div class="inline">
                     <label> Regime Trib. </label>
@@ -115,7 +115,7 @@
                       <option value="3" >Regime Normal.</option>
                     </select>
                     <label> CNPJ </label>
-                    <input type="text" id="CNPJ" maxlength="14" />
+                    <input type="text" id="CNPJ" maxlength="18" onkeyup="valCNPJ(this)"/>
                 </div>
                 <div class="inline">
                     <label> Endereço </label>
@@ -133,7 +133,7 @@
                     <label> Municipio</label>
                     <input type="text" id="xMun" maxlength="60" />
                     <label> Código</label>
-                    <input type="text" id="cMun" maxlength="15" style="max-width: 150px;" />
+                    <input type="text" id="cMun" maxlength="7" style="max-width: 150px;" onkeyup="valInt(this)" />
                     <label> Sigla da UF </label>
                     <input type="text" id="UF" maxlength="2" style="max-width: 50px;" />
                 </div>
@@ -141,35 +141,40 @@
                     <label> Nome do País </label>
                     <input type="text" id="xPais" maxlength="60" />
                     <label> Código </label>
-                    <input type="text" id="cPais" maxlength="4" />
+                    <input type="text" id="cPais" maxlength="4" onkeyup="valInt(this)"/>
                 </div>
                 <div class="inline">
                     <label> CEP </label>
-                    <input type="text" id="CEP" maxlength="8" />
+                    <input type="text" id="CEP" maxlength="8" onkeyup="valCEP(this)"/>
                     <label> Telefone </label>
-                    <input type="text" id="fone" maxlength="14" />
+                    <input type="text" id="fone" maxlength="14" onkeyup="phone(this)"/>
                 </div>
                 <button id="btnSaveEmit">Salvar</button>
                                 
             </div>            
             <div id="fiscal" class="tab fiscal" style="display:none">
 <!--                <h2>Fiscal</h2>-->
+                <input type="hidden" id="cUF" value="35" >      
+                <input type="hidden" id="cNF" value="">                 
+
+
+                <div class="ckBOX">
+                    <label for="ckbSimpRem">Simples Remessa </label>                 
+                    <input type='checkbox' id='ckbSimpRem' /> 
+                </div>                    
 
                 <form class="frmShow" id="B" method="POST" action="#" >
-                    <input type="hidden" id="cUF" value="35" >      
     
-                    <input type="hidden" id="cNF" value="">                 
-    
-                    <label> Natureza da Operação *</label>
-                    <input type="text" id="natOp" maxlength="60" value=""/>
+                    <label> Numero da NF</label>
+                    <input type="text" id="nNF" maxlength="9" />
+                <label> Nat. Operação *</label>
+                <input type="text" id="natOp" maxlength="60" />
     
                     <label> Código do Modelo do Documento Fiscal </label>
                     <input type="text" id="mod" maxlength="2" value=""/>
                 
                     <input type="hidden" id="serie" value="1" >                
     
-                    <label> Numero da NF</label>
-                    <input type="text" id="nNF" maxlength="9" value=""/>
     
                     <label> Data de emissão do Documento Fiscal </label>
                     <input type="date" id="dhEmi" value="" >
@@ -253,10 +258,6 @@
                     <input type="hidden" id="dhCont" value="">
                     <input type="hidden" id="xJust" value="" >    
                   </form>                
-                  <div style="display:flex;">
-                    <input type='checkbox' id='ckbSimpRem' /> 
-                    <label for="">Simples Remessa </label>                 
-                  </div>
   
                   <button id="btnSaveFiscal">Salvar</button>                
             </div>            
@@ -474,12 +475,12 @@
 
             document.querySelector('#xNome').value = emit.xNome
             document.querySelector('#xFant').value = emit.xFant
-            document.querySelector('#IE').value = emit.IE
+            document.querySelector('#IE').value = getIE(emit.IE)
             document.querySelector('#IEST').value = emit.IEST
             document.querySelector('#IM').value = emit.IM
             document.querySelector('#CNAE').value = emit.CNAE
             document.querySelector('#CRT').value = emit.CRT
-            document.querySelector('#CNPJ').value = emit.CNPJ
+            document.querySelector('#CNPJ').value = getCNPJ(emit.CNPJ)
             document.querySelector('#xLgr').value = emit.xLgr
             document.querySelector('#nro').value = emit.nro
             document.querySelector('#bairro').value = emit.bairro
@@ -489,8 +490,8 @@
             document.querySelector('#UF').value = emit.UF
             document.querySelector('#xPais').value = emit.xPais
             document.querySelector('#cPais').value = emit.cPais
-            document.querySelector('#CEP').value = emit.CEP
-            document.querySelector('#fone').value = emit.fone
+            document.querySelector('#CEP').value = getCEP(emit.CEP)
+            document.querySelector('#fone').value = getFone(emit.fone)
             document.querySelector('#xMun').value = emit.xMun
 
 
@@ -503,26 +504,26 @@
 
                 document.getElementById('btnSaveEmit').addEventListener('click',(event)=>{
                     const emit = new Object
-                    emit.xNome = document.querySelector('#xNome').value.trim()
-                    emit.xFant = document.querySelector('#xFant').value.trim()
-                    emit.IE = document.querySelector('#IE').value.trim()
-                    emit.IEST = document.querySelector('#IEST').value.trim()
-                    emit.IM = document.querySelector('#IM').value.trim()
-                    emit.CNAE = document.querySelector('#CNAE').value.trim()
-                    emit.CRT = document.querySelector('#CRT').value.trim()
-                    emit.CNPJ = document.querySelector('#CNPJ').value.trim()
-                    emit.xLgr = document.querySelector('#xLgr').value.trim()
-                    emit.nro = document.querySelector('#nro').value.trim()
-                    emit.bairro = document.querySelector('#bairro').value.trim()
-                    emit.cpl = document.querySelector('#cpl').value.trim()
-                    emit.xMun = document.querySelector('#xMun').value.trim()
-                    emit.cMun = document.querySelector('#cMun').value.trim()
-                    emit.UF = document.querySelector('#UF').value.trim()
-                    emit.xPais = document.querySelector('#xPais').value.trim()
-                    emit.cPais = document.querySelector('#cPais').value.trim()
-                    emit.CEP = document.querySelector('#CEP').value.trim()
-                    emit.fone = document.querySelector('#fone').value.trim()
-                    emit.xMun = document.querySelector('#xMun').value.trim()
+                    emit.xNome = document.querySelector('#xNome').value.trim().toUpperCase()
+                    emit.xFant = document.querySelector('#xFant').value.trim().toUpperCase()
+                    emit.IE = getNum(document.querySelector('#IE').value)
+                    emit.IEST = document.querySelector('#IEST').value.trim().toUpperCase()
+                    emit.IM = getNum(document.querySelector('#IM').value)
+                    emit.CNAE = getNum(document.querySelector('#CNAE').value)
+                    emit.CRT = document.querySelector('#CRT').value.trim().toUpperCase()
+                    emit.CNPJ = getNum(document.querySelector('#CNPJ').value)
+                    emit.xLgr = document.querySelector('#xLgr').value.trim().toUpperCase()
+                    emit.nro = document.querySelector('#nro').value.trim().toUpperCase()
+                    emit.bairro = document.querySelector('#bairro').value.trim().toUpperCase()
+                    emit.cpl = document.querySelector('#cpl').value.trim().toUpperCase()
+                    emit.xMun = document.querySelector('#xMun').value.trim().toUpperCase()
+                    emit.cMun = getNum(document.querySelector('#cMun').value)
+                    emit.UF = document.querySelector('#UF').value.trim().toUpperCase()
+                    emit.xPais = document.querySelector('#xPais').value.trim().toUpperCase()
+                    emit.cPais = getNum(document.querySelector('#cPais').value)
+                    emit.CEP = getNum(document.querySelector('#CEP').value)
+                    emit.fone = getNum(document.querySelector('#fone').value)
+                    emit.xMun = document.querySelector('#xMun').value.trim().toUpperCase()
 
                     getConfig('NFe',JSON.stringify(emit),'emitente')
 
