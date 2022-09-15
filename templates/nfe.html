@@ -268,16 +268,30 @@
                     <legend>Busca Por</legend>
 
                     <div class="inline">
-                        <select id="selBuscaPed" name="campo_busca">
-                            <option value="todos">Todos</option>
-                            <option value="cod">Codigo</option>
-                            <option value="num_ped">Numero</option>
-                            <option value="cliente">Cliente</option>
-                            <option value="varios">Vários Códigos</option>
+                        <select id="selBuscaPed">
+                            <option value="true"       signal="=" val="true"   >Todos      </option>                        
+                            <option value="p.status"   signal="=" val="ABERTO" >Cotações   </option>
+                            <option value="p.status"   signal="=" val="FECHADO">Pedidos    </option>
+                            <option value="p.status"   signal="=" val="PAGO"   >Faturados  </option>
+                            <option value="p.status"   signal="=" val="INTERNO">Uso Interno</option>
+                            <option value="p.id"       signal="IN"   >Códigos (vários)</option>
+                            <option value="p.num_ped"  signal="LIKE">Número</option>
+                            <option value="e.fantasia" signal="LIKE"   >Cliente (Nome Fantasia)</option>
+                            <option value="e.nome" signal="LIKE"   >Cliente</option>
+                            <option value="e.id"       signal="IN"   >Cod. do Cliente</option>      
                         </select>
                         <input type="text" id="edtBuscaPed" />
                         <button id="btnBuscaPed" >OK</button>
                         </div>
+                        <div class="inline center-itens">
+                            <div class="ckBOX">
+                                <label for="ckbData">Início/Final</label>
+                                <input type="checkbox" id="ckbData" checked>
+                            </div>
+                            <input type="date" id="edtIni">
+                            <input type="date" id="edtFin">
+                        </div>                         
+
                      <table id="tblBuscaPed"></table> 
                 </fieldset>
 
@@ -387,7 +401,48 @@
 </template>
 <script>
 
+/* CHAMADA DE FUNÇÕES INICIAL */    
+
     importData()
+    document.querySelector('#edtIni').value =  today.iniMonth()
+    document.querySelector('#edtFin').value =  today.finMonth()
+
+
+
+    document.querySelector('#btnBuscaPed').addEventListener('click',()=>{
+
+        const sel = document.querySelector('#selBuscaPed')
+        const field = sel.value
+        const signal = sel.options[sel.selectedIndex].getAttribute('signal')
+        const ckb = document.querySelector('#ckbData').checked
+        let value = sel.options[sel.selectedIndex].hasAttribute('val') ? sel.options[sel.selectedIndex].getAttribute('val') : document.querySelector('#edtBuscaPed').value.trim()
+        value = signal=='LIKE' ? `"%${value}%"` : signal=='IN' ? `(${value})` : sel.value=='true'? sel.value : `"${value}"`
+
+
+        const tbl = document.getElementById('tblBuscaPed')
+        const params = new Object;
+            params.field = field
+            params.signal = signal
+            params.value = value
+            params.ini = ckb ? document.querySelector('#edtIni').value : '2000-01-01';
+            params.fin = ckb ? document.querySelector('#edtFin').value : '2100-12-31';        
+
+        const myPromisse = queryDB(params,27);
+
+        myPromisse.then((resolve)=>{
+            if(resolve.trim() != ""){
+                const json = JSON.parse(resolve);
+                tbl.innerHTML=''
+                json.length > 0 ? tbl.head('Cod.|mobHide,Num.,Cliente.,Data,Status|mobHide,Valor R$|mobHide') : 0
+                for(let i=0; i<json.length;i++){                                       
+                    tbl.plot(json[i],'id|mobHide,num_ped,fantasia,data_ped,status|mobHide,venda|mobHide','int,str,Upp,date,change FECHADO=PED ABERTO=COT PAGO=FAT INTERNO=USO_INT. .=**,R$.',true)                    
+                }                
+            }        
+        })
+
+
+    })
+
 
     function openTab(tab) {
         let x = document.getElementsByClassName("tab");
@@ -412,59 +467,50 @@
                     
     }
 
+/* CHAMADA DE FUNÇÕES DO DOM */    
 
-
-           /* DECLARAÇÃO GLOBAL */
-           const today = new Date();        
-                let dadosNF;
-                let numPed = "";
-            /* CHAMADA DE FUNÇÕES INICIAL */    
-            
-            
-            /* CHAMADA DE FUNÇÕES DO DOM */    
-            
-                document.querySelector('.tab-emitente').addEventListener('click',()=>{
-                    openTab('emitente')
-                })
-                document.querySelector('.tab-fiscal').addEventListener('click',()=>{
-                    openTab('fiscal')
-                })
-                document.querySelector('.tab-pedido').addEventListener('click',()=>{
-                    openTab('pedido')
-                })
-                document.querySelector('.tab-cliente').addEventListener('click',()=>{
-                    openTab('cliente')
-                })    
-                document.querySelector('.tab-itens').addEventListener('click',()=>{
-                    openTab('itens')
-                })
-                document.querySelector('.tab-fatura').addEventListener('click',()=>{
-                    openTab('fatura')
-                })
-                
-                document.querySelector('.tab-export').addEventListener('click',()=>{
-                    openTab('export');
+    document.querySelector('.tab-emitente').addEventListener('click',()=>{
+        openTab('emitente')
+    })
+    document.querySelector('.tab-fiscal').addEventListener('click',()=>{
+        openTab('fiscal')
+    })
+    document.querySelector('.tab-pedido').addEventListener('click',()=>{
+        openTab('pedido')
+    })
+    document.querySelector('.tab-cliente').addEventListener('click',()=>{
+        openTab('cliente')
+    })    
+    document.querySelector('.tab-itens').addEventListener('click',()=>{
+        openTab('itens')
+    })
+    document.querySelector('.tab-fatura').addEventListener('click',()=>{
+        openTab('fatura')
+    })
+    
+    document.querySelector('.tab-export').addEventListener('click',()=>{
+        openTab('export');
 /*                    
-                    const data = new URLSearchParams();        
-                        data.append("path", `../NF_txt`);
-            
-                    const resp = getData("ajax/ajax_getFiles.php", data);                    
-                    resp.then((resolve)=>{
-                        const arr = JSON.parse(resolve);
-                        const sel = document.getElementById('txtFiles');
-                        sel.innerHTML = '';
-                        for(let i=2; i<arr.length; i++){
-                            const opt = document.createElement('option');
-                            if(i == 2){
-                                opt.selected = true;
-                            }
-                            opt.innerHTML = arr[i];
-                            sel.appendChild(opt);
-
+                const data = new URLSearchParams();        
+                    data.append("path", `../NF_txt`);
+        
+                const resp = getData("ajax/ajax_getFiles.php", data);                    
+                resp.then((resolve)=>{
+                    const arr = JSON.parse(resolve);
+                    const sel = document.getElementById('txtFiles');
+                    sel.innerHTML = '';
+                    for(let i=2; i<arr.length; i++){
+                        const opt = document.createElement('option');
+                        if(i == 2){
+                            opt.selected = true;
                         }
-                    })             
+                        opt.innerHTML = arr[i];
+                        sel.appendChild(opt);
+
+                    }
+                })             
 */                           
-                })
+    })
 
 
     function importData(){
@@ -494,46 +540,94 @@
             document.querySelector('#fone').value = getFone(emit.fone)
             document.querySelector('#xMun').value = emit.xMun
 
+            const fiscal = JSON.parse(json.fiscal)
 
-            console.log(emit)
+            document.querySelector('#ckbSimpRem').checked = fiscal.ckbSimpRem
+            document.querySelector('#nNF').value = fiscal.nNF
+            document.querySelector('#cUF').value = fiscal.cUF
+            document.querySelector('#natOp').value = fiscal.natOp
+            document.querySelector('#mod').value = fiscal.mod
+            document.querySelector('#serie').value = fiscal.serie
+            document.querySelector('#dhEmi').value = today.getFormatDate()
+            document.querySelector('#dhSaiEnt').value = today.getFormatDate()
+            document.querySelector('#tpNF').value = fiscal.tpNF
+            document.querySelector('#idDest').value = fiscal.idDest
+            document.querySelector('#cMunFG').value = fiscal.cMunFG
+            document.querySelector('#tpImp').value = fiscal.tpImp
+            document.querySelector('#tpEmis').value = fiscal.tpEmis
+            document.querySelector('#cDV').value = fiscal.cDV
+            document.querySelector('#tpAmb').value = fiscal.tpAmb
+            document.querySelector('#finNFe').value = fiscal.finNFe
+            document.querySelector('#indFinal').value = fiscal.indFinal
+            document.querySelector('#indPres').value = fiscal.indPres
+            document.querySelector('#procEmi').value = fiscal.procEmi
+            document.querySelector('#verProc').value = fiscal.verProc
+            document.querySelector('#dhCont').value = fiscal.dhCont
+            document.querySelector('#xJust').value = fiscal.xJust
 
+
+            console.log(fiscal)
 
         })
 
     }
 
-                document.getElementById('btnSaveEmit').addEventListener('click',(event)=>{
-                    const emit = new Object
-                    emit.xNome = document.querySelector('#xNome').value.trim().toUpperCase()
-                    emit.xFant = document.querySelector('#xFant').value.trim().toUpperCase()
-                    emit.IE = getNum(document.querySelector('#IE').value)
-                    emit.IEST = document.querySelector('#IEST').value.trim().toUpperCase()
-                    emit.IM = getNum(document.querySelector('#IM').value)
-                    emit.CNAE = getNum(document.querySelector('#CNAE').value)
-                    emit.CRT = document.querySelector('#CRT').value.trim().toUpperCase()
-                    emit.CNPJ = getNum(document.querySelector('#CNPJ').value)
-                    emit.xLgr = document.querySelector('#xLgr').value.trim().toUpperCase()
-                    emit.nro = document.querySelector('#nro').value.trim().toUpperCase()
-                    emit.bairro = document.querySelector('#bairro').value.trim().toUpperCase()
-                    emit.cpl = document.querySelector('#cpl').value.trim().toUpperCase()
-                    emit.xMun = document.querySelector('#xMun').value.trim().toUpperCase()
-                    emit.cMun = getNum(document.querySelector('#cMun').value)
-                    emit.UF = document.querySelector('#UF').value.trim().toUpperCase()
-                    emit.xPais = document.querySelector('#xPais').value.trim().toUpperCase()
-                    emit.cPais = getNum(document.querySelector('#cPais').value)
-                    emit.CEP = getNum(document.querySelector('#CEP').value)
-                    emit.fone = getNum(document.querySelector('#fone').value)
-                    emit.xMun = document.querySelector('#xMun').value.trim().toUpperCase()
+    document.getElementById('btnSaveEmit').addEventListener('click',(event)=>{
+        const emit = new Object
+        emit.xNome = document.querySelector('#xNome').value.trim().toUpperCase()
+        emit.xFant = document.querySelector('#xFant').value.trim().toUpperCase()
+        emit.IE = getNum(document.querySelector('#IE').value)
+        emit.IEST = document.querySelector('#IEST').value.trim().toUpperCase()
+        emit.IM = getNum(document.querySelector('#IM').value)
+        emit.CNAE = getNum(document.querySelector('#CNAE').value)
+        emit.CRT = document.querySelector('#CRT').value.trim().toUpperCase()
+        emit.CNPJ = getNum(document.querySelector('#CNPJ').value)
+        emit.xLgr = document.querySelector('#xLgr').value.trim().toUpperCase()
+        emit.nro = document.querySelector('#nro').value.trim().toUpperCase()
+        emit.bairro = document.querySelector('#bairro').value.trim().toUpperCase()
+        emit.cpl = document.querySelector('#cpl').value.trim().toUpperCase()
+        emit.xMun = document.querySelector('#xMun').value.trim().toUpperCase()
+        emit.cMun = getNum(document.querySelector('#cMun').value)
+        emit.UF = document.querySelector('#UF').value.trim().toUpperCase()
+        emit.xPais = document.querySelector('#xPais').value.trim().toUpperCase()
+        emit.cPais = getNum(document.querySelector('#cPais').value)
+        emit.CEP = getNum(document.querySelector('#CEP').value)
+        emit.fone = getNum(document.querySelector('#fone').value)
+        emit.xMun = document.querySelector('#xMun').value.trim().toUpperCase()
 
-                    getConfig('NFe',JSON.stringify(emit),'emitente')
+        getConfig('NFe',JSON.stringify(emit),'emitente')
 
-                })
+    })
+                
+    document.getElementById('btnSaveFiscal').addEventListener('click',(event)=>{
+        const fiscal = new Object
+        fiscal.ckbSimpRem = document.querySelector('#ckbSimpRem').checked
+        fiscal.nNF = document.querySelector('#nNF').value.trim()
+        fiscal.cUF = document.querySelector('#cUF').value
+        fiscal.natOp = document.querySelector('#natOp').value.trim().toUpperCase()
+        fiscal.mod = document.querySelector('#mod').value.trim()
+        fiscal.serie = document.querySelector('#serie').value
+        fiscal.dhEmi = document.querySelector('#dhEmi').value
+        fiscal.dhSaiEnt = document.querySelector('#dhSaiEnt').value
+        fiscal.tpNF = document.querySelector('#tpNF').value
+        fiscal.idDest = document.querySelector('#idDest').value
+        fiscal.cMunFG = document.querySelector('#cMunFG').value
+        fiscal.tpImp = document.querySelector('#tpImp').value
+        fiscal.tpEmis = document.querySelector('#tpEmis').value
+        fiscal.cDV = document.querySelector('#cDV').value
+        fiscal.tpAmb = document.querySelector('#tpAmb').value
+        fiscal.finNFe = document.querySelector('#finNFe').value
+        fiscal.indFinal = document.querySelector('#indFinal').value
+        fiscal.indPres = document.querySelector('#indPres').value
+        fiscal.procEmi = document.querySelector('#procEmi').value
+        fiscal.verProc = document.querySelector('#verProc').value
+        fiscal.dhCont = document.querySelector('#dhCont').value
+        fiscal.xJust = document.querySelector('#xJust').value
+
+        getConfig('NFe',JSON.stringify(fiscal),'fiscal')
+
+    })
 /*                
-                document.getElementById('btnSaveFiscal').addEventListener('click',(event)=>{
-                    document.getElementById('cNF').value = Math.floor(Math.random() * (99999999 - 10000000) + 10000000) ; // novo cNF
-                    salvaNF("B",2);     
-//                    console.log(dadosNF);
-                })
                 document.getElementById('btnSaveCli').addEventListener('click',()=>{
                     salvaNF("E",6);
                     salvaNF("E02",7);
