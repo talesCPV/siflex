@@ -314,11 +314,13 @@ function queryDB(params,cod){
     });      
 }
 
-function getConfig(field,value=0,order='read'){
+function getConfig(field,file='config.json',order='read',value=0){
+//    console.log('field:'+field+' file:'+file+' order:'+order+' value:'+value)
     const data = new URLSearchParams();        
         data.append("order", order);
         data.append("field", field);
         data.append("value", value);
+        data.append("file",file);
     const myRequest = new Request("backend/getConfig.php",{
         method : "POST",
         body : data
@@ -327,7 +329,7 @@ function getConfig(field,value=0,order='read'){
     return new Promise((resolve,reject) =>{
         fetch(myRequest)
         .then(function (response){
-            if (response.status === 200) { 
+            if (response.status === 200) {                 
                 resolve(response.text());                    
             } else { 
                 reject(new Error("Houve algum erro na comunicação com o servidor"));                    

@@ -27,7 +27,7 @@
 
     const saveBackground = function(filename, path='assets/users/'){ 
         try{
-            getConfig(localStorage.getItem('username'),path+filename,'wallpaper')
+            getConfig(localStorage.getItem('username'),'config.json','wallpaper',path+filename)
             main_data.dashboard.wallpaper()
             closeModal('uploadFile')
         }catch{

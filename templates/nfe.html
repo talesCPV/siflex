@@ -563,7 +563,7 @@
 
 
     function importData(){
-        getConfig('NFe').then((txt)=>{    
+        getConfig('NFe','NFe.json').then((txt)=>{    
             const json = JSON.parse(txt)
 
             const emitente = document.querySelector('#emitente')
@@ -621,7 +621,7 @@
             fiscal.querySelector('#verProc').value = B.verProc
             fiscal.querySelector('#dhCont').value = B.dhCont
             fiscal.querySelector('#xJust').value = B.xJust
-
+/*
             const cliente = document.querySelector('#cliente')
 
             const E = JSON.parse(json.E)
@@ -647,7 +647,7 @@
             cliente.querySelector('#cPais').value = E05.cPais
             cliente.querySelector('#xPais').value = E05.xPais
             cliente.querySelector('#fone').value = E05.fone
-
+*/
 //            console.log(fiscal)
 
         })
@@ -664,10 +664,10 @@
             C.IM = getNum(emitente.querySelector('#IM').value)
             C.CNAE = getNum(emitente.querySelector('#CNAE').value)
             C.CRT = emitente.querySelector('#CRT').value.trim().toUpperCase()
-        getConfig('NFe',JSON.stringify(C),'C')
+        getConfig('NFe','NFe.json','C',JSON.stringify(C))
         const C02 = new Object
             C02.CNPJ = getNum(emitente.querySelector('#CNPJ').value)
-        getConfig('NFe',JSON.stringify(C02),'C02')
+        getConfig('NFe','NFe.json','C02',JSON.stringify(C02))
         const C05 = new Object
             C05.xLgr = emitente.querySelector('#xLgr').value.trim().toUpperCase()
             C05.nro = emitente.querySelector('#nro').value.trim().toUpperCase()
@@ -680,7 +680,7 @@
             C05.cPais = getNum(emitente.querySelector('#cPais').value)
             C05.xPais = emitente.querySelector('#xPais').value.trim().toUpperCase()
             C05.fone = getNum(emitente.querySelector('#fone').value)
-        getConfig('NFe',JSON.stringify(C05),'C05')
+        getConfig('NFe','NFe.json','C05',JSON.stringify(C05))
     })
                 
     document.getElementById('btnSaveFiscal').addEventListener('click',(event)=>{
@@ -707,10 +707,10 @@
             B.verProc = fiscal.querySelector('#verProc').value
             B.dhCont = fiscal.querySelector('#dhCont').value
             B.xJust = fiscal.querySelector('#xJust').value
-        getConfig('NFe',JSON.stringify(B),'B')
+        getConfig('NFe','NFe.json','B',JSON.stringify(B))
         const CONF = new Object
             CONF.ckbSimpRem = document.querySelector('#ckbSimpRem').checked
-        getConfig('NFe',JSON.stringify(CONF),'CONF')
+        getConfig('NFe','NFe.json','CONF',JSON.stringify(CONF))
 
     })
                 
@@ -723,10 +723,10 @@
             E.ISUF = cliente.querySelector('#ISUF').value
             E.IM = cliente.querySelector('#IM').value.trim()
             E.email = cliente.querySelector('#email').value.trim().toLowerCase()
-        getConfig('NFe',JSON.stringify(E),'E')
+        getConfig('NFe','NFe.json','E',JSON.stringify(E))
         const E02 = new Object
             E02.CNPJ = cliente.querySelector('#CNPJ').value.trim().toUpperCase()
-        getConfig('NFe',JSON.stringify(E02),'E02')
+        getConfig('NFe','NFe.json','E02',JSON.stringify(E02))
         const E05 = new Object
             E05.xLgr = cliente.querySelector('#xLgr').value.trim().toUpperCase()
             E05.nro = cliente.querySelector('#nro').value
@@ -739,7 +739,7 @@
             E05.cPais = cliente.querySelector('#cPais').value.trim().toUpperCase()
             E05.xPais = cliente.querySelector('#xPais').value.trim().toUpperCase()
             E05.fone = cliente.querySelector('#fone').value.trim().toUpperCase()
-        getConfig('NFe',JSON.stringify(E05),'E05')
+        getConfig('NFe','NFe.json','E05',JSON.stringify(E05))
 
     })
 /*                

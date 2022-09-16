@@ -91,14 +91,14 @@
 
     document.querySelector('#btnCusto').addEventListener('click',()=>{
         const custo = document.querySelector('#edtCusto')
-        getConfig('config',custo.value,'centro_custo')
+        getConfig('config','config.json','centro_custo',custo.value)
     })
 
     document.querySelector('#btnTxtPadrao').addEventListener('click',()=>{
         const condPgto = document.querySelector('#edtCondPgto')
-        getConfig('config',condPgto.value.trim(),'cond_pgto')
+        getConfig('config','config.json','cond_pgto',condPgto.value.trim())
         const anaFrota = document.querySelector('#edtAnaFrota')
-        getConfig('config',anaFrota.value.trim(),'ana_frota')
+        getConfig('config','config.json','ana_frota',anaFrota.value.trim())
     })
 
 </script>

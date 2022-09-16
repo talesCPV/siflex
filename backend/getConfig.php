@@ -1,6 +1,6 @@
 <?php   
 	if (IsSet($_POST["field"])){
-        $path = getcwd().'/../config/config.json';
+        $path = getcwd().'/../config/'.$_POST["file"];
         $field = $_POST["field"];
         $order = $_POST["order"];
         $value = $_POST["value"];      
