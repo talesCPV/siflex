@@ -1,27 +1,9 @@
 
 <template>
     <style>
-    h2{
-        width: 100%;
-        text-align: center;
-        margin: auto;
-        background-color: rgb(0, 0, 0);
-        color: white;
-    }
 
-    table{
-        width: 100%;
-        table-layout: auto;
-    }
 
-    table tr:hover{
-        cursor: pointer;
-        background-color: crimson;
-        color: ghostwhite;
-    }
 
-    tr:nth-child(even) {background: #CCC}
-    tr:nth-child(odd) {background: #FFF}
 
     .tab-bar{
         display: flex;
@@ -53,22 +35,23 @@
         font-size: large;
     }
 
-    .frmShow  > input, .frmShow > select, .frmShow  > label, .frmShow  > textarea{
+    #fiscal > *{
         display: flex;
+        flex-direction: column;
         width: 98%;
-        margin-left: 10px;        
+        margin-left: 10px;  
+        margin-top: 10px;      
     }
 
-    .frmShow  > label{
-        margin-top: 10px;
-    }    
+    #fiscal > label{
+        margin-left: 20px;
+    }
 
-    button, input[type='checkbox']{
-        margin: 10px;
-        float: right;
-        padding: 5px 10px;
+
+    button{
         width: 98%;
     }
+
 
 
     </style>
@@ -90,92 +73,99 @@
         <div class="tab-screen">        
             <div id="emitente" class="tab emitente">
 <!--                <h2>Emitente</h2>               -->
-                <div class="inline">
-                    <label> Razão Social *</label>
-                    <input type="text" id="xNome" maxlength="60" />
+                <div id="C">
+                    <div class="inline">
+                        <label> Razão Social *</label>
+                        <input type="text" id="xNome" maxlength="60" />
+                    </div>
+                    <div class="inline">
+                        <label> Nome Fantasia </label>
+                        <input type="text" id="xFant" maxlength="60" />
+                    </div>    
+
+                    <div class="inline">
+                        <label> Insc. Estadual </label>
+                        <input type="text" id="IE" maxlength="15" onkeyup="valIE(this)"/>
+                        <input type="hidden" id="IEST" >                
+                        <label> Insc. Municipal </label>
+                        <input type="text" id="IM" maxlength="15" onkeyup="valInt(this)"/>
+                    </div> 
+                    <div class="inline">
+                        <label> Regime Trib. </label>
+                        <select id="CRT" >
+                          <option value="1" selected>Simples Nacional</option>
+                          <option value="2" >Simples Nacional - excesso de sublimite de receita bruta</option>
+                          <option value="3" >Regime Normal.</option>
+                        </select>
+                        <label> CNAE </label>
+                        <input type="text" id="CNAE" maxlength="7" onkeyup="valInt(this)"/>                        
+                    </div>                                                       
                 </div>
-                <div class="inline">
-                    <label> Nome Fantasia </label>
-                    <input type="text" id="xFant" maxlength="60" />
-                </div>
-                <div class="inline">
-                    <label> Insc. Estadual </label>
-                    <input type="text" id="IE" maxlength="15" onkeyup="valIE(this)"/>
-                    <input type="hidden" id="IEST" >                
-                    <label> Insc. Municipal </label>
-                    <input type="text" id="IM" maxlength="15" onkeyup="valInt(this)"/>
-                    <label> CNAE </label>
-                    <input type="text" id="CNAE" maxlength="7" onkeyup="valInt(this)"/>
-                </div>
-                <div class="inline">
-                    <label> Regime Trib. </label>
-                    <select id="CRT" >
-                      <option value="1" selected>Simples Nacional</option>
-                      <option value="2" >Simples Nacional - excesso de sublimite de receita bruta</option>
-                      <option value="3" >Regime Normal.</option>
-                    </select>
+                <div id="C02" class="inline">
+                    
                     <label> CNPJ </label>
                     <input type="text" id="CNPJ" maxlength="18" onkeyup="valCNPJ(this)"/>
                 </div>
-                <div class="inline">
-                    <label> Endereço </label>
-                    <input type="text" id="xLgr" maxlength="60" />
-                    <label> Número: </label>
-                    <input type="text" id="nro" maxlength="5" style="max-width: 100px;" />
-                </div>
-                <div class="inline">
-                    <label> Bairro </label>
-                    <input type="text" id="bairro" maxlength="60" />
-                    <label> Complemento </label>
-                    <input type="text" id="cpl" maxlength="60" style="max-width: 200px;" />
-                </div>
-                <div class="inline">
-                    <label> Municipio</label>
-                    <input type="text" id="xMun" maxlength="60" />
-                    <label> Código</label>
-                    <input type="text" id="cMun" maxlength="7" style="max-width: 150px;" onkeyup="valInt(this)" />
-                    <label> Sigla da UF </label>
-                    <input type="text" id="UF" maxlength="2" style="max-width: 50px;" />
-                </div>
-                <div class="inline">
-                    <label> Nome do País </label>
-                    <input type="text" id="xPais" maxlength="60" />
-                    <label> Código </label>
-                    <input type="text" id="cPais" maxlength="4" onkeyup="valInt(this)"/>
-                </div>
-                <div class="inline">
-                    <label> CEP </label>
-                    <input type="text" id="CEP" maxlength="8" onkeyup="valCEP(this)"/>
-                    <label> Telefone </label>
-                    <input type="text" id="fone" maxlength="14" onkeyup="phone(this)"/>
+                <div id="C05">
+                    <div class="inline">
+                        <label> Endereço </label>
+                        <input type="text" id="xLgr" maxlength="60" />
+                        <label> Número: </label>
+                        <input type="text" id="nro" maxlength="5" style="max-width: 100px;" />
+                    </div>
+                    <div class="inline">
+                        <label> Bairro </label>
+                        <input type="text" id="bairro" maxlength="60" />
+                        <label> Complemento </label>
+                        <input type="text" id="cpl" maxlength="60" style="max-width: 200px;" />
+                    </div>
+                    <div class="inline">
+                        <label> Municipio</label>
+                        <input type="text" id="xMun" maxlength="60" />
+                        <label> Código</label>
+                        <input type="text" id="cMun" maxlength="7" style="max-width: 150px;" onkeyup="valInt(this)" />
+                        <label> Sigla da UF </label>
+                        <input type="text" id="UF" maxlength="2" style="max-width: 50px;" />
+                    </div>
+                    <div class="inline">
+                        <label> Nome do País </label>
+                        <input type="text" id="xPais" maxlength="60" />
+                        <label> Código </label>
+                        <input type="text" id="cPais" maxlength="4" onkeyup="valInt(this)"/>
+                    </div>
+                    <div class="inline">
+                        <label> CEP </label>
+                        <input type="text" id="CEP" maxlength="8" onkeyup="valCEP(this)"/>
+                        <label> Telefone </label>
+                        <input type="text" id="fone" maxlength="14" onkeyup="phone(this)"/>
+                    </div>
                 </div>
                 <button id="btnSaveEmit">Salvar</button>
                                 
             </div>            
             <div id="fiscal" class="tab fiscal" style="display:none">
 <!--                <h2>Fiscal</h2>-->
-                <input type="hidden" id="cUF" value="35" >      
-                <input type="hidden" id="cNF" value="">                 
+            
+                <div id="B">
 
-
-                <div class="ckBOX">
-                    <label for="ckbSimpRem">Simples Remessa </label>                 
-                    <input type='checkbox' id='ckbSimpRem' /> 
-                </div>                    
-
-                <form class="frmShow" id="B" method="POST" action="#" >
-    
-                    <label> Numero da NF</label>
+                    <input type="hidden" id="cUF" value="35">
+                    <input type="hidden" id="cNF">
+                    <input type="hidden" id="serie" value="1">
+                    <input type="hidden" id="cMunFG">
+                    <input type="hidden" id="cDV">
+                    <input type="hidden" id="verProc">
+                    <input type="hidden" id="dhCont">
+                    <input type="hidden" id="xJust">
+                
+                    <label> Numero da NF</label>    
                     <input type="text" id="nNF" maxlength="9" />
-                <label> Nat. Operação *</label>
-                <input type="text" id="natOp" maxlength="60" />
+
+                    <label> Nat. Operação *</label>
+                    <input type="text" id="natOp" maxlength="60" />
     
                     <label> Código do Modelo do Documento Fiscal </label>
                     <input type="text" id="mod" maxlength="2" value=""/>
-                
-                    <input type="hidden" id="serie" value="1" >                
-    
-    
+                    
                     <label> Data de emissão do Documento Fiscal </label>
                     <input type="date" id="dhEmi" value="" >
     
@@ -194,9 +184,7 @@
                       <option value="2">Operação Interestadual</option>
                       <option value="3">Operação com o Exterior</option>
                     </select>
-    
-                    <input type="hidden" id="cMunFG" value="" >                
-    
+        
                     <label> Formato de Impressão do DANFE</label>
                     <select id="tpImp" >
                       <option value="1">Retrato</option>
@@ -213,9 +201,7 @@
                       <option value="7">Contingência SVC-RS</option>
                       <option value="9">Contingência off-line NFC-e</option>
                     </select>
-    
-                    <input type="hidden" id="cDV" value="" >                
-    
+        
                     <label> Identificação do Ambiente</label>
                     <select id="tpAmb" >
                       <option value="1">Produção</option>
@@ -253,11 +239,12 @@
                       <option value="2">emissão de NF-e avulsa, pelo contribuinte com seu certificado digital, através do site do Fisco</option>
                       <option value="3">emissão NF-e pelo contribuinte com aplicativo fornecido pelo Fisco</option>
                     </select>
-    
-                    <input type="hidden" id="verProc" value="">
-                    <input type="hidden" id="dhCont" value="">
-                    <input type="hidden" id="xJust" value="" >    
-                  </form>                
+
+                    <div class="ckBOX">
+                        <label for="ckbSimpRem">Simples Remessa </label>                 
+                        <input type='checkbox' id='ckbSimpRem' /> 
+                    </div>  
+                </div>                
   
                   <button id="btnSaveFiscal">Salvar</button>                
             </div>            
@@ -266,18 +253,17 @@
 
                 <fieldset>
                     <legend>Busca Por</legend>
-
                     <div class="inline">
                         <select id="selBuscaPed">
                             <option value="true"       signal="=" val="true"   >Todos      </option>                        
                             <option value="p.status"   signal="=" val="ABERTO" >Cotações   </option>
-                            <option value="p.status"   signal="=" val="FECHADO">Pedidos    </option>
+                            <option value="p.status"   signal="=" val="FECHADO" selected>Pedidos    </option>
                             <option value="p.status"   signal="=" val="PAGO"   >Faturados  </option>
                             <option value="p.status"   signal="=" val="INTERNO">Uso Interno</option>
                             <option value="p.id"       signal="IN"   >Códigos (vários)</option>
-                            <option value="p.num_ped"  signal="LIKE">Número</option>
+                            <option value="p.num_ped"  signal="LIKE">Num. do Pedido</option>
                             <option value="e.fantasia" signal="LIKE"   >Cliente (Nome Fantasia)</option>
-                            <option value="e.nome" signal="LIKE"   >Cliente</option>
+                            <option value="e.nome"     signal="LIKE"   >Cliente</option>
                             <option value="e.id"       signal="IN"   >Cod. do Cliente</option>      
                         </select>
                         <input type="text" id="edtBuscaPed" />
@@ -291,61 +277,77 @@
                             <input type="date" id="edtIni">
                             <input type="date" id="edtFin">
                         </div>                         
-
                      <table id="tblBuscaPed"></table> 
                 </fieldset>
-
-
 
             </div>
             <div id="cliente" class="tab cliente" style="display:none">
 <!--                <h2>Cliente</h2>-->
-                <form class="frmShow" id="E" method="POST" action="#">
-                    <label> Razão Social *</label>
-                    <input type="text" id="xNome" maxlength="60" value="" />
-                    <label> Contribuinte ICMS</label>
-                    <select id="indIEDest">
-                        <option value="1">Contribuinte ICMS (informar a IE do destinatário)</option>
-                        <option value="2">Contribuinte isento de Inscrição no cadastro de Contribuintes do ICMS (Não possui IE)</option>
-                        <option value="9">Não Contribuinte, que pode ou não possuir Inscrição Estadual no Cadastro de Contribuintes do ICMS</option>
-                    </select>
-                    <label> Insc. Estadual </label>
-                    <input type="text" id="IE" maxlength="14" value="" />
-                    <input type="hidden" id="ISUF" value=""  >                
-                    <label> Insc. Municipal </label>
-                    <input type="text" id="IM" maxlength="15" value="" />
-                    <label> Email </label>
-                    <input type="text" id="email" value=""/>
-                </form>                           
-                <form class="frmShow" id="E02" method="POST" action="#">
+                <div id="E">
+                    <div class="inline">
+                        <label> Razão Social *</label>
+                        <input type="text" id="xNome" maxlength="60"/>
+                    </div>
+                    <div class="inline">
+                        <label> ICMS</label>
+                        <select id="indIEDest">
+                            <option value="1">Contribuinte ICMS (informar a IE do destinatário)</option>
+                            <option value="2">Contribuinte isento de Inscrição no cadastro de Contribuintes do ICMS (Não possui IE)</option>
+                            <option value="9">Não Contribuinte, que pode ou não possuir Inscrição Estadual no Cadastro de Contribuintes do ICMS</option>
+                        </select>
+                    </div>
+                    <div class="inline">
+                        <label> Insc. Estadual </label>
+                        <input type="text" id="IE" maxlength="14"/>
+                        <input type="hidden" id="ISUF">
+                        <label> Insc. Municipal </label>
+                        <input type="text" id="IM" maxlength="15"/>                 
+                    </div>
+                    <div class="inline">
+                        <label> Email </label>
+                        <input type="text" id="email"/>
+                    </div>
+
+                </div>                           
+                <div id="E02" class="inline">
                     <label> CNPJ </label>
-                    <input type="text" id="CNPJ" maxlength="14" value=""/>
-                </form>
-                <form class="frmShow" id="E05" method="POST" action="#">
-                    <label> Endereço </label>
-                    <input type="text" id="xLgr" maxlength="60" value="" />
-                    <label> Número: </label>
-                    <input type="text" id="nro" maxlength="5" value="" />
-                    <label> Complemento </label>
-                    <input type="text" id="XCpl" maxlength="60"  value=""/>
-                    <label> Bairro </label>
-                    <input type="text" id="xBairro" maxlength="60" value="" />
-                    <label> Código do Municipio </label>
-                    <input type="text" id="cMun" maxlength="60" value="" readonly/>
+                    <input type="text" id="CNPJ" maxlength="14"/>
+                </div>
+                <div id="E05">
+                    <div class="inline">
+                        <label> Endereço </label>
+                        <input type="text" id="xLgr" maxlength="60"/>
+                        <label> Número: </label>
+                        <input type="text" id="nro" maxlength="5" style="width: 100px;" />    
+                    </div>
+                    <div class="inline">
+                        <label> Bairro </label>
+                        <input type="text" id="xBairro" maxlength="60"/>
+                        <label> Complemento </label>
+                        <input type="text" id="XCpl" maxlength="60"/>
+                    </div>
+                    <div class="inline">
+                        <label>  Municipio</label>
+                        <input type="text" id="xMun" maxlength="60"/>
+                        <label> Cod.</label>
+                        <input type="text" id="cMun" maxlength="60" readonly/>
+                        <label> Sigla da UF </label>
+                        <input type="text" id="UF" maxlength="60"/>                        
+                    </div>
                     <button id="btnBuscaIBGE"> Buscar no IBGE</button>
-                    <label>  Nome do Municipio</label>
-                    <input type="text" id="xMun" maxlength="60" value=""/>
-                    <label> Sigla da UF </label>
-                    <input type="text" id="UF" maxlength="60" value="" />
-                    <label> CEP </label>
-                    <input type="text" id="CEP" maxlength="8" value=""/>
-                    <label> Código do País  </label>
-                    <input type="text" id="cPais" maxlength="4" value=""/>
-                    <label> Nome do País </label>
-                    <input type="text" id="xPais" maxlength="60" value=""/>
-                    <label> Telefone </label>
-                    <input type="text" id="fone" maxlength="14" value="" />
-                </form>
+                    <div class="inline">
+                        <label> País </label>
+                        <input type="text" id="xPais" maxlength="60"/>                        
+                        <label> Cod.</label>
+                        <input type="text" id="cPais" maxlength="4"/>
+                    </div>
+                    <div class="inline">
+                        <label> CEP </label>
+                        <input type="text" id="CEP" maxlength="8"/>
+                        <label> Telefone </label>
+                        <input type="text" id="fone" maxlength="14"/>    
+                    </div>
+                </div>
                 <button id="btnSaveCli">Salvar</button>
             </div>        
             <div id="itens" class="tab itens" style="display:none">
@@ -407,7 +409,59 @@
     document.querySelector('#edtIni').value =  today.iniMonth()
     document.querySelector('#edtFin').value =  today.finMonth()
 
+    document.querySelector('#tblBuscaPed').addEventListener('click',(e)=>{
+        data = e.target.parentNode.data
+        data.mode = 'NFe'
 
+        if (confirm(`Carregar Ped.${data.num_ped} de ${data.fantasia.toUpperCase()}?`)) {
+            console.log(data)
+
+            const cliente = document.querySelector('#cliente')
+
+            cliente.querySelector('#xNome').value = data.nome_emp.trim().toUpperCase()
+            cliente.querySelector('#indIEDest').value = (data.ie==null || data.ie.trim() == '') ? 2 : 1
+            cliente.querySelector('#IE').value = data.ie!=null ? getIE(data.ie) : ''
+            cliente.querySelector('#IM').value = data.im!=null ? data.im.trim().toUpperCase() : ''
+            cliente.querySelector('#CNPJ').value = getCNPJ(data.cnpj)
+            cliente.querySelector('#xLgr').value = data.endereco!=null ? data.endereco.trim().toUpperCase() : ''
+            cliente.querySelector('#nro').value = data.num!=null ? data.num.trim().toUpperCase() : ''
+            cliente.querySelector('#XCpl').value = data.comp!= null ? data.comp.trim().toUpperCase() : ''
+            cliente.querySelector('#xBairro').value = data.bairro!=null ? data.bairro.trim().toUpperCase() : ''
+            cliente.querySelector('#xMun').value = data.cidade!=null ? data.cidade.trim().toUpperCase() : ''
+            cliente.querySelector('#UF').value = data.estado.trim().toUpperCase()
+            cliente.querySelector('#CEP').value = data.cep!=null ? getCEP(data.cep) : ''
+            cliente.querySelector('#cPais').value = '1058'
+            cliente.querySelector('#xPais').value = 'BRASIL'
+            cliente.querySelector('#fone').value = getFone(data.tel)
+            document.getElementById('btnSaveCli').click()
+
+
+
+            const params = new Object;
+                params.ped_id = data.id
+            const myPromisse = queryDB(params,30);
+            myPromisse.then((resolve)=>{
+                const json = JSON.parse(resolve)
+                const tbl = document.querySelector('#tblItens')
+
+                tbl.head('Cod.|mobHide,Descrição,Und.|mobHide,Qtd.,Preço Unit.,Sub Total')            
+                for(let i=0; i<json.length;i++){
+                    tbl.plot(json[i],'cod_prod|mobHide,descricao,und|mobHide,qtd,preco,total','str,Upp,Upp,str,R$.,R$.')
+                }
+
+
+
+                console.log(json)
+
+            })
+
+
+
+
+        }
+
+//        openHTML('viewCot.html','pop-up','Cotação',data)
+    })
 
     document.querySelector('#btnBuscaPed').addEventListener('click',()=>{
 
@@ -418,7 +472,6 @@
         let value = sel.options[sel.selectedIndex].hasAttribute('val') ? sel.options[sel.selectedIndex].getAttribute('val') : document.querySelector('#edtBuscaPed').value.trim()
         value = signal=='LIKE' ? `"%${value}%"` : signal=='IN' ? `(${value})` : sel.value=='true'? sel.value : `"${value}"`
 
-
         const tbl = document.getElementById('tblBuscaPed')
         const params = new Object;
             params.field = field
@@ -428,7 +481,6 @@
             params.fin = ckb ? document.querySelector('#edtFin').value : '2100-12-31';        
 
         const myPromisse = queryDB(params,27);
-
         myPromisse.then((resolve)=>{
             if(resolve.trim() != ""){
                 const json = JSON.parse(resolve);
@@ -439,8 +491,6 @@
                 }                
             }        
         })
-
-
     })
 
 
@@ -463,8 +513,7 @@
         for (let i = 0; i < x.length; i++) {
             x[i].style.background = "#3F5954"; 
             x[i].style.color = "#FFF8DC";         
-        }       
-                    
+        }                    
     }
 
 /* CHAMADA DE FUNÇÕES DO DOM */    
@@ -517,122 +566,183 @@
         getConfig('NFe').then((txt)=>{    
             const json = JSON.parse(txt)
 
-            const emit = JSON.parse(json.emitente)
+            const emitente = document.querySelector('#emitente')
+            
+            const C = JSON.parse(json.C)
+            emitente.querySelector('#xNome').value = C.xNome
+            emitente.querySelector('#xFant').value = C.xFant
+            emitente.querySelector('#IE').value = getIE(C.IE)
+            emitente.querySelector('#IEST').value = C.IEST
+            emitente.querySelector('#IM').value = C.IM
+            emitente.querySelector('#CNAE').value = C.CNAE
+            emitente.querySelector('#CRT').value = C.CRT
 
-            document.querySelector('#xNome').value = emit.xNome
-            document.querySelector('#xFant').value = emit.xFant
-            document.querySelector('#IE').value = getIE(emit.IE)
-            document.querySelector('#IEST').value = emit.IEST
-            document.querySelector('#IM').value = emit.IM
-            document.querySelector('#CNAE').value = emit.CNAE
-            document.querySelector('#CRT').value = emit.CRT
-            document.querySelector('#CNPJ').value = getCNPJ(emit.CNPJ)
-            document.querySelector('#xLgr').value = emit.xLgr
-            document.querySelector('#nro').value = emit.nro
-            document.querySelector('#bairro').value = emit.bairro
-            document.querySelector('#cpl').value = emit.cpl
-            document.querySelector('#xMun').value = emit.xMun
-            document.querySelector('#cMun').value = emit.cMun
-            document.querySelector('#UF').value = emit.UF
-            document.querySelector('#xPais').value = emit.xPais
-            document.querySelector('#cPais').value = emit.cPais
-            document.querySelector('#CEP').value = getCEP(emit.CEP)
-            document.querySelector('#fone').value = getFone(emit.fone)
-            document.querySelector('#xMun').value = emit.xMun
+            const C02 = JSON.parse(json.C02)
+            emitente.querySelector('#CNPJ').value = getCNPJ(C02.CNPJ)
 
-            const fiscal = JSON.parse(json.fiscal)
+            const C05 = JSON.parse(json.C05)
+            emitente.querySelector('#xLgr').value = C05.xLgr
+            emitente.querySelector('#nro').value = C05.nro
+            emitente.querySelector('#bairro').value = C05.bairro
+            emitente.querySelector('#cpl').value = C05.cpl
+            emitente.querySelector('#xMun').value = C05.xMun
+            emitente.querySelector('#cMun').value = C05.cMun
+            emitente.querySelector('#UF').value = C05.UF
+            emitente.querySelector('#xPais').value = C05.xPais
+            emitente.querySelector('#cPais').value = C05.cPais
+            emitente.querySelector('#CEP').value = getCEP(C05.CEP)
+            emitente.querySelector('#fone').value = getFone(C05.fone)
+            emitente.querySelector('#xMun').value = C05.xMun
+            
+            const fiscal = document.querySelector('#fiscal')
+            
+            const CONF = JSON.parse(json.CONF)
+            fiscal.querySelector('#ckbSimpRem').checked = CONF.ckbSimpRem
+            
+            const B = JSON.parse(json.B)
+            fiscal.querySelector('#nNF').value = parseInt(B.nNF) + 1
+            fiscal.querySelector('#cUF').value = B.cUF
+            fiscal.querySelector('#natOp').value = B.natOp
+            fiscal.querySelector('#mod').value = B.mod
+            fiscal.querySelector('#serie').value = B.serie
+            fiscal.querySelector('#dhEmi').value = today.getFormatDate()
+            fiscal.querySelector('#dhSaiEnt').value = today.getFormatDate()
+            fiscal.querySelector('#tpNF').value = B.tpNF
+            fiscal.querySelector('#idDest').value = B.idDest
+            fiscal.querySelector('#cMunFG').value = B.cMunFG
+            fiscal.querySelector('#tpImp').value = B.tpImp
+            fiscal.querySelector('#tpEmis').value = B.tpEmis
+            fiscal.querySelector('#cDV').value = B.cDV
+            fiscal.querySelector('#tpAmb').value = B.tpAmb
+            fiscal.querySelector('#finNFe').value = B.finNFe
+            fiscal.querySelector('#indFinal').value = B.indFinal
+            fiscal.querySelector('#indPres').value = B.indPres
+            fiscal.querySelector('#procEmi').value = B.procEmi
+            fiscal.querySelector('#verProc').value = B.verProc
+            fiscal.querySelector('#dhCont').value = B.dhCont
+            fiscal.querySelector('#xJust').value = B.xJust
 
-            document.querySelector('#ckbSimpRem').checked = fiscal.ckbSimpRem
-            document.querySelector('#nNF').value = fiscal.nNF
-            document.querySelector('#cUF').value = fiscal.cUF
-            document.querySelector('#natOp').value = fiscal.natOp
-            document.querySelector('#mod').value = fiscal.mod
-            document.querySelector('#serie').value = fiscal.serie
-            document.querySelector('#dhEmi').value = today.getFormatDate()
-            document.querySelector('#dhSaiEnt').value = today.getFormatDate()
-            document.querySelector('#tpNF').value = fiscal.tpNF
-            document.querySelector('#idDest').value = fiscal.idDest
-            document.querySelector('#cMunFG').value = fiscal.cMunFG
-            document.querySelector('#tpImp').value = fiscal.tpImp
-            document.querySelector('#tpEmis').value = fiscal.tpEmis
-            document.querySelector('#cDV').value = fiscal.cDV
-            document.querySelector('#tpAmb').value = fiscal.tpAmb
-            document.querySelector('#finNFe').value = fiscal.finNFe
-            document.querySelector('#indFinal').value = fiscal.indFinal
-            document.querySelector('#indPres').value = fiscal.indPres
-            document.querySelector('#procEmi').value = fiscal.procEmi
-            document.querySelector('#verProc').value = fiscal.verProc
-            document.querySelector('#dhCont').value = fiscal.dhCont
-            document.querySelector('#xJust').value = fiscal.xJust
+            const cliente = document.querySelector('#cliente')
 
+            const E = JSON.parse(json.E)
+            cliente.querySelector('#xNome').value = E.xNome
+            cliente.querySelector('#indIEDest').value = E.indIEDest
+            cliente.querySelector('#IE').value = E.IE
+            cliente.querySelector('#ISUF').value = E.ISUF
+            cliente.querySelector('#IM').value = E.IM
+            cliente.querySelector('#email').value = E.email
 
-            console.log(fiscal)
+            const E02 = JSON.parse(json.E02)
+            cliente.querySelector('#CNPJ').value = E02.CNPJ
+
+            const E05 = JSON.parse(json.E05)
+            cliente.querySelector('#xLgr').value = E05.xLgr
+            cliente.querySelector('#nro').value = E05.nro
+            cliente.querySelector('#XCpl').value = E05.XCpl
+            cliente.querySelector('#xBairro').value = E05.xBairro
+            cliente.querySelector('#cMun').value = E05.cMun
+            cliente.querySelector('#xMun').value = E05.xMun
+            cliente.querySelector('#UF').value = E05.UF
+            cliente.querySelector('#CEP').value = E05.CEP
+            cliente.querySelector('#cPais').value = E05.cPais
+            cliente.querySelector('#xPais').value = E05.xPais
+            cliente.querySelector('#fone').value = E05.fone
+
+//            console.log(fiscal)
 
         })
 
     }
 
     document.getElementById('btnSaveEmit').addEventListener('click',(event)=>{
-        const emit = new Object
-        emit.xNome = document.querySelector('#xNome').value.trim().toUpperCase()
-        emit.xFant = document.querySelector('#xFant').value.trim().toUpperCase()
-        emit.IE = getNum(document.querySelector('#IE').value)
-        emit.IEST = document.querySelector('#IEST').value.trim().toUpperCase()
-        emit.IM = getNum(document.querySelector('#IM').value)
-        emit.CNAE = getNum(document.querySelector('#CNAE').value)
-        emit.CRT = document.querySelector('#CRT').value.trim().toUpperCase()
-        emit.CNPJ = getNum(document.querySelector('#CNPJ').value)
-        emit.xLgr = document.querySelector('#xLgr').value.trim().toUpperCase()
-        emit.nro = document.querySelector('#nro').value.trim().toUpperCase()
-        emit.bairro = document.querySelector('#bairro').value.trim().toUpperCase()
-        emit.cpl = document.querySelector('#cpl').value.trim().toUpperCase()
-        emit.xMun = document.querySelector('#xMun').value.trim().toUpperCase()
-        emit.cMun = getNum(document.querySelector('#cMun').value)
-        emit.UF = document.querySelector('#UF').value.trim().toUpperCase()
-        emit.xPais = document.querySelector('#xPais').value.trim().toUpperCase()
-        emit.cPais = getNum(document.querySelector('#cPais').value)
-        emit.CEP = getNum(document.querySelector('#CEP').value)
-        emit.fone = getNum(document.querySelector('#fone').value)
-        emit.xMun = document.querySelector('#xMun').value.trim().toUpperCase()
-
-        getConfig('NFe',JSON.stringify(emit),'emitente')
-
+        const emitente = document.querySelector('#emitente')
+        const C = new Object
+            C.xNome = emitente.querySelector('#xNome').value.trim().toUpperCase()
+            C.xFant = emitente.querySelector('#xFant').value.trim().toUpperCase()
+            C.IE = getNum(emitente.querySelector('#IE').value)
+            C.IEST = emitente.querySelector('#IEST').value.trim().toUpperCase()
+            C.IM = getNum(emitente.querySelector('#IM').value)
+            C.CNAE = getNum(emitente.querySelector('#CNAE').value)
+            C.CRT = emitente.querySelector('#CRT').value.trim().toUpperCase()
+        getConfig('NFe',JSON.stringify(C),'C')
+        const C02 = new Object
+            C02.CNPJ = getNum(emitente.querySelector('#CNPJ').value)
+        getConfig('NFe',JSON.stringify(C02),'C02')
+        const C05 = new Object
+            C05.xLgr = emitente.querySelector('#xLgr').value.trim().toUpperCase()
+            C05.nro = emitente.querySelector('#nro').value.trim().toUpperCase()
+            C05.cpl = emitente.querySelector('#cpl').value.trim().toUpperCase()
+            C05.bairro = emitente.querySelector('#bairro').value.trim().toUpperCase()
+            C05.cMun = getNum(emitente.querySelector('#cMun').value)
+            C05.xMun = emitente.querySelector('#xMun').value.trim().toUpperCase()
+            C05.UF = emitente.querySelector('#UF').value.trim().toUpperCase()
+            C05.CEP = getNum(emitente.querySelector('#CEP').value)
+            C05.cPais = getNum(emitente.querySelector('#cPais').value)
+            C05.xPais = emitente.querySelector('#xPais').value.trim().toUpperCase()
+            C05.fone = getNum(emitente.querySelector('#fone').value)
+        getConfig('NFe',JSON.stringify(C05),'C05')
     })
                 
     document.getElementById('btnSaveFiscal').addEventListener('click',(event)=>{
-        const fiscal = new Object
-        fiscal.ckbSimpRem = document.querySelector('#ckbSimpRem').checked
-        fiscal.nNF = document.querySelector('#nNF').value.trim()
-        fiscal.cUF = document.querySelector('#cUF').value
-        fiscal.natOp = document.querySelector('#natOp').value.trim().toUpperCase()
-        fiscal.mod = document.querySelector('#mod').value.trim()
-        fiscal.serie = document.querySelector('#serie').value
-        fiscal.dhEmi = document.querySelector('#dhEmi').value
-        fiscal.dhSaiEnt = document.querySelector('#dhSaiEnt').value
-        fiscal.tpNF = document.querySelector('#tpNF').value
-        fiscal.idDest = document.querySelector('#idDest').value
-        fiscal.cMunFG = document.querySelector('#cMunFG').value
-        fiscal.tpImp = document.querySelector('#tpImp').value
-        fiscal.tpEmis = document.querySelector('#tpEmis').value
-        fiscal.cDV = document.querySelector('#cDV').value
-        fiscal.tpAmb = document.querySelector('#tpAmb').value
-        fiscal.finNFe = document.querySelector('#finNFe').value
-        fiscal.indFinal = document.querySelector('#indFinal').value
-        fiscal.indPres = document.querySelector('#indPres').value
-        fiscal.procEmi = document.querySelector('#procEmi').value
-        fiscal.verProc = document.querySelector('#verProc').value
-        fiscal.dhCont = document.querySelector('#dhCont').value
-        fiscal.xJust = document.querySelector('#xJust').value
+        const fiscal = document.querySelector('#fiscal')
+        const B = new Object
+            B.nNF = fiscal.querySelector('#nNF').value.trim()
+            B.cUF = fiscal.querySelector('#cUF').value
+            B.natOp = fiscal.querySelector('#natOp').value.trim().toUpperCase()
+            B.mod = fiscal.querySelector('#mod').value.trim()
+            B.serie = fiscal.querySelector('#serie').value
+            B.dhEmi = fiscal.querySelector('#dhEmi').value
+            B.dhSaiEnt = fiscal.querySelector('#dhSaiEnt').value
+            B.tpNF = fiscal.querySelector('#tpNF').value
+            B.idDest = fiscal.querySelector('#idDest').value
+            B.cMunFG = fiscal.querySelector('#cMunFG').value
+            B.tpImp = fiscal.querySelector('#tpImp').value
+            B.tpEmis = fiscal.querySelector('#tpEmis').value
+            B.cDV = fiscal.querySelector('#cDV').value
+            B.tpAmb = fiscal.querySelector('#tpAmb').value
+            B.finNFe = fiscal.querySelector('#finNFe').value
+            B.indFinal = fiscal.querySelector('#indFinal').value
+            B.indPres = fiscal.querySelector('#indPres').value
+            B.procEmi = fiscal.querySelector('#procEmi').value
+            B.verProc = fiscal.querySelector('#verProc').value
+            B.dhCont = fiscal.querySelector('#dhCont').value
+            B.xJust = fiscal.querySelector('#xJust').value
+        getConfig('NFe',JSON.stringify(B),'B')
+        const CONF = new Object
+            CONF.ckbSimpRem = document.querySelector('#ckbSimpRem').checked
+        getConfig('NFe',JSON.stringify(CONF),'CONF')
 
-        getConfig('NFe',JSON.stringify(fiscal),'fiscal')
+    })
+                
+    document.getElementById('btnSaveCli').addEventListener('click',()=>{
+        const cliente = document.querySelector('#cliente')
+        const E = new Object
+            E.xNome = cliente.querySelector('#xNome').value.trim().toUpperCase()
+            E.indIEDest = cliente.querySelector('#indIEDest').value
+            E.IE = cliente.querySelector('#IE').value
+            E.ISUF = cliente.querySelector('#ISUF').value
+            E.IM = cliente.querySelector('#IM').value.trim()
+            E.email = cliente.querySelector('#email').value.trim().toLowerCase()
+        getConfig('NFe',JSON.stringify(E),'E')
+        const E02 = new Object
+            E02.CNPJ = cliente.querySelector('#CNPJ').value.trim().toUpperCase()
+        getConfig('NFe',JSON.stringify(E02),'E02')
+        const E05 = new Object
+            E05.xLgr = cliente.querySelector('#xLgr').value.trim().toUpperCase()
+            E05.nro = cliente.querySelector('#nro').value
+            E05.XCpl = cliente.querySelector('#XCpl').value.trim().toUpperCase()
+            E05.xBairro = cliente.querySelector('#xBairro').value.trim().toUpperCase()
+            E05.cMun = cliente.querySelector('#cMun').value.trim().toUpperCase()
+            E05.xMun = cliente.querySelector('#xMun').value.trim().toUpperCase()
+            E05.UF = cliente.querySelector('#UF').value.trim().toUpperCase()
+            E05.CEP = cliente.querySelector('#CEP').value.trim().toUpperCase()
+            E05.cPais = cliente.querySelector('#cPais').value.trim().toUpperCase()
+            E05.xPais = cliente.querySelector('#xPais').value.trim().toUpperCase()
+            E05.fone = cliente.querySelector('#fone').value.trim().toUpperCase()
+        getConfig('NFe',JSON.stringify(E05),'E05')
 
     })
 /*                
-                document.getElementById('btnSaveCli').addEventListener('click',()=>{
-                    salvaNF("E",6);
-                    salvaNF("E02",7);
-                    salvaNF("E05",8);
-                })
                 document.getElementById('btnGeraNFe').addEventListener('click',(event)=>{
                     event.preventDefault();
                     geraNFE();

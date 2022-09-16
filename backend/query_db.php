@@ -47,7 +47,7 @@
            ON DUPLICATE KEY UPDATE 
            nome ="x01", fantasia="x02", tipo="x03", cnpj="x04", ie="x05", im="x06", endereco="x07", num="x08", cidade="x09", estado="x10", bairro="x11", cep="x12", tel="x13";',
          "26" => 'DELETE FROM tb_empresa WHERE id="x00" AND (SELECT U.class FROM tb_usuario AS U WHERE hash="x01") IN (10,4);',
-         "27" => 'SELECT p.*, e.fantasia, i.venda FROM tb_pedido AS p 
+         "27" => 'SELECT p.*, e.fantasia, e.nome AS nome_emp, e.cnpj, e.ie,e.im,e.endereco, e.cidade, e.num,e.estado,e.cep, e.tel,e.bairro, i.venda FROM tb_pedido AS p 
             INNER JOIN tb_empresa AS e
             INNER JOIN ( SELECT id as id_ped, 0 as venda, 0 as id_prod FROM tb_pedido WHERE id NOT IN (SELECT id_ped FROM tb_item_ped)
                UNION ALL SELECT id_ped, ROUND(SUM(qtd * preco),2) AS venda, id_prod FROM tb_item_ped GROUP BY id_ped) AS i
