@@ -531,6 +531,29 @@
         NFeConf(main_data.NFe)
     }
 
+    function geraTXT(){
+        let out = ''
+        for(let key in main_data.NFe){
+            if(key == 'itens'){
+                for(let i=0; i<main_data.NFe.itens.length; i++){
+                    for(let item in main_data.NFe.itens[i]){
+                       out += main_data.NFe[key][item]+'|'
+                    }
+                    out += '\n'
+                } 
+                
+            }else{
+                out+= key+'|'
+            for(let item in main_data.NFe[key]){
+                out += main_data.NFe[key][item]+'|'
+            }
+            out += '\n'
+
+            }
+        }
+        return out
+    }
+
     main_data.nfe.row_edit = function(obj){
         main_data.nfe.row_item.cells[1].innerHTML = obj.descricao
         main_data.nfe.row_item.cells[2].innerHTML = obj.qtd
@@ -577,8 +600,8 @@
                 cliente.querySelector('#cPais').value = '1058'
                 cliente.querySelector('#xPais').value = 'BRASIL'
                 cliente.querySelector('#fone').value = getFone(data.tel)
+                document.getElementById('btnSaveCli').click()
                 document.getElementById('btnBuscaIBGE').click()
-//                document.getElementById('btnSaveCli').click()
 
             }    
 
@@ -846,7 +869,7 @@
 
         if(document.querySelector('#cliente').querySelector('#cMun').value.trim() != '' ){
             geraNFeItens()
-
+            console.log(geraTXT())
         }else{
             alert('Favor verificar o campo código do município')
             openTab('cliente')
