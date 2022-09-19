@@ -420,10 +420,10 @@
 
     function geraNFeItens(){
         const tblItens = document.querySelector('#tblItens').rows
-        main_data.NFe.itens = []
+        main_data.NFe.H = []
         for(let i=1; i< tblItens.length; i++){
             console.log(tblItens[i].data)
-            const H = new Object
+//            const H = new Object
             H.nItem = i
             H.infAdProd = ''
 // I|cProd|cEAN|xProd|NCM|cBenef|EXTIPI|CFOP|uCom|qCom|vUnCom|vProd|cEANTrib|uTrib|qTrib|vUnTrib| vFrete|vSeg|vDesc|vOutro| indTot| xPed|nItemPed|nFCI|
