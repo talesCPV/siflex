@@ -114,17 +114,20 @@ HTMLTableElement.prototype.plot = function(obj, fields,type='',file=false){
                 case 'int':
                   html = parseInt(obj[arr[0]])
                   break;
+                case 'flo':
+                    html = obj[arr[0]] != null ? parseFloat(obj[arr[0]]).toFixed(2) : ''
+                    break;
                 case 'Upp':
-                    html = obj[arr[0]] != null ? obj[arr[0]].toUpperCase() : ''
+                    html = obj[arr[0]] != null ? obj[arr[0]].toUpperCase().trim() : ''
                     break
                 case 'str':
-                    html = obj[arr[0]] != null ? obj[arr[0]] : ''
+                    html = obj[arr[0]] != null ? obj[arr[0]].trim() : ''
                   break;
                 case 'dat':
                     html = obj[arr[0]] != null ? obj[arr[0]].substring(8,10)+'/'+ obj[arr[0]].substring(5,7)+'/'+obj[arr[0]].substring(0,4) : ''
                     break                 
                 case 'Low':
-                    html = obj[arr[0]] != null ? obj[arr[0]].toLowerCase() : ''
+                    html = obj[arr[0]] != null ? obj[arr[0]].toLowerCase().trim() : ''
                     break;
                 case 'R$.':
                     html = obj[arr[0]] != null ? viewMoneyBR(parseFloat(obj[arr[0]]).toFixed(2)) : ''   //'R$'+ parseFloat(obj[arr[0]]).toFixed(2)
@@ -314,6 +317,32 @@ function queryDB(params,cod){
     });      
 }
 
+function NFeConf(dados=''){
+    const data = new URLSearchParams();
+    if(dados == ''){
+        data.append("data", dados);
+    }else{
+        data.append("data", JSON.stringify(dados));
+    }        
+
+    const myRequest = new Request("backend/nfe_POST.php",{
+        method : "POST",
+        body : data
+    });
+
+    return new Promise((resolve,reject) =>{
+        fetch(myRequest)
+        .then(function (response){
+            if (response.status === 200) {                 
+                resolve(response.text());                    
+            } else { 
+                reject(new Error("Houve algum erro na comunicação com o servidor"));                    
+            } 
+        });
+    }); 
+
+}
+
 function getConfig(field,file='config.json',order='read',value=0){
 //    console.log('field:'+field+' file:'+file+' order:'+order+' value:'+value)
     const data = new URLSearchParams();        
@@ -337,6 +366,29 @@ function getConfig(field,file='config.json',order='read',value=0){
         });
     }); 
 }
+
+function loadTXT(file='templateNFe.txt'){
+        const data = new URLSearchParams();        
+            data.append("file",file);
+        const myRequest = new Request("backend/getFile.php",{
+            method : "POST",
+            body : data
+        });
+
+        return new Promise((resolve,reject) =>{
+            fetch(myRequest)
+            .then(function (response){
+                if (response.status === 200) {                 
+                    resolve(response.text());                    
+                } else { 
+                    reject(new Error("Houve algum erro na comunicação com o servidor"));                    
+                } 
+            });
+        }); 
+    }
+
+
+
  /*  MENU  */ 
 function openMenu(){        
     var drop = 0

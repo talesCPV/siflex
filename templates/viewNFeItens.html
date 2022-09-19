@@ -1,0 +1,47 @@
+
+<template>
+    <style>
+
+    </style>
+
+    <fieldset>
+        <legend>Detalhes do ítem</legend>
+
+        <div class="inline">
+            <label for="edtDesc">Descrição</label>
+            <input type="text" id="edtDesc">
+        </div>
+        <div class="inline">
+            <label for="edtQtd">Qtd</label>
+            <input type="text" id="edtQtd" onkeyup="valFloat(this)">
+            <label for="edtPreco">Preço unt. R$</label>
+            <input type="text" id="edtPreco" onkeyup="valFloat(this)">
+            <label for="edtCFOP">CFOP</label>
+            <input type="text" id="edtCFOP" onkeyup="valInt(this)" maxlength="4">
+        </div>
+        
+        <button id="btnSaveItem">Salvar</button>
+    </fieldset>
+
+
+</template>
+<script>
+
+    document.querySelector('#edtDesc').value = main_data.viewNFeItens.data.descricao
+    document.querySelector('#edtQtd').value = main_data.viewNFeItens.data.qtd
+    document.querySelector('#edtPreco').value = main_data.viewNFeItens.data.preco
+    document.querySelector('#edtCFOP').value = main_data.viewNFeItens.data.cfop
+
+
+    document.querySelector('#btnSaveItem').addEventListener('click',()=>{
+        main_data.viewNFeItens.data.descricao = document.querySelector('#edtDesc').value
+        main_data.viewNFeItens.data.qtd = document.querySelector('#edtQtd').value
+        main_data.viewNFeItens.data.preco = parseFloat(document.querySelector('#edtPreco').value).toFixed(2)
+        main_data.viewNFeItens.data.cfop = document.querySelector('#edtCFOP').value
+        main_data.viewNFeItens.data.total = (parseFloat(document.querySelector('#edtQtd').value) * parseFloat(document.querySelector('#edtPreco').value)).toFixed(2)
+        main_data.nfe.row_edit(main_data.viewNFeItens.data)
+        closeModal('viewNFeItens')
+    })
+
+
+</script>

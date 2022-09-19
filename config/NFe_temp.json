@@ -1,0 +1,85 @@
+{
+    "NFe":{
+        "NOTAFISCAL":{
+            "1" : "1"
+        },
+        "A":{
+            "versao":"4.00",
+            "id":"",
+            "indSinc":""
+        },
+        "B":{
+            "nNF":"2189",
+            "cUF":"35",
+            "cNF":39079744,
+            "natOp":"VENDA",
+            "mod":"",
+            "serie":"1",
+            "dhEmi":"2022-09-18",
+            "dhSaiEnt":"2022-09-18",
+            "tpNF":"1",
+            "idDest":"1",
+            "cMunFG":"",
+            "tpImp":"1",
+            "tpEmis":"1",
+            "cDV":"",
+            "tpAmb":"1",
+            "finNFe":"1",
+            "indFinal":"0",
+            "indPres":"0",
+            "procEmi":"0",
+            "verProc":"",
+            "dhCont":"",
+            "xJust":""        
+        },
+        "C":{
+            "xNome":"FLEXIBUS SANFONADOS LTDA",
+            "xFant":"FLEXIBUS SANFONADOS",
+            "IE":"234033845113",
+            "IEST":"",
+            "IM":"111222",
+            "CNAE":"",
+            "CRT":"1"
+        },
+        "C02":{
+            "CNPJ":"00519547000106"
+        },
+        "C05":{
+            "xLgr":"AV. DR. ROSALVO DE ALMEIDA TELLES",
+            "nro":"2070",
+            "cpl":"",
+            "bairro":"NOVA CAÇAPAVA",
+            "cMun":"3508504",
+            "xMun":"CAÇAPAVA",
+            "UF":"SP",
+            "CEP":"12283020",
+            "cPais":"1058",
+            "xPais":"BRASIL",
+            "fone":"1236532230"
+        },
+        "E":{
+            "xNome":"RAPIDO LUXO CAMPINAS LTDA",
+            "indIEDest":"1",
+            "IE":"492.458.590.119",
+            "ISUF":"",
+            "IM":"",
+            "email":""
+        },
+        "E02":{
+            "CNPJ":"45.992.724/0010-98"
+        },
+        "E05":{
+            "xLgr":"TRAVESSA VICTu00d3RIO TOGNI",
+            "nro":"0",
+            "XCpl":"FABIANO",
+            "xBairro":"JACARÉ",
+            "cMun":"3508405",
+            "xMun":"CABREu00daVA",
+            "UF":"SP",
+            "CEP":"1331-8000",
+            "cPais":"1058",
+            "xPais":"BRASIL",
+            "fone":"(11)4529-5152"        
+        }
+    }
+}

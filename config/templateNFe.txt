@@ -1,0 +1,37 @@
+NOTAFISCAL|1
+A|versao|id|indSinc
+B|cUF|cNF|natOp|mod|serie|nNF|dhEmi|dhSaiEnt|tpNF|idDest|cMunFG|tpImp|tpEmis|cDV|tpAmb|finNFe|indFinal|indPres|procEmi|verProc|dhCont|xJust|
+C|xNome|xFant|IE|IEST|IM|CNAE|CRT|
+C02|CNPJ|
+C05|xLgr|nro|cpl|bairro|cMun|xMun|UF|CEP|cPais|xPais|fone|
+E|xNome|indIEDest|IE|ISUF|IM|email|
+E02|CNPJ|
+E05|xLgr|nro|xCpl|xBairro|cMun|xMun|UF|CEP|cPais|xPais|fone|
+// itens
+H|nItem|infAdProd|
+I|cProd|cEAN|xProd|NCM|cBenef|EXTIPI|CFOP|uCom|qCom|vUnCom|vProd|cEANTrib|uTrib|qTrib|vUnTrib|vFrete|vSeg|vDesc|vOutro|indTot|xPed|nItemPed|nFCI|
+M||
+N|
+N10d|orig|CSOSN|
+O|CNPJProd|cSelo|qSelo|cEnq|
+O07|CST|vIPI|
+O10|vBC|pIPI|
+Q|
+Q05|CST|vPIS|
+Q07|vBC|pPIS|
+S|
+S05|CST|vCOFINS|
+S07|vBC|pCOFINS|
+// fim itens
+
+W|
+W02|vBC|vICMS|vICMSDeson|vFCPUFDest|vICMSUFDest|vICMSUFRemet|vFCP|vBCST|vST|vFCPST|vFCPSTRet|vProd|vFrete|vSeg|vDesc|vII|vIPI|vIPIDevol|vPIS|vCOFINS|vOutro|vNF|vTotTrib|
+W04c|0.00|
+W04e|0.00|
+W04g|0.00|
+X|0|
+Y02|nFat|vOrig|vDesc|vLiq|
+Y07|nDup|dVenc|vDup|
+YA|vTroco|
+YA01|1|15||4395.00|
+Z|infAdFisco|infCpl|

@@ -266,11 +266,7 @@ function viewMoneyBR(V){
     }
     return 'R$'+out
 }
-/*
-function moneyBR(V){
-    return 'R$'+ parseFloat(V).toFixed(2)
-}
-*/
+
 function horario(edt){
     let ok_chr = ['1','2','3','4','5','6','7','8','9','0'];
     var num = edt.value;
@@ -301,7 +297,7 @@ function horario(edt){
     edt.value = out;
 }
 
-function phone(param){ // formata a string no padrão TELEFONE
+function phone(param){ 
     param.value = getFone(param.value)
 }
 

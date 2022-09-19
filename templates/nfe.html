@@ -298,10 +298,10 @@
                     </div>
                     <div class="inline">
                         <label> Insc. Estadual </label>
-                        <input type="text" id="IE" maxlength="14"/>
+                        <input type="text" id="IE" maxlength="15" onkeyup="valIE(this)"/>
                         <input type="hidden" id="ISUF">
                         <label> Insc. Municipal </label>
-                        <input type="text" id="IM" maxlength="15"/>                 
+                        <input type="text" id="IM" maxlength="15" onkeyup="valInt(this)"/>                 
                     </div>
                     <div class="inline">
                         <label> Email </label>
@@ -311,7 +311,7 @@
                 </div>                           
                 <div id="E02" class="inline">
                     <label> CNPJ </label>
-                    <input type="text" id="CNPJ" maxlength="14"/>
+                    <input type="text" id="CNPJ" maxlength="18" onkeyup="valCNPJ(this)"/>
                 </div>
                 <div id="E05">
                     <div class="inline">
@@ -330,22 +330,22 @@
                         <label>  Municipio</label>
                         <input type="text" id="xMun" maxlength="60"/>
                         <label> Cod.</label>
-                        <input type="text" id="cMun" maxlength="60" readonly/>
+                        <input type="text" id="cMun" maxlength="7" onkeyup="valInt(this)" style="width: 200px ;"/>
                         <label> Sigla da UF </label>
-                        <input type="text" id="UF" maxlength="60"/>                        
+                        <input type="text" id="UF" maxlength="2" style="width: 70px ;"/>                        
                     </div>
                     <button id="btnBuscaIBGE"> Buscar no IBGE</button>
                     <div class="inline">
                         <label> País </label>
-                        <input type="text" id="xPais" maxlength="60"/>                        
+                        <input type="text" id="xPais" maxlength="15"/>                        
                         <label> Cod.</label>
                         <input type="text" id="cPais" maxlength="4"/>
                     </div>
                     <div class="inline">
                         <label> CEP </label>
-                        <input type="text" id="CEP" maxlength="8"/>
+                        <input type="text" id="CEP" maxlength="10" onkeyup="valCEP(this)"/>
                         <label> Telefone </label>
-                        <input type="text" id="fone" maxlength="14"/>    
+                        <input type="text" id="fone" maxlength="14" onkeyup="phone(this)"/>    
                     </div>
                 </div>
                 <button id="btnSaveCli">Salvar</button>
@@ -361,53 +361,197 @@
             </div>            
             <div id="fatura" class="tab fatura" style="display:none">
 <!--                <h2>Faturamento</h2>-->
-                <form class="frmShow" id="B" method="POST" action="#" >
+                <div id="W">
 
-                    <form class="frmShow" id="W" method="POST" action="#">
-                        <label>Valor da NF</label>
-                        <input type="text" id="edtValorNF">
-                        <label>Dias entre as Parcelas</label>
-                        <input type="text" id="edtDiasParcelas" value="30/45/60">
-                        <label>Texto Complementar</label>
-                        <textarea  id="txaTextoCompl" rows="10"></textarea>
-                    
-                    </form>
-
-
+                    <fieldset>
+                        <legend>Dados de Fatura</legend>
+                        <div class="inline">
+                            <label>Valor da NF</label>
+                            <input type="text" id="edtValorNF" value="0.00" onkeyup="valFloat(this)">
+                            <label>Dias entre as Parcelas</label>
+                            <input type="text" id="edtDiasParcelas" value="30/45/60">
+                            <label>Desconto</label>
+                            <input type="text" id="edtDesconto" value="0" onkeyup="valFloat(this)">
+                        </div>                        
+                        <label class="inline">Texto Complementar</label>
+                        <textarea  id="txaTextoCompl" rows="10"></textarea>                    
+                    </fieldset>
 
                     <button id="btnGeraNFe">Gerar NFe</button>
-                </form>
+                </div>
             </div>
             <div id="export" class="tab export" style="display:none">
 <!--                <h2>Arquivos TXT</h2>-->
 
-                    <form class="frmShow" id="TXT" method="POST" action="#">
+                    <fieldset>
+                        <legend>Arquivos TXT</legend>
                         <select id="txtFiles" size="20"></select>
-                    
-                    </form>
-
-                    <button id="btnExportNFe">Exportar</button>
-
-
+                        <button id="btnExportNFe">Exportar</button>                    
+                    </fieldset>
             </div>                
         </div>   
-
     </div> 
 
-
-  </div>
-
-
-
+</div>
 
 </template>
 <script>
+
+/*  GLOBAL  */
+
+//    let NFe
 
 /* CHAMADA DE FUNÇÕES INICIAL */    
 
     importData()
     document.querySelector('#edtIni').value =  today.iniMonth()
     document.querySelector('#edtFin').value =  today.finMonth()
+
+    function somaNFeItens(){
+        let tot = 0
+        const tbl = document.querySelector('#tblItens').rows
+        for(let i=1; i<tbl.length; i++){
+            let val = parseFloat(tbl[i].cells[4].innerHTML) 
+            val = val == NaN ? 0 : val
+            tot += val
+        }
+        document.querySelector('#edtValorNF').value = tot.toFixed(2)
+    }
+
+    function geraNFeItens(){
+        const tblItens = document.querySelector('#tblItens').rows
+        main_data.NFe.itens = []
+        for(let i=1; i< tblItens.length; i++){
+            console.log(tblItens[i].data)
+            const H = new Object
+            H.nItem = i
+            H.infAdProd = ''
+// I|cProd|cEAN|xProd|NCM|cBenef|EXTIPI|CFOP|uCom|qCom|vUnCom|vProd|cEANTrib|uTrib|qTrib|vUnTrib| vFrete|vSeg|vDesc|vOutro| indTot| xPed|nItemPed|nFCI|
+            H.I = new Object
+            H.I.cProd = tblItens[i].data.cod_prod
+            H.I.cEAN = '|'
+            H.I.xProd = tblItens[i].data.descricao.trim()
+            H.I.NCM = tblItens[i].data.ncm
+            H.I.cBenef = ''
+            H.I.CFOP = tblItens[i].data.cfop
+            H.I.uCom = tblItens[i].data.und
+            H.I.qCom = parseFloat(tblItens[i].data.qtd).toFixed(4)
+            H.I.vUnCom = parseFloat(tblItens[i].data.preco).toFixed(10)
+            H.I.vProd = parseFloat(tblItens[i].data.total).toFixed(2)
+            H.I.cEANTrib =  '|'
+            H.I.uTrib = tblItens[i].data.und
+            H.I.qTrib = parseFloat(tblItens[i].data.qtd).toFixed(4)
+            H.I.vUnTrib = parseFloat(tblItens[i].data.preco).toFixed(10)
+            H.I.vFrete = ''
+            H.I.vSeg = ''
+            H.I.vDesc = ''
+            H.I.vOutro = ''
+            H.I.indTot = '1'
+            H.I.xPed = ''
+            H.I.nItemPed = ''
+            H.I.nFCI = ''
+            H.M = new Object
+            H.M.a = ''
+            H.M.b = ''
+            H.N = new Object    
+//N10d|orig|CSOSN|
+            H.N10d = new Object
+            H.N10d.orig = '0'
+            H.N10d.CSOSN = '102'
+//O|CNPJProd|cSelo|qSelo|cEnq|                
+            H.O = new Object
+            H.O.CNPJProd = ''
+            H.O.cSelo = ''
+            H.O.qSelo = ''
+            H.O.cEnq = '999'
+//O07|CST|vIPI|                
+            H.O07 = new Object
+            H.O07.CST = '99'
+            H.O07.vIPI = '0.00'
+//O10|vBC|pIPI|
+            H.O10 = new Object
+            H.O10.vBC = '0.00'
+            H.O10.pIPI = '0.0000'
+            H.Q = new Object
+//Q05|CST|vPIS|            
+            H.Q05 = new Object
+            H.Q05.CST = '99'
+            H.Q05.vPIS = '0.00'
+//Q07|vBC|pPIS|                
+            H.Q07 = new Object
+            H.Q07.vBC = '0.00'
+            H.Q07.pPIS = '0.0000'
+            H.S = new Object
+//S05|CST|vCOFINS|            
+            H.S05 = new Object
+            H.S05.CST = '99'
+            H.S05.vCOFINS = '0.00'
+//S07|vBC|pCOFINS|
+            H.S07 = new Object
+            H.S07.vBC = '0.00'
+            H.S07.pCOFINS = '0.0000'
+            main_data.NFe.itens.push(H)
+        }
+
+        main_data.NFe.W = new Object
+//W02|vBC|vICMS|vICMSDeson|vFCPUFDest|vICMSUFDest|vICMSUFRemet|vFCP|vBCST|vST|vFCPST|vFCPSTRet|vProd|vFrete|vSeg|vDesc|vII|vIPI|vIPIDevol|vPIS|vCOFINS|vOutro|vNF|vTotTrib|
+        main_data.NFe.W02 = new Object
+        main_data.NFe.W02.vBC = '0.00'
+        main_data.NFe.W02.vICMS = '0.00'
+        main_data.NFe.W02.vICMSDeson = '0.00'
+//        main_data.NFe.W02.vFCPUFDest = '0.00'
+//        main_data.NFe.W02.vICMSUFDest = '0.00'
+        main_data.NFe.W02.vICMSUFRemet = '0.00'
+        main_data.NFe.W02.vFCP = '0.00'
+        main_data.NFe.W02.vBCST = '0.00'
+        main_data.NFe.W02.vST = '0.00'
+        main_data.NFe.W02.vFCPST = '0.00'
+//        main_data.NFe.W02.vFCPSTRet = '0.00'
+        main_data.NFe.W02.vProd = parseFloat(document.querySelector('#edtValorNF').value).toFixed(2)
+        main_data.NFe.W02.vFrete = '0.00'
+        main_data.NFe.W02.vSeg = '0.00'
+        main_data.NFe.W02.vDesc = '0.00'
+        main_data.NFe.W02.vII = '0.00'
+        main_data.NFe.W02.vIPI = '0.00'
+        main_data.NFe.W02.vIPIDevol = '0.00'
+        main_data.NFe.W02.vPIS = '0.00'
+        main_data.NFe.W02.vCOFINS = '0.00'
+        main_data.NFe.W02.vOutro = '0.00'
+        main_data.NFe.W02.vNF = parseFloat(document.querySelector('#edtValorNF').value).toFixed(2)
+        main_data.NFe.W02.vTotTrib = '0.00'
+//Y02|nFat|vOrig|vDesc|vLiq|
+        const parc = document.querySelector('#edtDiasParcelas').value.split('/')
+        const valor = parseFloat(document.querySelector('#edtValorNF').value)
+        const desc = parseFloat(document.querySelector('#edtDesconto').value)
+        main_data.NFe.Y02 = new Object
+        main_data.NFe.Y02.nFat = parc.length
+        main_data.NFe.Y02.vOrig = valor.toFixed(2)
+        main_data.NFe.Y02.vDesc = desc.toFixed(2)
+        main_data.NFe.Y02.vLiq = (valor - desc).toFixed(2)
+        NFeConf(main_data.NFe)
+    }
+
+    main_data.nfe.row_edit = function(obj){
+        main_data.nfe.row_item.cells[1].innerHTML = obj.descricao
+        main_data.nfe.row_item.cells[2].innerHTML = obj.qtd
+        main_data.nfe.row_item.cells[3].innerHTML = obj.preco
+        main_data.nfe.row_item.cells[4].innerHTML = obj.total
+        main_data.nfe.row_item.cells[5].innerHTML = obj.cfop
+        somaNFeItens()
+    }
+
+    document.querySelector('#tblItens').addEventListener('click',(e)=>{
+        data = e.target.parentNode.data
+        data.mode = 'edtItens'
+
+        main_data.nfe.row_item = e.target.parentNode
+
+
+
+        openHTML('viewNFeItens.html','pop-up','Edição de Ítem de NFe',data)
+
+
+    })
 
     document.querySelector('#tblBuscaPed').addEventListener('click',(e)=>{
         data = e.target.parentNode.data
@@ -416,26 +560,27 @@
         if (confirm(`Carregar Ped.${data.num_ped} de ${data.fantasia.toUpperCase()}?`)) {
             console.log(data)
 
-            const cliente = document.querySelector('#cliente')
+            function addCli(){
+                const cliente = document.querySelector('#cliente')
+                cliente.querySelector('#xNome').value = data.nome_emp.trim().toUpperCase()
+                cliente.querySelector('#indIEDest').value = (data.ie==null || data.ie.trim() == '') ? 2 : 1
+                cliente.querySelector('#IE').value = data.ie!=null ? getIE(data.ie) : ''
+                cliente.querySelector('#IM').value = data.im!=null ? data.im.trim().toUpperCase() : ''
+                cliente.querySelector('#CNPJ').value = getCNPJ(data.cnpj)
+                cliente.querySelector('#xLgr').value = data.endereco!=null ? data.endereco.trim().toUpperCase() : ''
+                cliente.querySelector('#nro').value = data.num!=null ? data.num.trim().toUpperCase() : ''
+                cliente.querySelector('#XCpl').value = data.comp!= null ? data.comp.trim().toUpperCase() : ''
+                cliente.querySelector('#xBairro').value = data.bairro!=null ? data.bairro.trim().toUpperCase() : ''
+                cliente.querySelector('#xMun').value = data.cidade!=null ? data.cidade.trim().toUpperCase() : ''
+                cliente.querySelector('#UF').value = data.estado.trim().toUpperCase()
+                cliente.querySelector('#CEP').value = data.cep!=null ? getCEP(data.cep) : ''
+                cliente.querySelector('#cPais').value = '1058'
+                cliente.querySelector('#xPais').value = 'BRASIL'
+                cliente.querySelector('#fone').value = getFone(data.tel)
+                document.getElementById('btnBuscaIBGE').click()
+//                document.getElementById('btnSaveCli').click()
 
-            cliente.querySelector('#xNome').value = data.nome_emp.trim().toUpperCase()
-            cliente.querySelector('#indIEDest').value = (data.ie==null || data.ie.trim() == '') ? 2 : 1
-            cliente.querySelector('#IE').value = data.ie!=null ? getIE(data.ie) : ''
-            cliente.querySelector('#IM').value = data.im!=null ? data.im.trim().toUpperCase() : ''
-            cliente.querySelector('#CNPJ').value = getCNPJ(data.cnpj)
-            cliente.querySelector('#xLgr').value = data.endereco!=null ? data.endereco.trim().toUpperCase() : ''
-            cliente.querySelector('#nro').value = data.num!=null ? data.num.trim().toUpperCase() : ''
-            cliente.querySelector('#XCpl').value = data.comp!= null ? data.comp.trim().toUpperCase() : ''
-            cliente.querySelector('#xBairro').value = data.bairro!=null ? data.bairro.trim().toUpperCase() : ''
-            cliente.querySelector('#xMun').value = data.cidade!=null ? data.cidade.trim().toUpperCase() : ''
-            cliente.querySelector('#UF').value = data.estado.trim().toUpperCase()
-            cliente.querySelector('#CEP').value = data.cep!=null ? getCEP(data.cep) : ''
-            cliente.querySelector('#cPais').value = '1058'
-            cliente.querySelector('#xPais').value = 'BRASIL'
-            cliente.querySelector('#fone').value = getFone(data.tel)
-            document.getElementById('btnSaveCli').click()
-
-
+            }    
 
             const params = new Object;
                 params.ped_id = data.id
@@ -443,20 +588,42 @@
             myPromisse.then((resolve)=>{
                 const json = JSON.parse(resolve)
                 const tbl = document.querySelector('#tblItens')
-
-                tbl.head('Cod.|mobHide,Descrição,Und.|mobHide,Qtd.,Preço Unit.,Sub Total')            
-                for(let i=0; i<json.length;i++){
-                    tbl.plot(json[i],'cod_prod|mobHide,descricao,und|mobHide,qtd,preco,total','str,Upp,Upp,str,R$.,R$.')
+                let total
+                if(tbl.rows.length > 0){
+                    total = parseFloat(document.querySelector('#edtValorNF').value)
+                    if (!confirm(`Adicionar os ítens deste pedido a NFe atual?`)) {
+                        total = 0
+                        tbl.head('Cod.|mobHide,Descrição,Qtd.,Preço Unit.,Sub Total,CFOP')
+                        addCli()
+                    }
+                }else{
+                    total = 0
+                    tbl.head('Cod.|mobHide,Descrição,Qtd.,Preço Unit.,Sub Total,CFOP') 
+                    addCli()           
                 }
 
+                for(let i=0; i<json.length;i++){
+//                    console.log(json[i])
+                    total += parseFloat(json[i].total)
+                    let CFOP = ''
+                    if(data.estado.trim().toUpperCase() == main_data.NFe.C05.UF){
+                        CFOP = '51'
+                    }else{
+                        CFOP = '61'
+                    }
 
+                    if(json[i].id_emp == '13'){
+                        CFOP += '01'
+                    }else{
+                        CFOP += '02'
+                    }
 
-                console.log(json)
+                    json[i].cfop = CFOP
 
+                    tbl.plot(json[i],'cod_prod|mobHide,descricao,qtd,preco,total,cfop','str,Upp,str,float,float,str')
+                }
+                document.querySelector('#edtValorNF').value = total.toFixed(2)
             })
-
-
-
 
         }
 
@@ -538,210 +705,247 @@
     })
     
     document.querySelector('.tab-export').addEventListener('click',()=>{
-        openTab('export');
-/*                    
-                const data = new URLSearchParams();        
-                    data.append("path", `../NF_txt`);
-        
-                const resp = getData("ajax/ajax_getFiles.php", data);                    
-                resp.then((resolve)=>{
-                    const arr = JSON.parse(resolve);
-                    const sel = document.getElementById('txtFiles');
-                    sel.innerHTML = '';
-                    for(let i=2; i<arr.length; i++){
-                        const opt = document.createElement('option');
-                        if(i == 2){
-                            opt.selected = true;
-                        }
-                        opt.innerHTML = arr[i];
-                        sel.appendChild(opt);
-
-                    }
-                })             
-*/                           
+        openTab('export');                         
     })
 
 
     function importData(){
-        getConfig('NFe','NFe.json').then((txt)=>{    
-            const json = JSON.parse(txt)
+        NFeConf().then((txt)=>{
+            main_data.NFe = JSON.parse(txt)
 
-            const emitente = document.querySelector('#emitente')
+            const emitente = document.querySelector('#emitente')            
+            emitente.querySelector('#xNome').value = main_data.NFe.C.xNome
+            emitente.querySelector('#xFant').value = main_data.NFe.C.xFant
+            emitente.querySelector('#IE').value = getIE(main_data.NFe.C.IE)
+            emitente.querySelector('#IEST').value = main_data.NFe.C.IEST
+            emitente.querySelector('#IM').value = main_data.NFe.C.IM
+            emitente.querySelector('#CNAE').value = main_data.NFe.C.CNAE
+            emitente.querySelector('#CRT').value = main_data.NFe.C.CRT
+            emitente.querySelector('#CNPJ').value = getCNPJ(main_data.NFe.C02.CNPJ)
+            emitente.querySelector('#xLgr').value = main_data.NFe.C05.xLgr
+            emitente.querySelector('#nro').value = main_data.NFe.C05.nro
+            emitente.querySelector('#bairro').value = main_data.NFe.C05.bairro
+            emitente.querySelector('#cpl').value = main_data.NFe.C05.cpl
+            emitente.querySelector('#xMun').value = main_data.NFe.C05.xMun
+            emitente.querySelector('#cMun').value = main_data.NFe.C05.cMun
+            emitente.querySelector('#UF').value = main_data.NFe.C05.UF
+            emitente.querySelector('#xPais').value = main_data.NFe.C05.xPais
+            emitente.querySelector('#cPais').value = main_data.NFe.C05.cPais
+            emitente.querySelector('#CEP').value = getCEP(main_data.NFe.C05.CEP)
+            emitente.querySelector('#fone').value = getFone(main_data.NFe.C05.fone)
+            emitente.querySelector('#xMun').value = main_data.NFe.C05.xMun
             
-            const C = JSON.parse(json.C)
-            emitente.querySelector('#xNome').value = C.xNome
-            emitente.querySelector('#xFant').value = C.xFant
-            emitente.querySelector('#IE').value = getIE(C.IE)
-            emitente.querySelector('#IEST').value = C.IEST
-            emitente.querySelector('#IM').value = C.IM
-            emitente.querySelector('#CNAE').value = C.CNAE
-            emitente.querySelector('#CRT').value = C.CRT
-
-            const C02 = JSON.parse(json.C02)
-            emitente.querySelector('#CNPJ').value = getCNPJ(C02.CNPJ)
-
-            const C05 = JSON.parse(json.C05)
-            emitente.querySelector('#xLgr').value = C05.xLgr
-            emitente.querySelector('#nro').value = C05.nro
-            emitente.querySelector('#bairro').value = C05.bairro
-            emitente.querySelector('#cpl').value = C05.cpl
-            emitente.querySelector('#xMun').value = C05.xMun
-            emitente.querySelector('#cMun').value = C05.cMun
-            emitente.querySelector('#UF').value = C05.UF
-            emitente.querySelector('#xPais').value = C05.xPais
-            emitente.querySelector('#cPais').value = C05.cPais
-            emitente.querySelector('#CEP').value = getCEP(C05.CEP)
-            emitente.querySelector('#fone').value = getFone(C05.fone)
-            emitente.querySelector('#xMun').value = C05.xMun
-            
-            const fiscal = document.querySelector('#fiscal')
-            
-            const CONF = JSON.parse(json.CONF)
-            fiscal.querySelector('#ckbSimpRem').checked = CONF.ckbSimpRem
-            
-            const B = JSON.parse(json.B)
-            fiscal.querySelector('#nNF').value = parseInt(B.nNF) + 1
-            fiscal.querySelector('#cUF').value = B.cUF
-            fiscal.querySelector('#natOp').value = B.natOp
-            fiscal.querySelector('#mod').value = B.mod
-            fiscal.querySelector('#serie').value = B.serie
+            const fiscal = document.querySelector('#fiscal')            
+            fiscal.querySelector('#nNF').value = parseInt(main_data.NFe.B.nNF) + 1
+            fiscal.querySelector('#cNF').value = main_data.NFe.B.cNF
+            fiscal.querySelector('#cUF').value = main_data.NFe.B.cUF
+            fiscal.querySelector('#natOp').value = main_data.NFe.B.natOp
+            fiscal.querySelector('#mod').value = main_data.NFe.B.mod
+            fiscal.querySelector('#serie').value = main_data.NFe.B.serie
             fiscal.querySelector('#dhEmi').value = today.getFormatDate()
             fiscal.querySelector('#dhSaiEnt').value = today.getFormatDate()
-            fiscal.querySelector('#tpNF').value = B.tpNF
-            fiscal.querySelector('#idDest').value = B.idDest
-            fiscal.querySelector('#cMunFG').value = B.cMunFG
-            fiscal.querySelector('#tpImp').value = B.tpImp
-            fiscal.querySelector('#tpEmis').value = B.tpEmis
-            fiscal.querySelector('#cDV').value = B.cDV
-            fiscal.querySelector('#tpAmb').value = B.tpAmb
-            fiscal.querySelector('#finNFe').value = B.finNFe
-            fiscal.querySelector('#indFinal').value = B.indFinal
-            fiscal.querySelector('#indPres').value = B.indPres
-            fiscal.querySelector('#procEmi').value = B.procEmi
-            fiscal.querySelector('#verProc').value = B.verProc
-            fiscal.querySelector('#dhCont').value = B.dhCont
-            fiscal.querySelector('#xJust').value = B.xJust
-/*
-            const cliente = document.querySelector('#cliente')
-
-            const E = JSON.parse(json.E)
-            cliente.querySelector('#xNome').value = E.xNome
-            cliente.querySelector('#indIEDest').value = E.indIEDest
-            cliente.querySelector('#IE').value = E.IE
-            cliente.querySelector('#ISUF').value = E.ISUF
-            cliente.querySelector('#IM').value = E.IM
-            cliente.querySelector('#email').value = E.email
-
-            const E02 = JSON.parse(json.E02)
-            cliente.querySelector('#CNPJ').value = E02.CNPJ
-
-            const E05 = JSON.parse(json.E05)
-            cliente.querySelector('#xLgr').value = E05.xLgr
-            cliente.querySelector('#nro').value = E05.nro
-            cliente.querySelector('#XCpl').value = E05.XCpl
-            cliente.querySelector('#xBairro').value = E05.xBairro
-            cliente.querySelector('#cMun').value = E05.cMun
-            cliente.querySelector('#xMun').value = E05.xMun
-            cliente.querySelector('#UF').value = E05.UF
-            cliente.querySelector('#CEP').value = E05.CEP
-            cliente.querySelector('#cPais').value = E05.cPais
-            cliente.querySelector('#xPais').value = E05.xPais
-            cliente.querySelector('#fone').value = E05.fone
-*/
-//            console.log(fiscal)
-
+            fiscal.querySelector('#tpNF').value = main_data.NFe.B.tpNF
+            fiscal.querySelector('#idDest').value = main_data.NFe.B.idDest
+            fiscal.querySelector('#cMunFG').value = main_data.NFe.B.cMunFG
+            fiscal.querySelector('#tpImp').value = main_data.NFe.B.tpImp
+            fiscal.querySelector('#tpEmis').value = main_data.NFe.B.tpEmis
+            fiscal.querySelector('#cDV').value = main_data.NFe.B.cDV
+            fiscal.querySelector('#tpAmb').value = main_data.NFe.B.tpAmb
+            fiscal.querySelector('#finNFe').value = main_data.NFe.B.finNFe
+            fiscal.querySelector('#indFinal').value = main_data.NFe.B.indFinal
+            fiscal.querySelector('#indPres').value = main_data.NFe.B.indPres
+            fiscal.querySelector('#procEmi').value = main_data.NFe.B.procEmi
+            fiscal.querySelector('#verProc').value = main_data.NFe.B.verProc
+            fiscal.querySelector('#dhCont').value = main_data.NFe.B.dhCont
+            fiscal.querySelector('#xJust').value = main_data.NFe.B.xJust
         })
 
     }
 
     document.getElementById('btnSaveEmit').addEventListener('click',(event)=>{
         const emitente = document.querySelector('#emitente')
-        const C = new Object
-            C.xNome = emitente.querySelector('#xNome').value.trim().toUpperCase()
-            C.xFant = emitente.querySelector('#xFant').value.trim().toUpperCase()
-            C.IE = getNum(emitente.querySelector('#IE').value)
-            C.IEST = emitente.querySelector('#IEST').value.trim().toUpperCase()
-            C.IM = getNum(emitente.querySelector('#IM').value)
-            C.CNAE = getNum(emitente.querySelector('#CNAE').value)
-            C.CRT = emitente.querySelector('#CRT').value.trim().toUpperCase()
-        getConfig('NFe','NFe.json','C',JSON.stringify(C))
-        const C02 = new Object
-            C02.CNPJ = getNum(emitente.querySelector('#CNPJ').value)
-        getConfig('NFe','NFe.json','C02',JSON.stringify(C02))
-        const C05 = new Object
-            C05.xLgr = emitente.querySelector('#xLgr').value.trim().toUpperCase()
-            C05.nro = emitente.querySelector('#nro').value.trim().toUpperCase()
-            C05.cpl = emitente.querySelector('#cpl').value.trim().toUpperCase()
-            C05.bairro = emitente.querySelector('#bairro').value.trim().toUpperCase()
-            C05.cMun = getNum(emitente.querySelector('#cMun').value)
-            C05.xMun = emitente.querySelector('#xMun').value.trim().toUpperCase()
-            C05.UF = emitente.querySelector('#UF').value.trim().toUpperCase()
-            C05.CEP = getNum(emitente.querySelector('#CEP').value)
-            C05.cPais = getNum(emitente.querySelector('#cPais').value)
-            C05.xPais = emitente.querySelector('#xPais').value.trim().toUpperCase()
-            C05.fone = getNum(emitente.querySelector('#fone').value)
-        getConfig('NFe','NFe.json','C05',JSON.stringify(C05))
+        main_data.NFe.C.xNome = emitente.querySelector('#xNome').value.trim().toUpperCase()
+        main_data.NFe.C.xFant = emitente.querySelector('#xFant').value.trim().toUpperCase()
+        main_data.NFe.C.IE = getNum(emitente.querySelector('#IE').value)
+        main_data.NFe.C.IEST = emitente.querySelector('#IEST').value.trim().toUpperCase()
+        main_data.NFe.C.IM = getNum(emitente.querySelector('#IM').value)
+        main_data.NFe.C.CNAE = getNum(emitente.querySelector('#CNAE').value)
+        main_data.NFe.C.CRT = emitente.querySelector('#CRT').value.trim().toUpperCase()
+        main_data.NFe.C02.CNPJ = getNum(emitente.querySelector('#CNPJ').value)
+        main_data.NFe.C05.xLgr = emitente.querySelector('#xLgr').value.trim().toUpperCase()
+        main_data.NFe.C05.nro = emitente.querySelector('#nro').value.trim().toUpperCase()
+        main_data.NFe.C05.cpl = emitente.querySelector('#cpl').value.trim().toUpperCase()
+        main_data.NFe.C05.bairro = emitente.querySelector('#bairro').value.trim().toUpperCase()
+        main_data.NFe.C05.cMun = getNum(emitente.querySelector('#cMun').value)
+        main_data.NFe.C05.xMun = emitente.querySelector('#xMun').value.trim().toUpperCase()
+        main_data.NFe.C05.UF = emitente.querySelector('#UF').value.trim().toUpperCase()
+        main_data.NFe.C05.CEP = getNum(emitente.querySelector('#CEP').value)
+        main_data.NFe.C05.cPais = getNum(emitente.querySelector('#cPais').value)
+        main_data.NFe.C05.xPais = emitente.querySelector('#xPais').value.trim().toUpperCase()
+        main_data.NFe.C05.fone = getNum(emitente.querySelector('#fone').value)
+        NFeConf(main_data.NFe)
     })
                 
     document.getElementById('btnSaveFiscal').addEventListener('click',(event)=>{
         const fiscal = document.querySelector('#fiscal')
-        const B = new Object
-            B.nNF = fiscal.querySelector('#nNF').value.trim()
-            B.cUF = fiscal.querySelector('#cUF').value
-            B.natOp = fiscal.querySelector('#natOp').value.trim().toUpperCase()
-            B.mod = fiscal.querySelector('#mod').value.trim()
-            B.serie = fiscal.querySelector('#serie').value
-            B.dhEmi = fiscal.querySelector('#dhEmi').value
-            B.dhSaiEnt = fiscal.querySelector('#dhSaiEnt').value
-            B.tpNF = fiscal.querySelector('#tpNF').value
-            B.idDest = fiscal.querySelector('#idDest').value
-            B.cMunFG = fiscal.querySelector('#cMunFG').value
-            B.tpImp = fiscal.querySelector('#tpImp').value
-            B.tpEmis = fiscal.querySelector('#tpEmis').value
-            B.cDV = fiscal.querySelector('#cDV').value
-            B.tpAmb = fiscal.querySelector('#tpAmb').value
-            B.finNFe = fiscal.querySelector('#finNFe').value
-            B.indFinal = fiscal.querySelector('#indFinal').value
-            B.indPres = fiscal.querySelector('#indPres').value
-            B.procEmi = fiscal.querySelector('#procEmi').value
-            B.verProc = fiscal.querySelector('#verProc').value
-            B.dhCont = fiscal.querySelector('#dhCont').value
-            B.xJust = fiscal.querySelector('#xJust').value
-        getConfig('NFe','NFe.json','B',JSON.stringify(B))
-        const CONF = new Object
-            CONF.ckbSimpRem = document.querySelector('#ckbSimpRem').checked
-        getConfig('NFe','NFe.json','CONF',JSON.stringify(CONF))
-
+        main_data.NFe.A.versao = '4.00'
+        main_data.NFe.A.id = ''
+        main_data.NFe.A.indSinc = ''
+        main_data.NFe.B.nNF = fiscal.querySelector('#nNF').value.trim()
+        main_data.NFe.B.cUF = fiscal.querySelector('#cUF').value
+        main_data.NFe.B.cNF = Math.floor(Math.random() * (99999999 - 10000000) + 10000000)
+        document.querySelector('#fiscal').querySelector('#cNF').value = main_data.NFe.B.cNF
+        main_data.NFe.B.natOp = fiscal.querySelector('#natOp').value.trim().toUpperCase()
+        main_data.NFe.B.mod = fiscal.querySelector('#mod').value.trim()
+        main_data.NFe.B.serie = fiscal.querySelector('#serie').value
+        main_data.NFe.B.dhEmi = fiscal.querySelector('#dhEmi').value
+        main_data.NFe.B.dhSaiEnt = fiscal.querySelector('#dhSaiEnt').value
+        main_data.NFe.B.tpNF = fiscal.querySelector('#tpNF').value
+        main_data.NFe.B.idDest = fiscal.querySelector('#idDest').value
+        main_data.NFe.B.cMunFG = fiscal.querySelector('#cMunFG').value
+        main_data.NFe.B.tpImp = fiscal.querySelector('#tpImp').value
+        main_data.NFe.B.tpEmis = fiscal.querySelector('#tpEmis').value
+        main_data.NFe.B.cDV = fiscal.querySelector('#cDV').value
+        main_data.NFe.B.tpAmb = fiscal.querySelector('#tpAmb').value
+        main_data.NFe.B.finNFe = fiscal.querySelector('#finNFe').value
+        main_data.NFe.B.indFinal = fiscal.querySelector('#indFinal').value
+        main_data.NFe.B.indPres = fiscal.querySelector('#indPres').value
+        main_data.NFe.B.procEmi = fiscal.querySelector('#procEmi').value
+        main_data.NFe.B.verProc = fiscal.querySelector('#verProc').value
+        main_data.NFe.B.dhCont = fiscal.querySelector('#dhCont').value
+        main_data.NFe.B.xJust = fiscal.querySelector('#xJust').value
+        main_data.NFe.A.id = geraChave(main_data.NFe.B.nNF,main_data.NFe.B.cNF,main_data.NFe.C02.CNPJ)
+        NFeConf(main_data.NFe)
     })
                 
     document.getElementById('btnSaveCli').addEventListener('click',()=>{
         const cliente = document.querySelector('#cliente')
-        const E = new Object
-            E.xNome = cliente.querySelector('#xNome').value.trim().toUpperCase()
-            E.indIEDest = cliente.querySelector('#indIEDest').value
-            E.IE = cliente.querySelector('#IE').value
-            E.ISUF = cliente.querySelector('#ISUF').value
-            E.IM = cliente.querySelector('#IM').value.trim()
-            E.email = cliente.querySelector('#email').value.trim().toLowerCase()
-        getConfig('NFe','NFe.json','E',JSON.stringify(E))
-        const E02 = new Object
-            E02.CNPJ = cliente.querySelector('#CNPJ').value.trim().toUpperCase()
-        getConfig('NFe','NFe.json','E02',JSON.stringify(E02))
-        const E05 = new Object
-            E05.xLgr = cliente.querySelector('#xLgr').value.trim().toUpperCase()
-            E05.nro = cliente.querySelector('#nro').value
-            E05.XCpl = cliente.querySelector('#XCpl').value.trim().toUpperCase()
-            E05.xBairro = cliente.querySelector('#xBairro').value.trim().toUpperCase()
-            E05.cMun = cliente.querySelector('#cMun').value.trim().toUpperCase()
-            E05.xMun = cliente.querySelector('#xMun').value.trim().toUpperCase()
-            E05.UF = cliente.querySelector('#UF').value.trim().toUpperCase()
-            E05.CEP = cliente.querySelector('#CEP').value.trim().toUpperCase()
-            E05.cPais = cliente.querySelector('#cPais').value.trim().toUpperCase()
-            E05.xPais = cliente.querySelector('#xPais').value.trim().toUpperCase()
-            E05.fone = cliente.querySelector('#fone').value.trim().toUpperCase()
-        getConfig('NFe','NFe.json','E05',JSON.stringify(E05))
+        main_data.NFe.E.xNome = cliente.querySelector('#xNome').value.trim().toUpperCase()
+        main_data.NFe.E.indIEDest = cliente.querySelector('#indIEDest').value
+        main_data.NFe.E.IE = getNum(cliente.querySelector('#IE').value)
+        main_data.NFe.E.ISUF = cliente.querySelector('#ISUF').value
+        main_data.NFe.E.IM = getNum(cliente.querySelector('#IM').value)
+        main_data.NFe.E.email = cliente.querySelector('#email').value.trim().toLowerCase()
+        main_data.NFe.E02.CNPJ = getNum(cliente.querySelector('#CNPJ').value)
+        main_data.NFe.E05.xLgr = cliente.querySelector('#xLgr').value.trim().toUpperCase()
+        main_data.NFe.E05.nro = cliente.querySelector('#nro').value
+        main_data.NFe.E05.XCpl = cliente.querySelector('#XCpl').value.trim().toUpperCase()
+        main_data.NFe.E05.xBairro = cliente.querySelector('#xBairro').value.trim().toUpperCase()
+        main_data.NFe.E05.cMun = getNum(cliente.querySelector('#cMun').value)
+        main_data.NFe.E05.xMun = cliente.querySelector('#xMun').value.trim().toUpperCase()
+        main_data.NFe.E05.UF = cliente.querySelector('#UF').value.trim().toUpperCase()
+        main_data.NFe.E05.CEP = getNum(cliente.querySelector('#CEP').value)
+        main_data.NFe.E05.cPais = cliente.querySelector('#cPais').value.trim().toUpperCase()
+        main_data.NFe.E05.xPais = cliente.querySelector('#xPais').value.trim().toUpperCase()
+        main_data.NFe.E05.fone = getNum(cliente.querySelector('#fone').value)
+        NFeConf(main_data.NFe)
+    })
+
+    document.querySelector('#btnGeraNFe').addEventListener('click',()=>{
+        
+
+        if(document.querySelector('#cliente').querySelector('#cMun').value.trim() != '' ){
+            geraNFeItens()
+
+        }else{
+            alert('Favor verificar o campo código do município')
+            openTab('cliente')
+            document.querySelector('#cliente').querySelector('#cMun').focus()
+        }
+
+
+        
 
     })
+
+
+    document.querySelector('#btnBuscaIBGE').addEventListener('click',()=>{
+        IBGE_cMun(document.querySelector('#E05').querySelector('#xMun').value,document.querySelector('#E05').querySelector('#UF').value)
+    })
+
+    function IBGE_cMun(C,E){
+        C = C.trim().toLowerCase()
+        E = E.trim().toUpperCase()
+        if(C != '' && E != ''){
+            const UF_cod = new Promise((resolve,reject) =>{
+                fetch("https://servicodados.ibge.gov.br/api/v1/localidades/estados")
+                .then(function (response){
+                    if (response.status === 200) { 
+                        resolve(response.text());
+                    } else { 
+                        reject(new Error("Houve algum erro na comunicação com o servidor"));
+                    } 
+                })                    
+            });   
+
+            UF_cod.then((resolve)=>{
+                const json = JSON.parse(resolve);
+                for(let i=0; i<json.length; i++){
+                    if(json[i].sigla == E){
+                        const Mun_cod = new Promise((resolve,reject) =>{
+                            fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${json[i].id}/municipios`)
+                            .then(function (response){
+                                if (response.status === 200) { 
+                                    resolve(response.text());
+                                } else { 
+                                    reject(new Error("Houve algum erro na comunicação com o servidor"));
+                                } 
+                            })                    
+                        }); 
+
+                        Mun_cod.then((resolve)=>{
+                            const json = JSON.parse(resolve);
+                            for(let j=0; j<json.length; j++){
+                                if(json[j].nome.trim().toLowerCase() == C){
+                                    document.querySelector('#E05').querySelector('#cMun').value =  json[j].id;
+                                    document.getElementById('btnSaveCli').click()
+                                    break;
+                                }
+                            }
+                        })                
+                    }
+                }
+            })
+        }else{
+            alert('Favor preencher Nome do Município e Sigla da UF.')
+        }
+    }
+
+
+    function geraChave(nNF,cNF,CNPJ){
+            
+            mes = today.getMonth().toString().padStart(2, '0');
+            ano = today.getFullYear().toString().substr(2,2);
+            const aamm = ano+mes;
+            nNF = nNF.padStart(9, '0');
+            const uf = "35";            // cUF - Código da UF do emitente do Documento Fiscal;
+            const tpEmis = "1";         // tpEmis – forma de emissão da NF-e;
+            const mod = "55";           // mod - Modelo do Documento Fiscal;
+            const ser = "001";          // serie - Série do Documento Fiscal;    
+            const chave = uf + aamm + CNPJ + mod + ser +  nNF + tpEmis + cNF ;
+    
+            let dv = 0;
+            let mult = 2;
+                for(let i = 1; i < chave.length+1; i++){
+                    dv = dv + (chave[chave.length - i] * mult);
+                    mult++;
+    
+                    if (mult > 9){
+                    mult = 2;
+                    }
+                }
+    
+                let resto = dv % 11;
+                dv = 11 - resto;
+    
+                if(dv > 9){
+                    dv = 0;
+                }
+    
+                return 'NFe'+chave+dv;
+    
+        }    
+
 /*                
                 document.getElementById('btnGeraNFe').addEventListener('click',(event)=>{
                     event.preventDefault();
