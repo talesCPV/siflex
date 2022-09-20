@@ -344,7 +344,6 @@ function NFeConf(dados=''){
 }
 
 function getConfig(field,file='config.json',order='read',value=0){
-//    console.log('field:'+field+' file:'+file+' order:'+order+' value:'+value)
     const data = new URLSearchParams();        
         data.append("order", order);
         data.append("field", field);
@@ -385,7 +384,7 @@ function loadTXT(file='templateNFe.txt'){
                 } 
             });
         }); 
-    }
+}
 
 /*  ABAS */
 
@@ -405,28 +404,6 @@ function pictab(e){
             sel_tab.style.color = "#3F5954";
         }
     }
-}
-
-function openTab(tab) {
-    let x = document.getElementsByClassName("tab");
-    
-    for (let i = 0; i < x.length; i++) {
-        x[i].style.display = "none";  
-    }
-    x = document.getElementsByClassName(tab);
-    for (let i = 0; i < x.length; i++) {
-        x[i].style.display = "block";          
-    } 
-    x = document.getElementsByClassName("tab-item");
-    for (let i = 0; i < x.length; i++) {
-        x[i].style.background = "#FFF8DC";  
-        x[i].style.color = "#3F5954";         
-    }                     
-    x = document.getElementsByClassName("tab-"+tab);
-    for (let i = 0; i < x.length; i++) {
-        x[i].style.background = "#3F5954"; 
-        x[i].style.color = "#FFF8DC";         
-    }                    
 }
 
  /*  MENU  */ 

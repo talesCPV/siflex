@@ -23,23 +23,22 @@
 
     </style>
   
-  <div class="form-base">
-    <h1>NFe Venda</h1>
-    <div style="margin: 50px;">
-    
+    <div class="form-base">
+        <h1>NFe Venda</h1>
+            
         <div class="tab-bar">
-            <div class="tab-item tab-emitente" style="background: #3F5954; color:#FFF8DC;" > Emitente</div>
-            <div class="tab-item tab-fiscal" >Fiscal</div>
-            <div class="tab-item tab-pedido" >Pedido</div>
-            <div class="tab-item tab-cliente" >Cliente</div>            
-            <div class="tab-item tab-itens" >Itens</div>
-            <div class="tab-item tab-fatura" >Faturamento</div>
-            <div class="tab-item tab-export" >Arquivos TXT</div>
+            <div class="tab-item" id="tab-emitente" onclick="pictab(this)"> Emitente</div>
+            <div class="tab-item" id="tab-fiscal" onclick="pictab(this)">Fiscal</div>
+            <div class="tab-item" id="tab-pedido" onclick="pictab(this)">Pedido</div>
+            <div class="tab-item" id="tab-cliente" onclick="pictab(this)">Cliente</div>            
+            <div class="tab-item" id="tab-itens" onclick="pictab(this)">Itens</div>
+            <div class="tab-item" id="tab-fatura" onclick="pictab(this)">Faturamento</div>
+            <div class="tab-item" id="tab-export" onclick="pictab(this)">Arquivos TXT</div>
         </div>
         
         <div class="tab-screen">        
-            <div id="emitente" class="tab emitente">
-<!--                <h2>Emitente</h2>               -->
+            <div id="emitente" class="tab">
+    <!--                <h2>Emitente</h2>               -->
                 <div id="C">
                     <div class="inline">
                         <label> Razão Social *</label>
@@ -60,9 +59,9 @@
                     <div class="inline">
                         <label> Regime Trib. </label>
                         <select id="CRT" >
-                          <option value="1" selected>Simples Nacional</option>
-                          <option value="2" >Simples Nacional - excesso de sublimite de receita bruta</option>
-                          <option value="3" >Regime Normal.</option>
+                            <option value="1" selected>Simples Nacional</option>
+                            <option value="2" >Simples Nacional - excesso de sublimite de receita bruta</option>
+                            <option value="3" >Regime Normal.</option>
                         </select>
                         <label> CNAE </label>
                         <input type="text" id="CNAE" maxlength="7" onkeyup="valInt(this)"/>                        
@@ -110,8 +109,8 @@
                 <button id="btnSaveEmit">Salvar</button>
                                 
             </div>            
-            <div id="fiscal" class="tab fiscal" style="display:none">
-<!--                <h2>Fiscal</h2>-->
+            <div id="fiscal" class="tab">
+    <!--                <h2>Fiscal</h2>-->
             
                 <div id="B">
 
@@ -129,82 +128,82 @@
 
                     <label> Nat. Operação *</label>
                     <input type="text" id="natOp" maxlength="60" />
-    
+
                     <label> Código do Modelo do Documento Fiscal </label>
                     <input type="text" id="mod" maxlength="2" value=""/>
                     
                     <label> Data de emissão do Documento Fiscal </label>
                     <input type="date" id="dhEmi" value="" >
-    
+
                     <label> Data e hora de Saída ou da Entrada da Mercadoria/Produto </label>
                     <input type="date" id="dhSaiEnt" value="">
-    
+
                     <label> Tipo de Operação</label>
                     <select id="tpNF" >
-                      <option value="0" selected>Entrada</option>
-                      <option value="1">Saída</option>
+                        <option value="0" selected>Entrada</option>
+                        <option value="1">Saída</option>
                     </select>
-    
+
                     <label> Identificador de Local de destino da operação</label>
                     <select id="idDest" >
-                      <option value="1">Operação Interna</option>
-                      <option value="2">Operação Interestadual</option>
-                      <option value="3">Operação com o Exterior</option>
+                        <option value="1">Operação Interna</option>
+                        <option value="2">Operação Interestadual</option>
+                        <option value="3">Operação com o Exterior</option>
                     </select>
         
                     <label> Formato de Impressão do DANFE</label>
                     <select id="tpImp" >
-                      <option value="1">Retrato</option>
-                      <option value="2">Paisagem</option>
+                        <option value="1">Retrato</option>
+                        <option value="2">Paisagem</option>
                     </select>
-    
+
                     <label>Tipo de Emissão da NF-e</label>
                     <select id="tpEmis" >
-                      <option value="1">Normal</option>
-                      <option value="2">Contingência FS - emissão em contingência com impressão do DANFE em Formulário de Segurança</option>
-                      <option value="4">Contingência EPEC - emissão em contingência com envio da Evento Prévio de Emissão em Contingência - EPEC</option>
-                      <option value="5">Contingência FS-DA - emissão em contingência com impressão do DANFE em Formulário de Segurança para Impressão de Documento Auxiliar de Documento Fiscal Eletrônico (FS-DA)</option>
-                      <option value="6">Contingência SVC-AN</option>
-                      <option value="7">Contingência SVC-RS</option>
-                      <option value="9">Contingência off-line NFC-e</option>
+                        <option value="1">Normal</option>
+                        <option value="2">Contingência FS - emissão em contingência com impressão do DANFE em Formulário de Segurança</option>
+                        <option value="4">Contingência EPEC - emissão em contingência com envio da Evento Prévio de Emissão em Contingência - EPEC</option>
+                        <option value="5">Contingência FS-DA - emissão em contingência com impressão do DANFE em Formulário de Segurança para Impressão de Documento Auxiliar de Documento Fiscal Eletrônico (FS-DA)</option>
+                        <option value="6">Contingência SVC-AN</option>
+                        <option value="7">Contingência SVC-RS</option>
+                        <option value="9">Contingência off-line NFC-e</option>
                     </select>
         
                     <label> Identificação do Ambiente</label>
                     <select id="tpAmb" >
-                      <option value="1">Produção</option>
-                      <option value="2">Homologação</option>
+                        <option value="1">Produção</option>
+                        <option value="2">Homologação</option>
                     </select>
-    
+
                     <label> Finalidade de emissão da NF-e</label>
                     <select id="finNFe" >
-                      <option value="1">NF-e normal</option>
-                      <option value="2">NF-e complementar</option>
-                      <option value="3">NF-e de ajuste</option>
+                        <option value="1">NF-e normal</option>
+                        <option value="2">NF-e complementar</option>
+                        <option value="3">NF-e de ajuste</option>
                     </select>
-    
+
                     <label>Indica operação com o consumidor final</label>
                     <select id="indFinal" >
-                      <option value="0">Normal</option>    
-                      <option value="1">Consumidor Final</option>
+                        <option value="0">Normal</option>    
+                        <option value="1">Consumidor Final</option>
                     </select>
-    
+
                     <label>Indicador de presença do comprador no estabelecimento comercial no momento da operação</label>
                     <select id="indPres" >
-                      <option value="0">Não se aplica (por exemplo Nota Fiscal Complementar ou de ajuste)</option>
-                      <option value="1">Operação presencial</option>
-                      <option value="2">Operação não presencial, pela Internet</option>
-                      <option value="3">Operação não presencial, pelo tele atendimento</option>
-                      <option value="4">NFC-e em operação com entrega em domicílio</option>
-                      <option value="5">Operação não presencial, fora do estabelecimento</option>
-                      <option value="9">Operação não presencial, outros</option>
+                        <option value="0">Não se aplica (por exemplo Nota Fiscal Complementar ou de ajuste)</option>
+                        <option value="1">Operação presencial</option>
+                        <option value="2">Operação não presencial, pela Internet</option>
+                        <option value="3">Operação não presencial, pelo tele atendimento</option>
+                        <option value="4">NFC-e em operação com entrega em domicílio</option>
+                        <option value="5">Operação não presencial, fora do estabelecimento</option>
+                        <option value="9">Operação não presencial, outros</option>
                     </select>
-    
+
                     <label>Processo de emissão da NF-e</label>
                     <select id="procEmi" >
-                      <option value="0">emissão de NF-e com aplicativo do contribuinte</option>
-                      <option value="1">emissão de NF-e avulsa pelo Fisco</option>
-                      <option value="2">emissão de NF-e avulsa, pelo contribuinte com seu certificado digital, através do site do Fisco</option>
-                      <option value="3">emissão NF-e pelo contribuinte com aplicativo fornecido pelo Fisco</option>
+                        <option value="0">emissão de NF-e com aplicativo do contribuinte</option>
+                        <option value="1">emissão de NF-e avulsa pelo Fisco</option>
+                        <option value="2">emissão de NF-e avulsa, pelo contribuinte com seu certificado digital, através do site do Fisco</option>
+                        <option value="3">emissão NF-e pelo contribuinte com aplicativo fornecido pelo Fisco</option>
                     </select>
 
                     <div class="ckBOX">
@@ -212,11 +211,11 @@
                         <input type='checkbox' id='ckbSimpRem' /> 
                     </div>  
                 </div>                
-  
-                  <button id="btnSaveFiscal">Salvar</button>                
+
+                    <button id="btnSaveFiscal">Salvar</button>                
             </div>            
-            <div id="pedido" class="tab pedido" style="display:none">
-<!--                <h2>Pedido</h2>-->
+            <div id="pedido" class="tab">
+    <!--                <h2>Pedido</h2>-->
 
                 <fieldset>
                     <legend>Busca Por</legend>
@@ -244,12 +243,12 @@
                             <input type="date" id="edtIni">
                             <input type="date" id="edtFin">
                         </div>                         
-                     <table id="tblBuscaPed"></table> 
+                        <table id="tblBuscaPed"></table> 
                 </fieldset>
 
             </div>
-            <div id="cliente" class="tab cliente" style="display:none">
-<!--                <h2>Cliente</h2>-->
+            <div id="cliente" class="tab">
+    <!--                <h2>Cliente</h2>-->
                 <div id="E">
                     <div class="inline">
                         <label> Razão Social *</label>
@@ -317,17 +316,17 @@
                 </div>
                 <button id="btnSaveCli">Salvar</button>
             </div>        
-            <div id="itens" class="tab itens" style="display:none">
-<!--                <h2>Itens</h2>-->
-               
+            <div id="itens" class="tab">
+    <!--                <h2>Itens</h2>-->
+                
                 <table id="tblItens"></table>
 
-<!--                    <button id="btnTeste">Teste*</button> -->
+    <!--                    <button id="btnTeste">Teste*</button> -->
 
 
             </div>            
-            <div id="fatura" class="tab fatura" style="display:none">
-<!--                <h2>Faturamento</h2>-->
+            <div id="fatura" class="tab">
+    <!--                <h2>Faturamento</h2>-->
                 <div id="W">
 
                     <fieldset>
@@ -371,8 +370,8 @@
                     <button id="btnGeraNFe">Gerar NFe</button>
                 </div>
             </div>
-            <div id="export" class="tab export" style="display:none">
-<!--                <h2>Arquivos TXT</h2>-->
+            <div id="export" class="tab">
+    <!--                <h2>Arquivos TXT</h2>-->
 
                     <fieldset>
                         <legend>NFe geradas</legend>
@@ -380,9 +379,7 @@
                     </fieldset>
             </div>                
         </div>   
-    </div> 
-
-</div>
+    </div>
 
 </template>
 <script>
@@ -391,6 +388,7 @@
 
     listNFe()
     importData()
+    document.querySelector('#tab-emitente').click()
     document.querySelector('#edtIni').value =  today.iniMonth()
     document.querySelector('#edtFin').value =  today.finMonth()
 
@@ -509,7 +507,6 @@
         const tblItens = document.querySelector('#tblItens').rows
         main_data.NFe.H = []
         for(let i=1; i< tblItens.length; i++){
-            console.log(tblItens[i].data)
             const item = new Object
             item.H = new Object
             item.H.nItem = i
@@ -754,41 +751,13 @@
 
 /* CHAMADA DE FUNÇÕES DO DOM */    
 
-    document.querySelector('.tab-emitente').addEventListener('click',()=>{
-        openTab('emitente')
-    })
-
-    document.querySelector('.tab-fiscal').addEventListener('click',()=>{
-        openTab('fiscal')
-    })
-
-    document.querySelector('.tab-pedido').addEventListener('click',()=>{
-        openTab('pedido')
-    })
-
-    document.querySelector('.tab-cliente').addEventListener('click',()=>{
-        openTab('cliente')
-    })    
-
-    document.querySelector('.tab-itens').addEventListener('click',()=>{
-        openTab('itens')
-    })
-
-    document.querySelector('.tab-fatura').addEventListener('click',()=>{
-        openTab('fatura')
-    })  
-
-    document.querySelector('.tab-export').addEventListener('click',()=>{
-        openTab('export');                         
-    })
-
     document.querySelector('#tblItens').addEventListener('click',(e)=>{
 
         data = e.target.parentNode.data
         data.mode = 'edtItens'
         main_data.nfe.row_item = e.target.parentNode
         openHTML('viewNFeItens.html','pop-up','Edição de Ítem de NFe',data)
-        
+
     })
 
     document.querySelector('#tblBuscaPed').addEventListener('click',(e)=>{
@@ -796,8 +765,6 @@
         data.mode = 'NFe'
 
         if (confirm(`Carregar Ped.${data.num_ped} de ${data.fantasia.toUpperCase()}?`)) {
-            console.log(data)
-
             function addCli(){
                 const cliente = document.querySelector('#cliente')
                 cliente.querySelector('#xNome').value = data.nome_emp.trim().toUpperCase()
@@ -845,7 +812,6 @@
                 }
 
                 for(let i=0; i<json.length;i++){
-//                    console.log(json[i])
                     total += parseFloat(json[i].total)
                     let CFOP = ''
                     if(data.estado.trim().toUpperCase() == main_data.NFe.C05.UF){
@@ -866,7 +832,7 @@
                 }
                 document.querySelector('#edtValorNF').value = total.toFixed(2)
                 document.querySelector('#txaTextoCompl').value = `DOC. EMITIDO POR ME OU EPP OPTANTE S.NACIONAL, NÃO GERA DIREITO A CREDITO FISCAL DE ISSQN E IPI, PERMITE O APROVEITAMENTO DE CREDITO DO ICMS NO VALOR DE  R$${(total*0.0282).toFixed(2)} CORRESPONDENTE A ALIQUOTA DE 2,82% NOS TERMOS DO ARTIGO 23 DA LC 123. Aprovado conforme pedido(s) ${document.querySelector('#hdnPed').value}`
-                openTab('cliente')
+                document.querySelector('#tab-cliente').click()
             })
 
         }
@@ -1012,7 +978,7 @@
 
         }else{
             alert('Favor verificar o campo código do município')
-            openTab('cliente')
+            document.querySelector('#tab-cliente').click()
             document.querySelector('#cliente').querySelector('#cMun').focus()
         }
 
