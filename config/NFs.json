@@ -4,13 +4,13 @@
         "CpfCnpj":"",
         "DtIni":"",
         "DtFin":"",
-        "TipoArq":"",
+        "TipoArq":"1",
         "cod":"4,35",
         "Versao":"2.00"
     },
     "20":{
-        "TipoReg" : "",
-        "TipoNf":"",
+        "TipoReg" : "20",
+        "TipoNf":"RPS",
         "NumNf":"",
         "SerNf":"001",
         "DtEmiNf":"",
