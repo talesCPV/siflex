@@ -20,80 +20,124 @@
         
         <div class="tab-screen">        
             <div id="emitente" class="tab">
-                <div id="C">
-                    <div class="inline">
-                        <label> Razão Social *</label>
-                        <input type="text" id="xNome" maxlength="60" />
-                    </div>
-                    <div class="inline">
-                        <label> Nome Fantasia </label>
-                        <input type="text" id="xFant" maxlength="60" />
-                    </div>    
-
-                    <div class="inline">
-                        <label> Insc. Estadual </label>
-                        <input type="text" id="IE" maxlength="15" onkeyup="valIE(this)"/>
-                        <input type="hidden" id="IEST" >                
-                        <label> Insc. Municipal </label>
-                        <input type="text" id="IM" maxlength="15" onkeyup="valInt(this)"/>
-                    </div> 
-                    <div class="inline">
-                        <label> Regime Trib. </label>
-                        <select id="CRT" >
-                          <option value="1" selected>Simples Nacional</option>
-                          <option value="2" >Simples Nacional - excesso de sublimite de receita bruta</option>
-                          <option value="3" >Regime Normal.</option>
-                        </select>
-                        <label> CNAE </label>
-                        <input type="text" id="CNAE" maxlength="7" onkeyup="valInt(this)"/>                        
-                    </div>                                                       
+                <div class="inline">
+                    <label> Razão Social *</label>
+                    <input type="text" id="xNome" maxlength="60" />
                 </div>
-                <div id="C02" class="inline">
-                    
+                <div class="inline">
+                    <label> Nome Fantasia </label>
+                    <input type="text" id="xFant" maxlength="60" />
+                </div>    
+
+                <div class="inline">
+                    <label> Insc. Estadual </label>
+                    <input type="text" id="IE" maxlength="15" onkeyup="valIE(this)"/>
+                    <input type="hidden" id="IEST" >                
+                    <label> Insc. Municipal </label>
+                    <input type="text" id="IM" maxlength="15" onkeyup="valInt(this)"/>
+                </div> 
+                <div class="inline">
+                    <label> Regime Trib. </label>
+                    <select id="CRT" >
+                        <option value="1" selected>Simples Nacional</option>
+                        <option value="2" >Simples Nacional - excesso de sublimite de receita bruta</option>
+                        <option value="3" >Regime Normal.</option>
+                    </select>
+                    <label> CNAE </label>
+                    <input type="text" id="CNAE" maxlength="7" onkeyup="valInt(this)"/>                        
+                </div>                                                       
+                <div class="inline">
                     <label> CNPJ </label>
                     <input type="text" id="CNPJ" maxlength="18" onkeyup="valCNPJ(this)"/>
                 </div>
-                <div id="C05">
-                    <div class="inline">
-                        <label> Endereço </label>
-                        <input type="text" id="xLgr" maxlength="60" />
-                        <label> Número: </label>
-                        <input type="text" id="nro" maxlength="5" style="max-width: 100px;" />
-                    </div>
-                    <div class="inline">
-                        <label> Bairro </label>
-                        <input type="text" id="bairro" maxlength="60" />
-                        <label> Complemento </label>
-                        <input type="text" id="cpl" maxlength="60" style="max-width: 200px;" />
-                    </div>
-                    <div class="inline">
-                        <label> Municipio</label>
-                        <input type="text" id="xMun" maxlength="60" />
-                        <label> Código</label>
-                        <input type="text" id="cMun" maxlength="7" style="max-width: 150px;" onkeyup="valInt(this)" />
-                        <label> Sigla da UF </label>
-                        <input type="text" id="UF" maxlength="2" style="max-width: 50px;" />
-                    </div>
-                    <div class="inline">
-                        <label> Nome do País </label>
-                        <input type="text" id="xPais" maxlength="60" />
-                        <label> Código </label>
-                        <input type="text" id="cPais" maxlength="4" onkeyup="valInt(this)"/>
-                    </div>
-                    <div class="inline">
-                        <label> CEP </label>
-                        <input type="text" id="CEP" maxlength="8" onkeyup="valCEP(this)"/>
-                        <label> Telefone </label>
-                        <input type="text" id="fone" maxlength="14" onkeyup="phone(this)"/>
-                    </div>
+                <div class="inline">
+                    <label> Endereço </label>
+                    <input type="text" id="xLgr" maxlength="60" />
+                    <label> Número: </label>
+                    <input type="text" id="nro" maxlength="5" style="max-width: 100px;" />
+                </div>
+                <div class="inline">
+                    <label> Bairro </label>
+                    <input type="text" id="bairro" maxlength="60" />
+                    <label> Complemento </label>
+                    <input type="text" id="cpl" maxlength="60" style="max-width: 200px;" />
+                </div>
+                <div class="inline">
+                    <label> Municipio</label>
+                    <input type="text" id="xMun" maxlength="60" />
+                    <label> Código</label>
+                    <input type="text" id="cMun" maxlength="7" style="max-width: 150px;" onkeyup="valInt(this)" />
+                    <label> Sigla da UF </label>
+                    <input type="text" id="UF" maxlength="2" style="max-width: 50px;" />
+                </div>
+                <div class="inline">
+                    <label> Nome do País </label>
+                    <input type="text" id="xPais" maxlength="60" />
+                    <label> Código </label>
+                    <input type="text" id="cPais" maxlength="4" onkeyup="valInt(this)"/>
+                </div>
+                <div class="inline">
+                    <label> CEP </label>
+                    <input type="text" id="CEP" maxlength="8" onkeyup="valCEP(this)"/>
+                    <label> Telefone </label>
+                    <input type="text" id="fone" maxlength="14" onkeyup="phone(this)"/>
                 </div>
                 <button id="btnSaveEmit">Salvar</button>
             </div>
             <div id="fiscal" class="tab">
-2
+                <div class="inline">
+                    <label for="edtNfsNum">Num NFs</label>
+                    <input type="text" id="edtNfsNum">
+                    <label for="edtRps">RPS Defasagem</label>
+                    <input type="text" id="edtRps">
+                </div>
+                <div class="inline">
+                    <label for="edtValor">Valor</label>
+                    <input type="text" id="edtValor">
+                    <label for="edtDias">Dias Parcelas</label>
+                    <input type="text" id="edtDias">
+                    <label for="edtAliq">Alíquota</label>
+                    <input type="text" id="edtAliq">
+                </div>
+                <div class="inline">
+                    <label for="cmbLocal">Local</label>
+                    <select id="cmbLocal">
+                        <option value="TOM" selected>No Cliente</option>
+                        <option value="PRE">Na Empresa</option>
+                    </select>
+                </div>
+
             </div>
             <div id="pedido" class="tab">
-3
+                <fieldset>
+                    <legend>Busca Por:</legend>
+                    <div class="inline">
+                        <select id="cmbBusca">
+                            <option value="true"   signal="="  val="true">Todos</option>
+                            <option value="EMP.fantasia" signal="LIKE">Cliente</option>
+                            <option value="EMP.id" signal="=">Código do Cliente</option>
+                            <option value="SERV.num_carro" signal="LIKE">Num. do Carro</option>
+                            <option value="SERV.nf" signal="IN">NF</option>
+                            <option value="SERV.pedido" signal="IN">Pedido</option>
+                            <option value="SERV.id" signal="IN">Cod. Serv. Executado</option>
+                        </select>
+                        <input type="text" id="edtBusca"placeholder="Digite sua Busca" onkeypress="return getEnter(event, 'btnBusca')">
+                        <button id="btnBusca">Busca</button>
+                    </div>
+                    <div class="inline center-itens">
+                        <div class="ckBOX">
+                            <label for="ckbData">Por data</label>
+                            <input type="checkbox" id="ckbData" checked>
+                        </div>
+                        <input type="date" id="edtIni" onkeypress="return getEnter(event, 'btnBusca')">
+                        <input type="date" id="edtFin" onkeypress="return getEnter(event, 'btnBusca')">
+                    </div>
+        
+                </fieldset>
+
+                <table id="tblServExec"></table>
+
+
             </div>
             <div id="cliente" class="tab">
 4
@@ -105,7 +149,10 @@
 6
             </div>
             <div id="export" class="tab">
-7
+                <fieldset>
+                    <legend>NFe geradas</legend>
+                    <select id="txtFiles" size="20"></select>
+                </fieldset>
             </div>
                 
 
@@ -120,7 +167,51 @@
 </template>
 <script>
     document.querySelector('#tab-emitente').click()
+    document.querySelector('#edtIni').value = today.iniMonth()
+    document.querySelector('#edtFin').value = today.finMonth()
+
+    document.querySelector('#btnBusca').addEventListener('click',()=>{
+
+        const sel = document.querySelector('#cmbBusca')
+        const field = sel.value
+        const signal = sel.options[sel.selectedIndex].getAttribute('signal')
+        const ckb = document.querySelector('#ckbData').checked
+        let value = sel.options[sel.selectedIndex].hasAttribute('val') ? sel.options[sel.selectedIndex].getAttribute('val') : document.querySelector('#edtBusca').value.trim()
+        value = signal=='LIKE' ? `"%${value}%"` : signal=='IN' ? `(${value})` : sel.value=='true'? sel.value : `"${value}"`
+
+        const tbl = document.getElementById('tblServExec')
+        const params = new Object;
+            params.field = field
+            params.signal = signal
+            params.value = value
+            params.ini = ckb ? document.querySelector('#edtIni').value : '2000-01-01';
+            params.fin = ckb ? document.querySelector('#edtFin').value : '2100-12-31';
+
+        const myPromisse = queryDB(params,52);
+
+        myPromisse.then((resolve)=>{
+            if(resolve.trim() != ""){
+                const json = JSON.parse(resolve);                
+                tbl.head('Cod.|mobHide,Cliente,Carro,Data|mobHide,NF|mobHide,Valor R$|mobHide')                                             
+                for(let i=0; i<json.length;i++){
+                    tbl.plot(json[i],'id|mobHide,fantasia,num_carro,data_exec,nf|mobHide,valor|mobHide','int,Upp,str,date,str,R$.')
+                }                               
+            }        
+        })
+    })
+
+    document.querySelector('#tblServExec').addEventListener('click',(e)=>{
+        data = e.target.parentNode.data
+        data.mode = 'edit'
+
+        if (confirm(`Carregar Carro.${data.num_carro} de ${data.fantasia.toUpperCase()}?`)) {
+
+            console.log(data)
+
+        }
 
 
+
+    })
 
 </script>
