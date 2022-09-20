@@ -92,6 +92,39 @@
         width: 98%;
     }
 
+    /*  ABAS (TAB) */
+
+    .tab-bar{
+        display: flex;
+    }
+
+    .tab-screen{
+        overflow: scroll;
+        border: solid;
+        width: 100%;
+        height: 80vh;
+        margin-top: 0px;
+    }
+
+    .tab-item{
+        margin: 20px 0 0 0;
+        padding: 15px 15px 5px 15px;
+        border: rgb(10, 10, 10) solid;
+        border-radius: 15px 15px 0 0;
+    }
+
+    .tab-item:hover{
+        background-color: #FFF8DC;
+        cursor: pointer;
+    }
+
+    .tab-item:target{
+        background-color: #3F5954;
+        color: ghostwhite;
+        font-size: large;
+    }
+
+
     /* CLASSES */
 
     .center-itens{

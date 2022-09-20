@@ -387,7 +387,47 @@ function loadTXT(file='templateNFe.txt'){
         }); 
     }
 
+/*  ABAS */
 
+function pictab(e){
+    const tab = e.id
+    const content = document.querySelectorAll(".tab");
+    for (let i = 0; i < content.length; i++) {
+        const sel_tab = document.querySelector('#tab-'+content[i].id)
+
+        if(content[i].id == tab.split('-')[1]){
+            content[i].style.display = "block"
+            sel_tab.style.background = "#3F5954";
+            sel_tab.style.color = "#FFF8DC";
+        }else{
+            content[i].style.display = "none"
+            sel_tab.style.background = "#FFF8DC";
+            sel_tab.style.color = "#3F5954";
+        }
+    }
+}
+
+function openTab(tab) {
+    let x = document.getElementsByClassName("tab");
+    
+    for (let i = 0; i < x.length; i++) {
+        x[i].style.display = "none";  
+    }
+    x = document.getElementsByClassName(tab);
+    for (let i = 0; i < x.length; i++) {
+        x[i].style.display = "block";          
+    } 
+    x = document.getElementsByClassName("tab-item");
+    for (let i = 0; i < x.length; i++) {
+        x[i].style.background = "#FFF8DC";  
+        x[i].style.color = "#3F5954";         
+    }                     
+    x = document.getElementsByClassName("tab-"+tab);
+    for (let i = 0; i < x.length; i++) {
+        x[i].style.background = "#3F5954"; 
+        x[i].style.color = "#FFF8DC";         
+    }                    
+}
 
  /*  MENU  */ 
 function openMenu(){        
@@ -463,7 +503,6 @@ function openMenu(){
 }
 
 /*  FILL COMBOS  */
-
 
 function fillCombo(combo, params, cod, fields, value=''){
 

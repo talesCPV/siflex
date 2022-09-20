@@ -419,7 +419,7 @@ console.log(data)
         addLine(2) 
     } 
 
-    if(['AnaFrotaOrc','ServOrc'].includes(origem)){
+    if(['AnaFrotaOrc'].includes(origem)){
         doc.setTextColor(color); 
         addLine()
         doc.setFontSize(8)       

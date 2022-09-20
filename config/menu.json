@@ -259,20 +259,28 @@
 			]
 		},
 		{
-			"modulo" : "NFe",
+			"modulo" : "NF",
 			"script" : "#",
 			"access" : [10],
 			"class"  : "",
 			"icone"  : "fa fa-cogs",
 			"itens"  : [
 				{
-					"modulo" : "NFe - Venda",
+					"modulo" : "NFe - Vendas",
 					"script" : "javascript:openHTML('nfe.html','content-screen','Nota Fiscal de Venda')",
 					"access" : [10,4],
 					"class"  : "",
 					"icone"  : "fa fa-archive",
 					"itens"  : []
-				}
+				},
+				{
+					"modulo" : "NFs - Serviços",
+					"script" : "javascript:openHTML('nfs.html','content-screen','Nota Fiscal de Venda')",
+					"access" : [10,4],
+					"class"  : "",
+					"icone"  : "fa fa-archive",
+					"itens"  : []
+				}				
 			]
 		},			
 		{
