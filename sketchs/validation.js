@@ -109,6 +109,18 @@ function getNum(V){
     return out
 }
 
+function getNumComa(V,dec=2){
+    V = parseFloat(V).toFixed(dec)
+    const ok_chr = ['1','2','3','4','5','6','7','8','9','0','.',','];
+    let out = ''
+    for(let i=0; i< V.length; i++){
+        if(ok_chr.includes(V[i])){
+            out+= V[i]=='.' ? ',' : V[i]
+        }
+    }
+    return out
+}
+
 function getPIS(V){
     const ok_chr = ['1','2','3','4','5','6','7','8','9','0'];
     let out = ''

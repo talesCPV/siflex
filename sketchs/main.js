@@ -84,6 +84,14 @@ Date.prototype.getFormatBR = function(){
     return (`${this.getDate().toString().padStart(2,'0')}/${(this.getMonth()+1).toString().padStart(2,'0')}/${this.getFullYear()}`)
 }
 
+Date.prototype.getFullHour = function(){
+    return (`${this.getHours().toString().padStart(2,'0')}:${this.getMinutes().toString().padStart(2,'0')}:${this.getSeconds().toString().padStart(2,'0')}`)
+}
+
+Date.prototype.getFullDate = function(){
+    return `${this.getFormatBR()} ${this.getFullHour()}`
+}
+
 Date.prototype.getWeekDay = function(){
     const dia = ['Dom','Seg','Ter','Qua','Qui','Sex','Sab']
     return dia[this.getDay()]
@@ -317,12 +325,14 @@ function queryDB(params,cod){
     });      
 }
 
-function NFeConf(dados=''){
+function NFeConf(dados='',file='NFe.json'){
     const data = new URLSearchParams();
     if(dados == ''){
         data.append("data", dados);
+        data.append("file", file);
     }else{
         data.append("data", JSON.stringify(dados));
+        data.append("file", file);
     }        
 
     const myRequest = new Request("backend/nfe_POST.php",{
@@ -558,4 +568,32 @@ function uploadImage(fileID,path,filename){
     }); 
 
     return myPromisse
+}
+
+function listNF(folder){
+
+    const data = new URLSearchParams();        
+        data.append("folder",folder);
+    const myRequest = new Request("backend/nfe_LIST.php",{
+        method : "POST",
+        body : data
+    });
+    const myPromisse = new Promise((resolve,reject) =>{
+        fetch(myRequest)
+        .then(function (response){
+            if (response.status === 200) { 
+                resolve(response.text());             
+            } else { 
+                reject(new Error("Houve algum erro na comunicação com o servidor"));                    
+            } 
+        });
+    });        
+    myPromisse.then((txt)=>{
+        const list = JSON.parse(txt)
+        const sel = document.querySelector('#txtFiles')
+        sel.innerHTML=''
+        for(let i=2; i<list.length; i++){
+            sel.innerHTML += `<option value="${list[i]}">${list[i]}</option>`
+        }
+    })
 }

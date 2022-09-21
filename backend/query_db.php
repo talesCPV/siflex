@@ -114,7 +114,7 @@
             VALUES (x00,"x01","x02","x03","x04","x05","x06","x07","x08") ON DUPLICATE KEY
             UPDATE id_emp="x01" ,data_exec="x02" ,num_carro="x03" ,func="x04" ,obs="x05" ,nf="x06" ,pedido="x07" ,valor="x08";',
          "51" => 'DELETE FROM tb_serv_exec WHERE id="x00" AND (SELECT U.class FROM tb_usuario AS U WHERE hash="x01") IN (10,4);',
-         "52" => 'SELECT SERV.*, EMP.fantasia, EMP.id AS id_emp , EMP.cnpj, EMP.endereco, EMP.num, EMP.estado, EMP.cidade, EMP.ie
+         "52" => 'SELECT SERV.*, EMP.fantasia, EMP.id AS id_emp , EMP.cnpj, EMP.endereco, EMP.num, EMP.estado, EMP.cidade, EMP.ie, EMP.nome as razao_social, EMP.bairro, EMP.cep
             FROM tb_serv_exec as SERV
             INNER JOIN tb_empresa as EMP
             ON SERV.id_emp = EMP.id

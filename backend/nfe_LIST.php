@@ -1,8 +1,10 @@
 <?php
 
-    $path = getcwd().'/../assets/NFe/';
-    $files = scandir($path);
-    $resp = json_encode($files);
-    print($resp); 
+    if (IsSet($_POST["folder"])){
+        $path = getcwd().'/../assets/'.$_POST["folder"].'/';
+        $files = scandir($path);
+        $resp = json_encode($files);
+        print($resp); 
+    }
 
 ?>

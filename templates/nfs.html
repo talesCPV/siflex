@@ -2,6 +2,9 @@
 <template>
     <style>
 
+        button{
+            width: 98%;
+        }
 
     </style>
 
@@ -9,9 +12,8 @@
         <h1>NFs Serviço</h1>
 
         <div class="tab-bar">
-            <div class="tab-item" id="tab-emitente" onclick="pictab(this)"> Emitente   </div>
-            <div class="tab-item" id="tab-fiscal"   onclick="pictab(this)">Fiscal      </div>
-            <div class="tab-item" id="tab-pedido"   onclick="pictab(this)">Pedido      </div>
+            <div class="tab-item" id="tab-emitente" onclick="pictab(this)">Emitente    </div>
+            <div class="tab-item" id="tab-pedido"   onclick="pictab(this)">Serviço     </div>
             <div class="tab-item" id="tab-cliente"  onclick="pictab(this)">Cliente     </div>            
             <div class="tab-item" id="tab-itens"    onclick="pictab(this)">Itens       </div>
             <div class="tab-item" id="tab-fatura"   onclick="pictab(this)">Faturamento </div>
@@ -24,28 +26,6 @@
                     <label> Razão Social *</label>
                     <input type="text" id="xNome" maxlength="60" />
                 </div>
-                <div class="inline">
-                    <label> Nome Fantasia </label>
-                    <input type="text" id="xFant" maxlength="60" />
-                </div>    
-
-                <div class="inline">
-                    <label> Insc. Estadual </label>
-                    <input type="text" id="IE" maxlength="15" onkeyup="valIE(this)"/>
-                    <input type="hidden" id="IEST" >                
-                    <label> Insc. Municipal </label>
-                    <input type="text" id="IM" maxlength="15" onkeyup="valInt(this)"/>
-                </div> 
-                <div class="inline">
-                    <label> Regime Trib. </label>
-                    <select id="CRT" >
-                        <option value="1" selected>Simples Nacional</option>
-                        <option value="2" >Simples Nacional - excesso de sublimite de receita bruta</option>
-                        <option value="3" >Regime Normal.</option>
-                    </select>
-                    <label> CNAE </label>
-                    <input type="text" id="CNAE" maxlength="7" onkeyup="valInt(this)"/>                        
-                </div>                                                       
                 <div class="inline">
                     <label> CNPJ </label>
                     <input type="text" id="CNPJ" maxlength="18" onkeyup="valCNPJ(this)"/>
@@ -65,48 +45,16 @@
                 <div class="inline">
                     <label> Municipio</label>
                     <input type="text" id="xMun" maxlength="60" />
-                    <label> Código</label>
-                    <input type="text" id="cMun" maxlength="7" style="max-width: 150px;" onkeyup="valInt(this)" />
                     <label> Sigla da UF </label>
                     <input type="text" id="UF" maxlength="2" style="max-width: 50px;" />
                 </div>
                 <div class="inline">
-                    <label> Nome do País </label>
-                    <input type="text" id="xPais" maxlength="60" />
-                    <label> Código </label>
-                    <input type="text" id="cPais" maxlength="4" onkeyup="valInt(this)"/>
-                </div>
-                <div class="inline">
                     <label> CEP </label>
                     <input type="text" id="CEP" maxlength="8" onkeyup="valCEP(this)"/>
-                    <label> Telefone </label>
-                    <input type="text" id="fone" maxlength="14" onkeyup="phone(this)"/>
+                    <label> Email </label>
+                    <input type="text" id="email" maxlength="50"/>
                 </div>
                 <button id="btnSaveEmit">Salvar</button>
-            </div>
-            <div id="fiscal" class="tab">
-                <div class="inline">
-                    <label for="edtNfsNum">Num NFs</label>
-                    <input type="text" id="edtNfsNum">
-                    <label for="edtRps">RPS Defasagem</label>
-                    <input type="text" id="edtRps">
-                </div>
-                <div class="inline">
-                    <label for="edtValor">Valor</label>
-                    <input type="text" id="edtValor">
-                    <label for="edtDias">Dias Parcelas</label>
-                    <input type="text" id="edtDias">
-                    <label for="edtAliq">Alíquota</label>
-                    <input type="text" id="edtAliq">
-                </div>
-                <div class="inline">
-                    <label for="cmbLocal">Local</label>
-                    <select id="cmbLocal">
-                        <option value="TOM" selected>No Cliente</option>
-                        <option value="PRE">Na Empresa</option>
-                    </select>
-                </div>
-
             </div>
             <div id="pedido" class="tab">
                 <fieldset>
@@ -140,17 +88,77 @@
 
             </div>
             <div id="cliente" class="tab">
-4
+                <div class="inline">
+                    <label> Razão Social *</label>
+                    <input type="text" id="xNome" maxlength="60" />
+                </div>
+                <div class="inline">
+                    <label> CNPJ </label>
+                    <input type="text" id="CNPJ" maxlength="18" onkeyup="valCNPJ(this)"/>
+                </div>
+                <div class="inline">
+                    <label> Endereço </label>
+                    <input type="text" id="xLgr" maxlength="60" />
+                    <label> Número: </label>
+                    <input type="text" id="nro" maxlength="5" style="max-width: 100px;" />
+                </div>
+                <div class="inline">
+                    <label> Bairro </label>
+                    <input type="text" id="bairro" maxlength="60" />
+                    <label> Complemento </label>
+                    <input type="text" id="cpl" maxlength="60" style="max-width: 200px;" />
+                </div>
+                <div class="inline">
+                    <label> Municipio</label>
+                    <input type="text" id="xMun" maxlength="60" />
+                    <label> Sigla da UF </label>
+                    <input type="text" id="UF" maxlength="2" style="max-width: 50px;" />
+                </div>
+                <div class="inline">
+                    <label> CEP </label>
+                    <input type="text" id="CEP" maxlength="8" onkeyup="valCEP(this)"/>
+                    <label> Email </label>
+                    <input type="text" id="email" maxlength="50"/>
+                </div>
+                <button id="btnSaveCli">Salvar</button>
             </div>
             <div id="itens" class="tab">
-5
+                <fieldset>
+                    <legend>Descriminação dos Serviços</legend>
+                    <textarea id="txtServicos" cols="30" rows="80"></textarea>
+                </fieldset>
             </div>
             <div id="fatura" class="tab">
-6
+                <div class="inline">
+                    <label for="edtNfsNum">Num NFs</label>
+                    <input type="text" id="edtNfsNum" onkeyup="valInt(this)">
+                    <label for="edtRps">RPS Defasagem</label>
+                    <input type="text" id="edtRps">
+                </div>
+                <div class="inline">
+                    <label for="edtValor">Valor</label>
+                    <input type="text" id="edtValor" value="0.00" onkeyup="valFloat(this)">
+                    <label for="edtDias">Dias entre Parcelas</label>
+                    <input type="text" id="edtDias" value="28">
+                    <label for="edtAliq">Alíquota</label>
+                    <input type="text" id="edtAliq" onkeyup="valFloat(this)">
+                </div>
+                <div class="inline">
+                    <label for="cmbLocal">Local Execução</label>
+                    <select id="cmbLocal">
+                        <option value="TOM" selected>No Cliente</option>
+                        <option value="PRE">Na Empresa</option>
+                    </select>
+                </div>
+                <fieldset>
+                    <legend>Dedução / Outras Informações</legend>
+                    <textarea id="txtInfo" cols="30" rows="15">Serviço aprovado conforme Pedido:</textarea>
+                </fieldset>
+                <button id="brnGeraNFs">Gerar NFs</button>
             </div>
             <div id="export" class="tab">
                 <fieldset>
-                    <legend>NFe geradas</legend>
+                    <legend>NFs geradas</legend>
                     <select id="txtFiles" size="20"></select>
                 </fieldset>
             </div>                
@@ -162,9 +170,156 @@
 
 </template>
 <script>
+
+    importData()
+    listNF('NFs')
+
     document.querySelector('#tab-emitente').click()
     document.querySelector('#edtIni').value = today.iniMonth()
     document.querySelector('#edtFin').value = today.finMonth()
+
+    function getTXT(){
+        let out = ''
+            for(let key in main_data.NFs){
+                if(['10','20','90'].includes(key)){
+                    for(let item in main_data.NFs[key]){
+                        out += main_data.NFs[key][item]+'|'
+                    }
+                    out += '\n'
+                }
+            }
+            return out   
+    }
+
+    function saveFiscal(){
+        const now = new Date
+        main_data.NFs['20'].TipoNf = 'P'
+        main_data.NFs['20'].NumNf = document.querySelector('#edtNfsNum').value.trim().padStart(9,'0')
+        main_data.NFs['20'].SerNf = 'NFE'
+        main_data.NFs['20'].DtEmiNf = now.getFormatBR()
+        main_data.NFs['20'].DtHrGerNf = now.getFullDate()
+        main_data.NFs['20'].NumRps = (parseInt(document.querySelector('#edtNfsNum').value)-parseInt(document.querySelector('#edtRps').value)).toString().padStart(9,'0')
+        main_data.NFs['20'].SerRps = '001'
+        main_data.NFs['20'].DtEmiRps = now.getFormatBR()
+        main_data.NFs['20'].TipoCpfCnpjPre = '2' // 1-CPF 2-CNPJ
+        main_data.NFs['20'].AlqIssSN = getNumComa(document.querySelector('#edtAliq').value)
+        main_data.NFs['20'].SitNf = '1' // 1-Normal. 2-Cancelada. 3-Extraviada. 4-devolução. 5-não tributada.
+        main_data.NFs['20'].CodSrv = '14.01'
+        main_data.NFs['20'].DiscrSrv = document.querySelector('#txtServicos').value.replaceAll('\n', '//')
+        main_data.NFs['20'].VlNFS = getNumComa(document.querySelector('#edtValor').value)
+        main_data.NFs['20'].VlDed = '0,00'
+        main_data.NFs['20'].DiscrDed = document.querySelector('#txtInfo').value.replaceAll('\n', '//') + '////**Tributado pelo ANEXO III Simples Nacional Conforme LC 123/200'
+        main_data.NFs['20'].VlBasCalc = getNumComa(document.querySelector('#edtValor').value)
+        main_data.NFs['20'].AlqIss = getNumComa(document.querySelector('#edtAliq'))
+        main_data.NFs['20'].VlIss = '0,00'
+        main_data.NFs['20'].VlIssRet = getNumComa(parseFloat(document.querySelector('#edtValor').value)*(parseFloat(document.querySelector('#edtAliq').value)/100))
+        main_data.NFs['90'].QtdRegNormal = '00001'
+        main_data.NFs['90'].ValorNFS = getNumComa(document.querySelector('#edtValor').value)
+        main_data.NFs['90'].ValorISS = '0,00'
+        main_data.NFs['90'].ValorDed = '0,00'
+        main_data.NFs['90'].ValorIssRet = main_data.NFs['20'].VlIssRet
+        main_data.NFs['90'].QtdReg30 = '0'
+        main_data.NFs['90'].ValTrib = '0,00'
+
+
+
+        NFeConf(main_data.NFs,'NFs.json')
+    }
+
+    function uploadNFs(txt, filename){
+        const data = new URLSearchParams();        
+            data.append("txt",txt);
+            data.append("filename",filename);
+            data.append("folder",'NFs');
+        const myRequest = new Request("backend/nfe_SAVE.php",{
+            method : "POST",
+            body : data
+        });
+        fetch(myRequest).then(()=>{
+            alert('NFe exportada com sucesso!')
+            listNF('NFs')
+        })
+    }
+
+    function importData(){
+        NFeConf('','NFs.json').then((txt)=>{
+            main_data.NFs = JSON.parse(txt)
+            const emitente = document.querySelector('#emitente')
+            emitente.querySelector('#xNome').value = main_data.NFs['20'].RazSocPre
+            emitente.querySelector('#CNPJ').value = getCNPJ(main_data.NFs['20'].CpfCnpjPre)
+            emitente.querySelector('#xLgr').value = main_data.NFs['20'].LogPre
+            emitente.querySelector('#nro').value = main_data.NFs['20'].NumEndPre
+            emitente.querySelector('#bairro').value = main_data.NFs['20'].BairroPre
+            emitente.querySelector('#cpl').value = main_data.NFs['20'].ComplEndPre
+            emitente.querySelector('#xMun').value = main_data.NFs['20'].MunPre
+            emitente.querySelector('#UF').value = main_data.NFs['20'].SiglaUFPre
+            emitente.querySelector('#CEP').value = getCEP(main_data.NFs['20'].CepPre)
+            emitente.querySelector('#email').value = getFone(main_data.NFs['20'].EmailPre)
+
+            const fatura = document.querySelector('#fatura')
+            fatura.querySelector('#edtNfsNum').value = parseInt(main_data.NFs.CONF.ultimaNFs)+1
+            fatura.querySelector('#edtRps').value = main_data.NFs.CONF.DefRPS
+            fatura.querySelector('#edtAliq').value = (main_data.NFs['20'].AlqIssSN)
+            document.querySelector('#edtAliq').onkeyup()
+        })
+    }
+
+    document.querySelector('#brnGeraNFs').addEventListener('click',()=>{
+
+        saveFiscal()
+        const txt = getTXT()
+        const filename = 'NFs-'+main_data.NFs['20'].NumNf+'.txt'
+        uploadNFs(txt, filename)
+        console.log(txt)
+
+    })
+
+    document.querySelector('#btnSaveEmit').addEventListener('click',()=>{
+        const emitente = document.querySelector('#emitente')
+        main_data.NFs['20'].RazSocPre = emitente.querySelector('#xNome').value.trim().toUpperCase()
+        main_data.NFs['20'].TipoCpfCnpjPre = '2'
+        main_data.NFs['20'].CpfCnpjPre = getNum(emitente.querySelector('#CNPJ').value)
+        main_data.NFs['10'].CpfCnpj = getNum(emitente.querySelector('#CNPJ').value)
+        main_data.NFs['20'].LogPre = emitente.querySelector('#xLgr').value.trim().toUpperCase()
+        main_data.NFs['20'].NumEndPre = emitente.querySelector('#nro').value.trim().toUpperCase()
+        main_data.NFs['20'].ComplEndPre = emitente.querySelector('#cpl').value.trim().toUpperCase()
+        main_data.NFs['20'].BairroPre = emitente.querySelector('#bairro').value.trim().toUpperCase()
+        main_data.NFs['20'].MunPre = emitente.querySelector('#xMun').value.trim().toUpperCase()
+        main_data.NFs['20'].SiglaUFPre = emitente.querySelector('#UF').value.trim().toUpperCase()
+        main_data.NFs['20'].CepPre = getNum(emitente.querySelector('#CEP').value)
+        main_data.NFs['20'].EmailPre = emitente.querySelector('#email').value.trim().toLowerCase()
+        NFeConf(main_data.NFs,'NFs.json')
+        console.log(main_data.NFs)
+    })
+
+    document.querySelector('#btnSaveCli').addEventListener('click',()=>{
+        const cliente = document.querySelector('#cliente')
+        main_data.NFs['20'].RazSocTom = cliente.querySelector('#xNome').value.trim().toUpperCase()
+        main_data.NFs['20'].TipoCpfCnpjTom = '2'
+        main_data.NFs['20'].CpfCnpjTom = getNum(cliente.querySelector('#CNPJ').value)
+        main_data.NFs['20'].LogTom = cliente.querySelector('#xLgr').value.trim().toUpperCase()
+        main_data.NFs['20'].NumEndTom = cliente.querySelector('#nro').value.trim().toUpperCase()
+        main_data.NFs['20'].ComplEndTom = cliente.querySelector('#cpl').value.trim().toUpperCase()
+        main_data.NFs['20'].BairroTom = cliente.querySelector('#bairro').value.trim().toUpperCase()
+        main_data.NFs['20'].MunTom = cliente.querySelector('#xMun').value.trim().toUpperCase()
+        main_data.NFs['20'].SiglaUFTom = cliente.querySelector('#UF').value.trim().toUpperCase()
+        main_data.NFs['20'].CepTom = getNum(cliente.querySelector('#CEP').value)
+        main_data.NFs['20'].EmailTom = cliente.querySelector('#email').value.trim().toLowerCase()
+        NFeConf(main_data.NFs,'NFs.json')
+        console.log(main_data.NFs)
+    })
+
+    document.querySelector('#txtFiles').addEventListener('dblclick',()=>{
+        const file = document.getElementById('txtFiles').value
+        const path = 'assets/NFs/' + file;
+        var link = document.createElement("a");
+            link.download = file;
+            link.href = path;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            delete link; 
+    })
 
     document.querySelector('#btnBusca').addEventListener('click',()=>{
 
@@ -203,6 +358,29 @@
         if (confirm(`Carregar Carro.${data.num_carro} de ${data.fantasia.toUpperCase()}?`)) {
 
             console.log(data)
+            const cliente = document.querySelector('#cliente')
+            cliente.querySelector('#xNome').value = data.razao_social.trim().toUpperCase()
+            cliente.querySelector('#CNPJ').value = getCNPJ(data.cnpj)
+            cliente.querySelector('#xLgr').value = data.endereco.trim().toUpperCase()
+            cliente.querySelector('#nro').value = data.num.trim().toUpperCase()
+            cliente.querySelector('#bairro').value = data.bairro.trim().toUpperCase()
+            cliente.querySelector('#cpl').value = ''
+            cliente.querySelector('#xMun').value = data.cidade.trim().toUpperCase()
+            cliente.querySelector('#UF').value = data.estado.trim().toUpperCase()
+            cliente.querySelector('#CEP').value = getCEP(data.cep)
+            cliente.querySelector('#email').value = ''
+            document.querySelector('#btnSaveCli').click()
+            const serv = document.querySelector('#txtServicos')
+            if(serv.innerHTML.trim() == ''){
+                serv.innerHTML = `CARRO:${data.num_carro}\n` + data.obs +'\n'
+                document.querySelector('#edtValor').value = data.valor
+
+            }else if (confirm(`Adicionar o carro ${data.num_carro} a NFs atual?`)){
+                serv.innerHTML += `\nCARRO:${data.num_carro}\n` + data.obs +'\n'
+                document.querySelector('#edtValor').value =  (parseFloat(document.querySelector('#edtValor').value)+parseFloat(data.valor)).toFixed(2)
+
+            }
+
 
         }
 

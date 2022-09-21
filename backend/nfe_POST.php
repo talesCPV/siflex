@@ -1,6 +1,6 @@
 <?php   
-	if (IsSet($_POST["data"])){
-        $path = getcwd().'/../config/NFe.json';
+	if (IsSet($_POST["data"]) && IsSet($_POST["file"])){
+        $path = getcwd().'/../config/'.$_POST["file"];        
         $data = $_POST["data"];
         if (file_exists($path)) {
             if($data == ''){

@@ -386,7 +386,7 @@
 
 /* CHAMADA DE FUNÇÕES INICIAL */    
 
-    listNFe()
+    listNF('NFe')
     importData()
     document.querySelector('#tab-emitente').click()
     document.querySelector('#edtIni').value =  today.iniMonth()
@@ -427,7 +427,6 @@
             emitente.querySelector('#cPais').value = main_data.NFe.C05.cPais
             emitente.querySelector('#CEP').value = getCEP(main_data.NFe.C05.CEP)
             emitente.querySelector('#fone').value = getFone(main_data.NFe.C05.fone)
-            emitente.querySelector('#xMun').value = main_data.NFe.C05.xMun
             
             const fiscal = document.querySelector('#fiscal')            
             fiscal.querySelector('#nNF').value = parseInt(main_data.NFe.B.nNF) + 1
@@ -468,38 +467,19 @@
         document.querySelector('#txaTextoCompl').value = `DOC. EMITIDO POR ME OU EPP OPTANTE S.NACIONAL, NÃO GERA DIREITO A CREDITO FISCAL DE ISSQN E IPI, PERMITE O APROVEITAMENTO DE CREDITO DO ICMS NO VALOR DE  R$${(tot*0.0282).toFixed(2)} CORRESPONDENTE A ALIQUOTA DE 2,82% NOS TERMOS DO ARTIGO 23 DA LC 123. Aprovado conforme pedido(s) ${document.querySelector('#hdnPed').value}`
     }
 
-    function listNFe(){
-    const myPromisse = new Promise((resolve,reject) =>{
-        fetch("backend/nfe_LIST.php")
-        .then(function (response){
-            if (response.status === 200) { 
-                resolve(response.text());             
-            } else { 
-                reject(new Error("Houve algum erro na comunicação com o servidor"));                    
-            } 
-        });
-    });
-    myPromisse.then((txt)=>{
-        const list = JSON.parse(txt)
-        const sel = document.querySelector('#txtFiles')
-        sel.innerHTML=''
-        for(let i=2; i<list.length; i++){
-            sel.innerHTML += `<option value="${list[i]}">${list[i]}</option>`
-        }
-    })
-}
-
     function uploadNFe(txt, filename){
         const data = new URLSearchParams();        
             data.append("txt",txt);
             data.append("filename",filename);
+            data.append("folder",'NFe');
+
         const myRequest = new Request("backend/nfe_SAVE.php",{
             method : "POST",
             body : data
         });
         fetch(myRequest).then(()=>{
             alert('NFe exportada com sucesso!')
-            listNFe()
+            listNF('NFe')
         })
     }
 
