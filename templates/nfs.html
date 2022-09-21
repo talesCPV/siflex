@@ -149,6 +149,11 @@
                         <option value="TOM" selected>No Cliente</option>
                         <option value="PRE">Na Empresa</option>
                     </select>
+                    <label for="cmbRetFont">ISS Retido na Fonte</label>
+                    <select id="cmbRetFont">
+                        <option value="SIM">Sim</option>
+                        <option value="NAO" selected>Não</option>
+                    </select>
                 </div>
                 <fieldset>
                     <legend>Dedução / Outras Informações</legend>
@@ -192,7 +197,7 @@
     }
 
     function saveFiscal(){
-        const now = new Date
+        let now = new Date
         main_data.NFs['20'].TipoNf = 'P'
         main_data.NFs['20'].NumNf = document.querySelector('#edtNfsNum').value.trim().padStart(9,'0')
         main_data.NFs['20'].SerNf = 'NFE'
@@ -204,23 +209,48 @@
         main_data.NFs['20'].TipoCpfCnpjPre = '2' // 1-CPF 2-CNPJ
         main_data.NFs['20'].AlqIssSN = getNumComa(document.querySelector('#edtAliq').value)
         main_data.NFs['20'].SitNf = '1' // 1-Normal. 2-Cancelada. 3-Extraviada. 4-devolução. 5-não tributada.
+
+        const local = document.querySelector('#cmbLocal').value
+        const cliente = document.querySelector('#cliente')
+        const emitente = document.querySelector('#emitente')
+        main_data.NFs['20'].LogLocPre = local=='TOM' ? cliente.querySelector('#xLgr').value : emitente.querySelector('#xLgr').value
+        main_data.NFs['20'].NumLocPre = local=='TOM' ? cliente.querySelector('#nro').value : emitente.querySelector('#nro').value
+        main_data.NFs['20'].CompLocPre = local=='TOM' ? cliente.querySelector('#cpl').value : emitente.querySelector('#nro').value
+        main_data.NFs['20'].BairroLocPre = local=='TOM' ? cliente.querySelector('#bairro').value : emitente.querySelector('#bairro').value
+        main_data.NFs['20'].MunLocPre = local=='TOM' ? cliente.querySelector('#xMun').value : emitente.querySelector('#xMun').value
+        main_data.NFs['20'].SiglaUFLocPre = local=='TOM' ? cliente.querySelector('#UF').value : emitente.querySelector('#UF').value
+        main_data.NFs['20'].CepLocPre = local=='TOM' ? cliente.querySelector('#CEP').value : emitente.querySelector('#CEP').value
+
         main_data.NFs['20'].CodSrv = '14.01'
         main_data.NFs['20'].DiscrSrv = document.querySelector('#txtServicos').value.replaceAll('\n', '//')
         main_data.NFs['20'].VlNFS = getNumComa(document.querySelector('#edtValor').value)
         main_data.NFs['20'].VlDed = '0,00'
-        main_data.NFs['20'].DiscrDed = document.querySelector('#txtInfo').value.replaceAll('\n', '//') + '////**Tributado pelo ANEXO III Simples Nacional Conforme LC 123/200'
         main_data.NFs['20'].VlBasCalc = getNumComa(document.querySelector('#edtValor').value)
         main_data.NFs['20'].AlqIss = getNumComa(document.querySelector('#edtAliq'))
         main_data.NFs['20'].VlIss = '0,00'
         main_data.NFs['20'].VlIssRet = getNumComa(parseFloat(document.querySelector('#edtValor').value)*(parseFloat(document.querySelector('#edtAliq').value)/100))
+
+        const retido = document.querySelector('#cmbRetFont').value
         main_data.NFs['90'].QtdRegNormal = '00001'
         main_data.NFs['90'].ValorNFS = getNumComa(document.querySelector('#edtValor').value)
-        main_data.NFs['90'].ValorISS = '0,00'
+        main_data.NFs['90'].ValorISS = retido=='SIM' ? '0,00' : main_data.NFs['20'].VlIssRet
         main_data.NFs['90'].ValorDed = '0,00'
-        main_data.NFs['90'].ValorIssRet = main_data.NFs['20'].VlIssRet
+        main_data.NFs['90'].ValorIssRet = retido=='SIM' ? main_data.NFs['20'].VlIssRet : '0,00'
         main_data.NFs['90'].QtdReg30 = '0'
         main_data.NFs['90'].ValTrib = '0,00'
 
+        const parc = document.querySelector('#edtDias').value.split('/')
+        const total = parseFloat(document.querySelector('#edtValor').value)        
+        let fatura = ''
+        let pg = 0
+        for(let i=0; i< parc.length; i++){
+            now = new Date
+            now.change(parseInt(parc[i]))
+            fatura += `//Parcela-${(i+1).toString().padStart(2,"0")}/${(parc.length).toString().padStart(2,"0")} Venc.${now.getFormatBR()} Valor R$${i != (parc.length-1) ? (total/parc.length).toFixed(2) : (total - pg).toFixed(2)}`
+            pg += total/parc.length
+        }
+        fatura += '//**Tributado pelo ANEXO III Simples Nacional Conforme LC 123/200'
+        main_data.NFs['20'].DiscrDed = document.querySelector('#txtInfo').value.replaceAll('\n', '//') + fatura
 
 
         NFeConf(main_data.NFs,'NFs.json')
@@ -257,7 +287,7 @@
             emitente.querySelector('#email').value = getFone(main_data.NFs['20'].EmailPre)
 
             const fatura = document.querySelector('#fatura')
-            fatura.querySelector('#edtNfsNum').value = parseInt(main_data.NFs.CONF.ultimaNFs)+1
+            fatura.querySelector('#edtNfsNum').value = parseInt(main_data.NFs['20'].NumNf)+1
             fatura.querySelector('#edtRps').value = main_data.NFs.CONF.DefRPS
             fatura.querySelector('#edtAliq').value = (main_data.NFs['20'].AlqIssSN)
             document.querySelector('#edtAliq').onkeyup()
