@@ -33,7 +33,7 @@
             <div class="tab-item" id="tab-cliente" onclick="pictab(this)">Cliente</div>            
             <div class="tab-item" id="tab-itens" onclick="pictab(this)">Itens</div>
             <div class="tab-item" id="tab-fatura" onclick="pictab(this)">Faturamento</div>
-            <div class="tab-item" id="tab-export" onclick="pictab(this)">Arquivos TXT</div>
+            <div class="tab-item" id="tab-export" onclick="pictab(this)">Arquivos</div>
         </div>
         
         <div class="tab-screen">        
@@ -179,6 +179,7 @@
                         <option value="1">NF-e normal</option>
                         <option value="2">NF-e complementar</option>
                         <option value="3">NF-e de ajuste</option>
+                        <option value="4">Devolução de mercadoria</option>
                     </select>
 
                     <label>Indica operação com o consumidor final</label>
@@ -374,8 +375,12 @@
     <!--                <h2>Arquivos TXT</h2>-->
 
                     <fieldset>
-                        <legend>NFe geradas</legend>
+                        <legend>TXT</legend>
                         <select id="txtFiles" size="20"></select>
+                    </fieldset>
+                    <fieldset>
+                        <legend>XML</legend>
+                        <select id="xmlFiles" size="20"></select>
                     </fieldset>
             </div>                
         </div>   
@@ -386,7 +391,8 @@
 
 /* CHAMADA DE FUNÇÕES INICIAL */    
 
-    listNF('NFe')
+    listNF('NFe/txt')
+    listNF('NFe/xml','xml')
     importData()
     document.querySelector('#tab-emitente').click()
     document.querySelector('#edtIni').value =  today.iniMonth()
@@ -471,15 +477,22 @@
         const data = new URLSearchParams();        
             data.append("txt",txt);
             data.append("filename",filename);
-            data.append("folder",'NFe');
+            data.append("folder",'NFe/txt');
 
         const myRequest = new Request("backend/nfe_SAVE.php",{
             method : "POST",
             body : data
         });
         fetch(myRequest).then(()=>{
-            alert('NFe exportada com sucesso!')
-            listNF('NFe')
+            const myRequest2 = new Request("backend/nfe_TXT2XML.php",{
+                method : "POST",
+                body : data
+            })
+            fetch(myRequest2).then(()=>{
+                alert('NFe exportada com sucesso!!')
+                listNF('NFe/txt')
+                listNF('NFe/xml','xml')
+            })            
         })
     }
 
@@ -494,7 +507,7 @@
 // I|cProd|cEAN|xProd|NCM|cBenef|EXTIPI|CFOP|uCom|qCom|vUnCom|vProd|cEANTrib|uTrib|qTrib|vUnTrib| vFrete|vSeg|vDesc|vOutro| indTot| xPed|nItemPed|nFCI|
             item.I = new Object
             item.I.cProd = tblItens[i].data.cod_prod
-            item.I.cEAN = '|'
+            item.I.cEAN = ''
             item.I.xProd = tblItens[i].data.descricao.trim()
             item.I.NCM = tblItens[i].data.ncm
             item.I.cBenef = ''
@@ -853,7 +866,7 @@
     document.querySelector('#txtFiles').addEventListener('dblclick',()=>{
 
         const file = document.getElementById('txtFiles').value
-        const path = 'assets/NFe/' + file;
+        const path = 'assets/NFe/txt/' + file;
         
         var link = document.createElement("a");
             link.download = file;
@@ -865,6 +878,19 @@
 
 
 
+    })
+
+    document.querySelector('#xmlFiles').addEventListener('dblclick',()=>{
+
+        const file = document.getElementById('xmlFiles').value
+        const path = 'assets/NFe/xml/' + file;
+        var link = document.createElement("a");
+            link.download = file;
+            link.href = path;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            delete link; 
     })
 
     document.getElementById('btnSaveEmit').addEventListener('click',(event)=>{
@@ -893,6 +919,7 @@
                 
     document.getElementById('btnSaveFiscal').addEventListener('click',(event)=>{
         const fiscal = document.querySelector('#fiscal')
+        const now = new Date(fiscal.querySelector('#dhEmi').value)
         main_data.NFe.A.versao = '4.00'
         main_data.NFe.A.id = ''
         main_data.NFe.A.indSinc = ''
@@ -903,8 +930,8 @@
         main_data.NFe.B.natOp = fiscal.querySelector('#natOp').value.trim().toUpperCase()
         main_data.NFe.B.mod = fiscal.querySelector('#mod').value.trim()
         main_data.NFe.B.serie = fiscal.querySelector('#serie').value
-        main_data.NFe.B.dhEmi = fiscal.querySelector('#dhEmi').value
-        main_data.NFe.B.dhSaiEnt = fiscal.querySelector('#dhSaiEnt').value
+        main_data.NFe.B.dhEmi = now.getFullDateTime()
+        main_data.NFe.B.dhSaiEnt = now.getFullDateTime()
         main_data.NFe.B.tpNF = fiscal.querySelector('#tpNF').value
         main_data.NFe.B.idDest = fiscal.querySelector('#idDest').value
         main_data.NFe.B.cMunFG = fiscal.querySelector('#cMunFG').value
@@ -953,7 +980,7 @@
             document.getElementById('btnSaveFiscal').click()
             geraNFeItens()
             const txt = getTXT()
-            const filename = 'NFe-'+(main_data.NFe.B.nNF).padStart(6,'0')+'.txt'
+            const filename = 'NFe-'+(main_data.NFe.B.nNF).padStart(6,'0')
             uploadNFe(txt, filename)
 
         }else{

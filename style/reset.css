@@ -161,12 +161,26 @@
     .form-base{
         border-radius: 20px;
         background-color: cornsilk;
-        color: darkslategray;
+        color: rgb(47, 79, 79);
         max-width: 1200px;
         margin: auto;
         margin-top: 80px;
         padding: 30px;
     }
+
+    #close-screen{
+        position: relative;
+        left: 99%;        
+
+        color: rgb(47, 79, 79);
+        font-size: 1.5em;
+        font-weight: 800;
+    }
+
+    #close-screen:hover{
+        cursor: pointer;
+        color: rgb(158, 238, 30);
+    }    
 
     .control-size{
         display: flex;

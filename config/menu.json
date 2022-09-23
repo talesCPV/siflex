@@ -261,7 +261,7 @@
 		{
 			"modulo" : "NF",
 			"script" : "#",
-			"access" : [10],
+			"access" : [10,4],
 			"class"  : "",
 			"icone"  : "fa fa-cogs",
 			"itens"  : [
@@ -275,7 +275,7 @@
 				},
 				{
 					"modulo" : "NFs - Serviços",
-					"script" : "javascript:openHTML('nfs.html','content-screen','Nota Fiscal de Venda')",
+					"script" : "javascript:openHTML('nfs.html','content-screen','Nota Fiscal de Serviço')",
 					"access" : [10,4],
 					"class"  : "",
 					"icone"  : "fa fa-archive",

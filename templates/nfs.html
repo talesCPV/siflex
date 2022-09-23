@@ -177,7 +177,7 @@
 <script>
 
     importData()
-    listNF('NFs')
+    listNF('NFs/txt')
 
     document.querySelector('#tab-emitente').click()
     document.querySelector('#edtIni').value = today.iniMonth()
@@ -266,14 +266,14 @@
         const data = new URLSearchParams();        
             data.append("txt",txt);
             data.append("filename",filename);
-            data.append("folder",'NFs');
+            data.append("folder",'NFs/txt');
         const myRequest = new Request("backend/nfe_SAVE.php",{
             method : "POST",
             body : data
         });
         fetch(myRequest).then(()=>{
             alert('NFe exportada com sucesso!')
-            listNF('NFs')
+            listNF('NFs/txt')
         })
     }
 
@@ -306,7 +306,6 @@
         const txt = getTXT()
         const filename = 'NFs-'+main_data.NFs['20'].NumNf+'.txt'
         uploadNFs(txt, filename)
-        console.log(txt)
 
     })
 
@@ -325,7 +324,6 @@
         main_data.NFs['20'].CepPre = getNum(emitente.querySelector('#CEP').value)
         main_data.NFs['20'].EmailPre = emitente.querySelector('#email').value.trim().toLowerCase()
         NFeConf(main_data.NFs,'NFs.json')
-        console.log(main_data.NFs)
     })
 
     document.querySelector('#btnSaveCli').addEventListener('click',()=>{
@@ -342,12 +340,11 @@
         main_data.NFs['20'].CepTom = getNum(cliente.querySelector('#CEP').value)
         main_data.NFs['20'].EMailTom = cliente.querySelector('#email').value.trim().toLowerCase()
         NFeConf(main_data.NFs,'NFs.json')
-        console.log(main_data.NFs)
     })
 
     document.querySelector('#txtFiles').addEventListener('dblclick',()=>{
         const file = document.getElementById('txtFiles').value
-        const path = 'assets/NFs/' + file;
+        const path = 'assets/NFs/txt/' + file;
         var link = document.createElement("a");
             link.download = file;
             link.href = path;
@@ -392,8 +389,6 @@
         data.mode = 'edit'
 
         if (confirm(`Carregar Carro.${data.num_carro} de ${data.fantasia.toUpperCase()}?`)) {
-
-            console.log(data)
             const cliente = document.querySelector('#cliente')
             cliente.querySelector('#xNome').value = data.razao_social.trim().toUpperCase()
             cliente.querySelector('#CNPJ').value = getCNPJ(data.cnpj)
