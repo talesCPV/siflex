@@ -17,7 +17,7 @@
             <div class="tab-item" id="tab-cliente"  onclick="pictab(this)">Cliente     </div>            
             <div class="tab-item" id="tab-itens"    onclick="pictab(this)">Itens       </div>
             <div class="tab-item" id="tab-fatura"   onclick="pictab(this)">Faturamento </div>
-            <div class="tab-item" id="tab-export"   onclick="pictab(this)">Arquivos TXT</div>
+            <div class="tab-item" id="tab-export"   onclick="pictab(this)">Arquivos</div>
         </div>
         
         <div class="tab-screen">        
@@ -163,9 +163,13 @@
             </div>
             <div id="export" class="tab">
                 <fieldset>
-                    <legend>NFs geradas</legend>
+                    <legend>TXT</legend>
                     <select id="txtFiles" size="20"></select>
                 </fieldset>
+                <fieldset>
+                    <legend>XML</legend>
+                    <select id="xmlFiles" size="20"></select>
+                </fieldset>                
             </div>                
         </div>
 
@@ -178,6 +182,8 @@
 
     importData()
     listNF('NFs/txt')
+    listNF('NFs/xml','xml')
+
 
     document.querySelector('#tab-emitente').click()
     document.querySelector('#edtIni').value = today.iniMonth()
@@ -272,8 +278,16 @@
             body : data
         });
         fetch(myRequest).then(()=>{
-            alert('NFe exportada com sucesso!')
-            listNF('NFs/txt')
+            const myRequest2 = new Request("backend/nfs_TXT2XML.php",{
+                method : "POST",
+                body : data
+            });
+            fetch(myRequest2).then(()=>{
+                alert('NFs exportada com sucesso!')
+                listNF('NFs/txt')
+                listNF('NFs/xml','xml')
+            })          
+
         })
     }
 
@@ -353,6 +367,19 @@
             document.body.removeChild(link);
             delete link; 
     })
+
+    document.querySelector('#xmlFiles').addEventListener('dblclick',()=>{
+        const file = document.getElementById('xmlFiles').value
+        const path = 'assets/NFs/xml/' + file;
+        var link = document.createElement("a");
+            link.download = file;
+            link.href = path;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            delete link; 
+    })
+
 
     document.querySelector('#btnBusca').addEventListener('click',()=>{
 

@@ -115,10 +115,10 @@ class ConvertNFePHP {
      * @param string $arq Path para o arquivo txt
      * @return string xml construido
      */
-    public function nfetxt2xml($arq) {
-        if ( !is_file($arq) ){
+    public function nfetxt2xml($arq) {        
+        if ( !is_file($arq) ){            
             return FALSE;
-        }
+        }        
         $arrayComAsLinhasDoArquivo = file($arq);
         return $this->nfetxt2xml_array_com_linhas( $arrayComAsLinhasDoArquivo );
     }//fim nfetxt2xml
@@ -178,7 +178,7 @@ class ConvertNFePHP {
         $ide    =  $dom->getElementsByTagName("ide")->item(0);
         $emit   =  $dom->getElementsByTagName("emit")->item(0);
         $cUF    = $ide->getElementsByTagName('cUF')->item(0)->nodeValue;
-        $dEmi   = $ide->getElementsByTagName('dEmi')->item(0)->nodeValue;
+        $dEmi   = $ide->getElementsByTagName('dhEmi')->item(0)->nodeValue;
         $CNPJ   = $emit->getElementsByTagName('CNPJ')->item(0)->nodeValue;
         $mod    = $ide->getElementsByTagName('mod')->item(0)->nodeValue;
         $serie  = $ide->getElementsByTagName('serie')->item(0)->nodeValue;
@@ -244,10 +244,10 @@ class ConvertNFePHP {
                     $dados[$x] = $this->__limpaString(trim($dados[$x]));
                 } //end if
             } //end for
-            
+//            echo $dados[0];
             //monta o dado conforme o tipo, inicia lendo o primeiro campo da matriz
             switch ( $dados[0] ) {
-                case "NOTA FISCAL": // primeiro elemento não faz nada, aqui é informado o número de NF contidas no TXT
+                case "NOTAFISCAL": // primeiro elemento não faz nada, aqui é informado o número de NF contidas no TXT
                     break;
 
                 case "A":  //atributos da NFe, campos obrigatórios [NFe]
@@ -263,6 +263,7 @@ class ConvertNFePHP {
 
                 case "B": //identificadores [infNFe]
                     //B|cUF|cNF|NatOp|indPag|mod|serie|nNF|dEmi|dSaiEnt|hSaiEnt|tpNF|cMunFG|TpImp|TpEmis|cDV|tpAmb|finNFe|procEmi|VerProc|dhCont|xJust
+                    //B|cUF|cNF|natOp|mod|serie|nNF|dhEmi|dhSaiEnt|tpNF|idDest|cMunFG|tpImp|tpEmis|cDV|tpAmb|finNFe|indFinal|indPres|procEmi|verProc|dhCont|xJust|
                     $ide = $dom->createElement("ide");
                     $cUF = $dom->createElement("cUF", $dados[1]);
                     $ide->appendChild($cUF);
@@ -270,53 +271,56 @@ class ConvertNFePHP {
                     $ide->appendChild($cNF);
                     $NatOp = $dom->createElement("natOp", $dados[3]);
                     $ide->appendChild($NatOp);
-                    $indPag = $dom->createElement("indPag", $dados[4]);
-                    $ide->appendChild($indPag);
-                    $mod = $dom->createElement("mod", $dados[5]);
+                    
+                    $mod = $dom->createElement("mod", $dados[4]);
                     $ide->appendChild($mod);
-                    $serie = $dom->createElement("serie", $dados[6]);
+                    $serie = $dom->createElement("serie", $dados[5]);
                     $ide->appendChild($serie);
-                    $nNF = $dom->createElement("nNF", $dados[7]);
+                    $nNF = $dom->createElement("nNF", $dados[6]);
                     $ide->appendChild($nNF);
-                    $dEmi = $dom->createElement("dEmi", $dados[8]);
-                    $ide->appendChild($dEmi);
-                    if(!empty($dados[9])) {
-                        $dSaiEnt = $dom->createElement("dSaiEnt", $dados[9]);
-                        $ide->appendChild($dSaiEnt);
+                    $dhEmi = $dom->createElement("dhEmi", $dados[7]);
+                    $ide->appendChild($dhEmi);
+                    if(!empty($dados[8])) {
+                        $dhSaiEnt = $dom->createElement("dhSaiEnt", $dados[8]);
+                        $ide->appendChild($dhSaiEnt);
                     }
-                    if(!empty($dados[10])) {
-                        $hSaiEnt = $dom->createElement("hSaiEnt", $dados[10]);
-                        $ide->appendChild($hSaiEnt);
-                    }
-                    $tpNF = $dom->createElement("tpNF", $dados[11]);
+                    $tpNF = $dom->createElement("tpNF", $dados[9]);
                     $ide->appendChild($tpNF);
-                    $cMunFG = $dom->createElement("cMunFG", $dados[12]);
-                    $ide->appendChild($cMunFG);
-                    $tpImp = $dom->createElement("tpImp", $dados[13]);
+                    $idDest = $dom->createElement("idDest", $dados[10]);
+                    $ide->appendChild($idDest);
+                    if(!empty($dados[11])) {
+                        $cMunFG = $dom->createElement("cMunFG", $dados[11]);
+                        $ide->appendChild($cMunFG);
+                    }
+                    $tpImp = $dom->createElement("tpImp", $dados[12]);
                     $ide->appendChild($tpImp);
-                    $tpEmis = $dom->createElement("tpEmis", $dados[14]);
+                    $tpEmis = $dom->createElement("tpEmis", $dados[13]);
                     $ide->appendChild($tpEmis);
-                    $CDV = $dom->createElement("cDV", $dados[15]);
+                    $CDV = $dom->createElement("cDV", $dados[14]);
                     $ide->appendChild($CDV);
-                    $tpAmb = $dom->createElement("tpAmb", $dados[16]);
+                    $tpAmb = $dom->createElement("tpAmb", $dados[15]);
                     //guardar a variavel para uso posterior
                     $this->tpAmb = $dados[16];
                     $ide->appendChild($tpAmb);
-                    $finNFe = $dom->createElement("finNFe", $dados[17]);
+                    $finNFe = $dom->createElement("finNFe", $dados[16]);
                     $ide->appendChild($finNFe);
-                    $procEmi = $dom->createElement("procEmi", $dados[18]);
+                    $indFinal = $dom->createElement("indFinal", $dados[17]);
+                    $ide->appendChild($indFinal);
+                    $indPres = $dom->createElement("indPres", $dados[18]);
+                    $ide->appendChild($indPres);                    
+                    $procEmi = $dom->createElement("procEmi", $dados[19]);
                     $ide->appendChild($procEmi);
-                    if( empty( $dados[19] ) ){
-                        $dados[19]="NfePHP";
+                    if( empty( $dados[20] ) ){
+                        $dados[20]="NfePHP_3.0";
                     }
-                    $verProc = $dom->createElement("verProc", $dados[19]);
+                    $verProc = $dom->createElement("verProc", $dados[20]);
                     $ide->appendChild($verProc);
-                    if(!empty($dados[20])) {
-                        $dhCont = $dom->createElement("dhCont", $dados[20]);
+                    if(!empty($dados[21])) {
+                        $dhCont = $dom->createElement("dhCont", $dados[21]);
                         $ide->appendChild($dhCont);
                     }
-                    if(!empty($dados[21])) {
-                        $xJust = $dom->createElement("xJust", $dados[21]);
+                    if(!empty($dados[22])) {
+                        $xJust = $dom->createElement("xJust", $dados[22]);
                         $ide->appendChild($xJust);
                     }
                     $infNFe->appendChild($ide);
@@ -496,26 +500,29 @@ class ConvertNFePHP {
 
                 case "E": //Grupo de identificação do Destinatário da NF-e [infNFe]
                     //E|xNome|IE|ISUF|email|
+                    //E|xNome|indIEDest|IE|ISUF|IM|email|
                     $dest = $dom->createElement("dest");
                     //se ambiente homologação preencher conforme NT2011.002
                     //válida a partir de 01/05/2011
-                    if ($this->tpAmb == '2'){
-                        $xNome = $dom->createElement("xNome", 'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL');
-                        $dest->appendChild($xNome);
-                        $IE = $dom->createElement("IE", '');
+
+                    $xNome = $dom->createElement("xNome", $dados[1]);
+                    $dest->appendChild($xNome);
+                    $indIEDest = $dom->createElement("indIEDest", $dados[2]);
+                    $dest->appendChild($indIEDest);   
+                    if($dados[2] == 1) {
+                        $IE = $dom->createElement("IE", $dados[3]);
                         $dest->appendChild($IE);
-                    } else {
-                        $xNome = $dom->createElement("xNome", $dados[1]);
-                        $dest->appendChild($xNome);
-                        $IE = $dom->createElement("IE", $dados[2]);
-                        $dest->appendChild($IE);
-                    }
-                    if(!empty($dados[3])) {
-                        $ISUF = $dom->createElement("ISUF", $dados[3]);
+                    }                
+                    if(!empty($dados[4])) {
+                        $ISUF = $dom->createElement("ISUF", $dados[4]);
                         $dest->appendChild($ISUF);
                     }
-                    if(!empty($dados[4])) {
-                        $email = $dom->createElement("email", $dados[4]);
+                    if(!empty($dados[5])) {
+                        $IM = $dom->createElement("IM", $dados[5]);
+                        $dest->appendChild($IM);
+                    }                    
+                    if(!empty($dados[6])) {
+                        $email = $dom->createElement("email", $dados[6]);
                         $dest->appendChild($email);
                     }
                     $infNFe->appendChild($dest);
@@ -591,7 +598,12 @@ class ConvertNFePHP {
                         $fone = $dom->createElement("fone", $dados[11]);
                         $enderDest->appendChild($fone);
                     }
-                    $dest->insertBefore($dest->appendChild($enderDest),$IE);
+                    $dest->insertBefore($dest->appendChild($enderDest),$indIEDest);
+                    
+                    if($indIEDest == "1") {
+                        $dest->insertBefore($dest->appendChild($enderDest),$IE);
+                    } 
+                    
                     break;
 
                 case "F": //Grupo de identificação do Local de retirada [infNFe]
@@ -702,79 +714,80 @@ class ConvertNFePHP {
 
                 case "I": //PRODUTO SERVICO [det]
                     //I|CProd|CEAN|XProd|NCM|EXTIPI|CFOP|UCom|QCom|VUnCom|VProd|CEANTrib|UTrib|QTrib|VUnTrib|VFrete|VSeg|VDesc|vOutro|indTot|xPed|nItemPed|
+                    //I|cProd|cEAN||xProd|NCM|cBenef|EXTIPI|CFOP|uCom|qCom|vUnCom|vProd|cEANTrib|uTrib|qTrib|vUnTrib|vFrete|vSeg|vDesc|vOutro|indTot|xPed|nItemPed|nFCI|
                     $prod = $dom->createElement("prod");
                     $cProd = $dom->createElement("cProd", $dados[1]);
                     $prod->appendChild($cProd);
                     $cEAN = $dom->createElement("cEAN", $dados[2]);
                     $prod->appendChild($cEAN);
-                    $xProd = $dom->createElement("xProd", $dados[3]);
+                    $xProd = $dom->createElement("xProd", $dados[4]);
                     $prod->appendChild($xProd);
-                    $NCM = $dom->createElement("NCM", $dados[4]);
+                    $NCM = $dom->createElement("NCM", $dados[5]);
                     $prod->appendChild($NCM);
-                    if(!empty($dados[5])) {
-                        $EXTIPI = $dom->createElement("EXTIPI", $dados[5]);
+                    if(!empty($dados[6])) {
+                        $EXTIPI = $dom->createElement("EXTIPI", $dados[6]);
                         $prod->appendChild($EXTIPI);
                     }
-                    $CFOP = $dom->createElement("CFOP", $dados[6]);
+                    $CFOP = $dom->createElement("CFOP", $dados[7]);
                     $prod->appendChild($CFOP);
-                    $uCom = $dom->createElement("uCom", $dados[7]);
+                    $uCom = $dom->createElement("uCom", $dados[8]);
                     $prod->appendChild($uCom);
-                    $qCom = $dom->createElement("qCom", $dados[8]);
+                    $qCom = $dom->createElement("qCom", $dados[9]);
                     $prod->appendChild($qCom);
-                    $vUnCom = $dom->createElement("vUnCom", $dados[9]);
+                    $vUnCom = $dom->createElement("vUnCom", $dados[10]);
                     $prod->appendChild($vUnCom);
-                    $vProd = $dom->createElement("vProd", $dados[10]);
+                    $vProd = $dom->createElement("vProd", $dados[11]);
                     $prod->appendChild($vProd);
-                    $cEANTrib = $dom->createElement("cEANTrib", $dados[11]);
+                    $cEANTrib = $dom->createElement("cEANTrib", $dados[12]);
                     $prod->appendChild($cEANTrib);
-                    if(!empty($dados[12])) {
-                    $uTrib = $dom->createElement("uTrib", $dados[12]);
+                    if(!empty($dados[14])) {
+                    $uTrib = $dom->createElement("uTrib", $dados[14]);
                     } else {
-                        $uTrib = $dom->createElement("uTrib", $dados[7]);
+                        $uTrib = $dom->createElement("uTrib", $dados[8]);
                     } 
                     $prod->appendChild($uTrib);
-                    if(!empty($dados[13])) {
-                    $qTrib = $dom->createElement("qTrib", $dados[13]);
+                    if(!empty($dados[15])) {
+                    $qTrib = $dom->createElement("qTrib", $dados[15]);
                     } else {
-                        $qTrib = $dom->createElement("qTrib", $dados[8]);
+                        $qTrib = $dom->createElement("qTrib", $dados[9]);
                     }
                     $prod->appendChild($qTrib);
-                    if(!empty($dados[14])) {
-                    $vUnTrib = $dom->createElement("vUnTrib", $dados[14]);
+                    if(!empty($dados[16])) {
+                    $vUnTrib = $dom->createElement("vUnTrib", $dados[16]);
                     } else {
-                        $vUnTrib = $dom->createElement("vUnTrib", $dados[9]);
+                        $vUnTrib = $dom->createElement("vUnTrib", $dados[10]);
                     }
                     $prod->appendChild($vUnTrib);
-                    if(!empty($dados[15])) {
-                        $vFrete = $dom->createElement("vFrete", $dados[15]);
+                    if(!empty($dados[17])) {
+                        $vFrete = $dom->createElement("vFrete", $dados[17]);
                         $prod->appendChild($vFrete);
                     }
-                    if(!empty($dados[16])) {
-                        $vSeg = $dom->createElement("vSeg", $dados[16]);
+                    if(!empty($dados[18])) {
+                        $vSeg = $dom->createElement("vSeg", $dados[18]);
                         $prod->appendChild($vSeg);
                     }
-                    if(!empty($dados[17])) {
-                        $vDesc = $dom->createElement("vDesc", $dados[17]);
+                    if(!empty($dados[19])) {
+                        $vDesc = $dom->createElement("vDesc", $dados[19]);
                         $prod->appendChild($vDesc);
                     }
-                    if(!empty($dados[18])) {
-                        $vOutro = $dom->createElement("vOutro", $dados[18]);
+                    if(!empty($dados[20])) {
+                        $vOutro = $dom->createElement("vOutro", $dados[20]);
                         $prod->appendChild($vOutro);
                     }
-                    if(!empty($dados[19]) || $dados[19] == 0) {
-                        $indTot = $dom->createElement("indTot", $dados[19]);
+                    if(!empty($dados[21]) || $dados[21] == 0) {
+                        $indTot = $dom->createElement("indTot", $dados[21]);
                         $prod->appendChild($indTot);
                     } else {
                         $indTot = $dom->createElement("indTot", '0');
                         $prod->appendChild($indTot);
                     }
-                    if( sizeof($dados) > 19 ){
-                        if(!empty($dados[20])) {
-                            $xPed = $dom->createElement("xPed", $dados[20]);
+                    if( sizeof($dados) > 21 ){
+                        if(!empty($dados[22])) {
+                            $xPed = $dom->createElement("xPed", $dados[22]);
                             $prod->appendChild($xPed);
                         }
-                        if(!empty($dados[21])) {
-                            $nItemPed = $dom->createElement("nItemPed", $dados[21]);
+                        if(!empty($dados[23])) {
+                            $nItemPed = $dom->createElement("nItemPed", $dados[23]);
                             $prod->appendChild($nItemPed);
                         }
                     }
@@ -1457,25 +1470,22 @@ class ConvertNFePHP {
                         break;
 
                     case "O": //Grupo do IPI 0 ou 1 [imposto]
+                        //O|CNPJProd|cSelo|qSelo|cEnq|
                         $IPI = $dom->createElement("IPI");
                         if(!empty($dados[1])) {
-                            $clEnq = $dom->createElement("clEnq", $dados[1]);
-                            $IPI->appendChild($clEnq);
-                        }
-                        if(!empty($dados[2])) {
-                            $CNPJProd = $dom->createElement("CNPJProd", $dados[2]);
+                            $CNPJProd = $dom->createElement("CNPJProd", $dados[1]);
                             $IPI->appendChild($CNPJProd);
                         }
-                        if(!empty($dados[3])) {
-                            $cSelo = $dom->createElement("cSelo", $dados[3]);
+                        if(!empty($dados[2])) {
+                            $cSelo = $dom->createElement("cSelo", $dados[2]);
                             $IPI->appendChild($cSelo);
                         }
-                        if(!empty($dados[4])) {
-                            $qSelo = $dom->createElement("qSelo", $dados[4]);
+                        if(!empty($dados[3])) {
+                            $qSelo = $dom->createElement("qSelo", $dados[3]);
                             $IPI->appendChild($qSelo);
                         }
-                        if(!empty($dados[5])) {
-                            $cEnq = $dom->createElement("cEnq", $dados[5]);
+                        if(!empty($dados[4])) {
+                            $cEnq = $dom->createElement("cEnq", $dados[4]);
                             $IPI->appendChild($cEnq);
                         }
                         $imposto->appendChild($IPI);
@@ -1738,35 +1748,59 @@ class ConvertNFePHP {
 
                     case "W02": //Grupo de Valores Totais referentes ao ICMS obrigatorio [total]
                         // todos esses campos sao obrigatorios
+                        //W02|vBC|vICMS|vICMSDeson|vFCPUFDest|vICMSUFDest|vICMSUFRemet|vFCP|vBCST|vST|vFCPST|
+                        //vFCPSTRet|vProd|vFrete|vSeg|vDesc|vII|vIPI|vIPIDevol|vPIS|vCOFINS|vOutro|vNF|vTotTrib|
                         $ICMSTot = $dom->createElement("ICMSTot");
                         $vBC = $dom->createElement("vBC", $dados[1]);
                         $ICMSTot->appendChild($vBC);
                         $vICMS = $dom->createElement("vICMS", $dados[2]);
                         $ICMSTot->appendChild($vICMS);
-                        $vBCST = $dom->createElement("vBCST", $dados[3]);
+                        $vICMSDeson = $dom->createElement("vICMSDeson", $dados[3]);
+                        $ICMSTot->appendChild($vICMSDeson);
+                        $vFCPUFDest = $dom->createElement("vFCPUFDest", $dados[4]);
+                        $ICMSTot->appendChild($vFCPUFDest);
+                        $vICMSUFDest = $dom->createElement("vICMSUFDest", $dados[5]);
+                        $ICMSTot->appendChild($vICMSUFDest);
+                        $vICMSUFRemet = $dom->createElement("vICMSUFRemet", $dados[6]);
+                        $ICMSTot->appendChild($vICMSUFRemet);
+                        $vFCP = $dom->createElement("vFCP", $dados[7]);
+                        $ICMSTot->appendChild($vFCP);
+                        $vBCST = $dom->createElement("vBCST", $dados[8]);
                         $ICMSTot->appendChild($vBCST);
-                        $vST = $dom->createElement("vST", $dados[4]);
+                        $vST = $dom->createElement("vST", $dados[8]);
                         $ICMSTot->appendChild($vST);
-                        $vProd = $dom->createElement("vProd", $dados[5]);
+                        $vFCPST = $dom->createElement("vFCPST", $dados[10]);
+                        $ICMSTot->appendChild($vFCPST);
+                        $vFCPSTRet = $dom->createElement("vFCPSTRet", $dados[11]);
+                        $ICMSTot->appendChild($vFCPSTRet);
+
+                        $vProd = $dom->createElement("vProd", $dados[9]);
                         $ICMSTot->appendChild($vProd);
-                        $vFrete = $dom->createElement("vFrete", $dados[6]);
+
+                        $vFrete = $dom->createElement("vFrete", $dados[13]);
                         $ICMSTot->appendChild($vFrete);
-                        $vSeg = $dom->createElement("vSeg", $dados[7]);
+                        $vSeg = $dom->createElement("vSeg", $dados[14]);
                         $ICMSTot->appendChild($vSeg);
-                        $vDesc = $dom->createElement("vDesc", $dados[8]);
+                        $vDesc = $dom->createElement("vDesc", $dados[15]);
                         $ICMSTot->appendChild($vDesc);
-                        $vII = $dom->createElement("vII", $dados[9]);
+                        $vII = $dom->createElement("vII", $dados[16]);
                         $ICMSTot->appendChild($vII);
-                        $vIPI = $dom->createElement("vIPI", $dados[10]);
+                        $vIPI = $dom->createElement("vIPI", $dados[17]);
                         $ICMSTot->appendChild($vIPI);
-                        $vPIS = $dom->createElement("vPIS", $dados[11]);
+                        $vIPIDevol = $dom->createElement("vIPIDevol", $dados[18]);
+                        $ICMSTot->appendChild($vIPIDevol);
+                        $vPIS = $dom->createElement("vPIS", $dados[18]);
                         $ICMSTot->appendChild($vPIS);
-                        $vCOFINS = $dom->createElement("vCOFINS", $dados[12]);
+                        $vCOFINS = $dom->createElement("vCOFINS", $dados[20]);
                         $ICMSTot->appendChild($vCOFINS);
-                        $vOutro = $dom->createElement("vOutro", $dados[13]);
+                        $vOutro = $dom->createElement("vOutro", $dados[20]);
                         $ICMSTot->appendChild($vOutro);
-                        $vNF = $dom->createElement("vNF", $dados[14]);
+
+                        $vNF = $dom->createElement("vNF", $dados[19]);
                         $ICMSTot->appendChild($vNF);
+
+                        $vTotTrib = $dom->createElement("vTotTrib", $dados[20]);
+                        $ICMSTot->appendChild($vTotTrib);
                         $total->appendChild($ICMSTot);
                         break;
 
@@ -1970,7 +2004,28 @@ class ConvertNFePHP {
                         $cobr = $dom->createElement("cobr");
                         $infNFe->appendChild($cobr);
                         break;
-
+                    case "YA01": //Grupo da Fatura 0 ou 1 [cobr]
+                        $pag = $dom->createElement("pag");
+                        $detPag = $dom->createElement("detPag");
+                        if(!empty($dados[1])) {
+                            $indPag = $dom->createElement("indPag", $dados[1]);
+                            $detPag->appendChild($indPag);
+                        }
+                        if(!empty($dados[2])) {
+                            $tPag = $dom->createElement("tPag", $dados[2]);
+                            $detPag->appendChild($tPag);
+                        }
+                        if(!empty($dados[3])) {
+                            $vDesc = $dom->createElement("vDesc", $dados[3]);
+                            $detPag->appendChild($vDesc);
+                        }
+                        if(!empty($dados[4])) {
+                            $vPag = $dom->createElement("vPag", $dados[4]);
+                            $detPag->appendChild($vPag);
+                        }
+                        $pag->appendChild($detPag);
+                        $infNFe->appendChild($pag);
+                        break;                        
                     case "Y02": //Grupo da Fatura 0 ou 1 [cobr]
                        if (!isset($cobr)){
                            $cobr = $dom->createElement("cobr");

@@ -382,6 +382,7 @@
                         <legend>XML</legend>
                         <select id="xmlFiles" size="20"></select>
                     </fieldset>
+                    <button id="btnAssina">Assina XML</button>
             </div>                
         </div>   
     </div>
@@ -399,6 +400,45 @@
     document.querySelector('#edtFin').value =  today.finMonth()
 
 /* FUNÇÔES */    
+
+    document.querySelector('#btnAssina').addEventListener('click',()=>{
+
+        let filename = document.querySelector('#xmlFiles').value.split('/')
+        filename = filename[filename.length-1].split('.')[0]      
+        
+        
+        
+        console.log()
+
+        if(filename.substring(11,15) == ''){
+            const data = new URLSearchParams();        
+                data.append("filename",filename);
+            const myRequest = new Request("backend/signNFe.php",{
+                method : "POST",
+                body : data
+            });
+            const myPromisse = new Promise((resolve,reject) =>{
+
+                fetch(myRequest)
+                .then(function (response){
+                    if (response.status === 200) { 
+                        resolve(response.text());             
+                    } else { 
+                        reject(new Error("Houve algum erro na comunicação com o servidor"));                    
+                    } 
+                })
+                .then(function (response){
+                    listNF('NFe/xml','xml')
+                })
+            })            
+        }else{
+            alert('XML já foi assinado!')
+        }
+
+
+
+    })
+
 
     main_data.nfe.row_edit = function(obj){
         main_data.nfe.row_item.cells[1].innerHTML = obj.descricao
@@ -507,7 +547,7 @@
 // I|cProd|cEAN|xProd|NCM|cBenef|EXTIPI|CFOP|uCom|qCom|vUnCom|vProd|cEANTrib|uTrib|qTrib|vUnTrib| vFrete|vSeg|vDesc|vOutro| indTot| xPed|nItemPed|nFCI|
             item.I = new Object
             item.I.cProd = tblItens[i].data.cod_prod
-            item.I.cEAN = ''
+            item.I.cEAN = '|'
             item.I.xProd = tblItens[i].data.descricao.trim()
             item.I.NCM = tblItens[i].data.ncm
             item.I.cBenef = ''
@@ -919,6 +959,7 @@
                 
     document.getElementById('btnSaveFiscal').addEventListener('click',(event)=>{
         const fiscal = document.querySelector('#fiscal')
+        const emitente = document.querySelector('#emitente')
         const now = new Date(fiscal.querySelector('#dhEmi').value)
         main_data.NFe.A.versao = '4.00'
         main_data.NFe.A.id = ''
@@ -934,7 +975,7 @@
         main_data.NFe.B.dhSaiEnt = now.getFullDateTime()
         main_data.NFe.B.tpNF = fiscal.querySelector('#tpNF').value
         main_data.NFe.B.idDest = fiscal.querySelector('#idDest').value
-        main_data.NFe.B.cMunFG = fiscal.querySelector('#cMunFG').value
+        main_data.NFe.B.cMunFG = getNum(emitente.querySelector('#cMun').value)
         main_data.NFe.B.tpImp = fiscal.querySelector('#tpImp').value
         main_data.NFe.B.tpEmis = fiscal.querySelector('#tpEmis').value
         main_data.NFe.B.cDV = fiscal.querySelector('#cDV').value
@@ -974,7 +1015,6 @@
     })
 
     document.querySelector('#btnGeraNFe').addEventListener('click',()=>{
-        
 
         if(document.querySelector('#cliente').querySelector('#cMun').value.trim() != '' ){
             document.getElementById('btnSaveFiscal').click()
@@ -994,5 +1034,6 @@
     document.querySelector('#btnBuscaIBGE').addEventListener('click',()=>{
         IBGE_cMun(document.querySelector('#E05').querySelector('#xMun').value,document.querySelector('#E05').querySelector('#UF').value)
     })
+
 
 </script>
