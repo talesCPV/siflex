@@ -171,15 +171,18 @@
     #close-screen{
         position: relative;
         left: 99%;        
-
         color: rgb(47, 79, 79);
         font-size: 1.5em;
         font-weight: 800;
+        padding: 0 9px;
+        border-radius: 18px;
+
     }
 
     #close-screen:hover{
+        border: solid 1px;
         cursor: pointer;
-        color: rgb(158, 238, 30);
+        color: rgb(224, 77, 77);
     }    
 
     .control-size{

@@ -91,6 +91,7 @@
             this.adn = 0
             this.he_adn = 0
             this.fal = 0
+            this.dsr = 0
         }
     }
 
@@ -103,6 +104,8 @@
     }
 
     main_data.horas.data = new Object
+    main_data.horas.data.d_uteis = 0
+    main_data.horas.data.dom_fer = 0
 
     const hj = today.getDate()
     while(today.getDate()!=26){
@@ -239,7 +242,8 @@
         }
 // dias funcionarios
         while(date <= date_fin){
-            weekDay = getWeekDay(date) 
+            weekDay = getWeekDay(date)
+            weekDay == 0 ? main_data.horas.data.dom_fer++ : main_data.horas.data.d_uteis++
             let tr = [0,6].includes(weekDay) ? `<tr id="${date.getFormatBR()}" class="weekend tr-center">` : [2,4].includes(date.getDay()) ? `<tr id="${date.getFormatDate()}" class="zebra tr-center">` :`<tr id="${date.getFormatDate()}" class="workday tr-center">`
                 tr += `${tr}<th>${date.getFormatBR()}</th><th>${semana[date.getDay()]}</th>`
             for(let i=0; i<func.length; i++){
@@ -288,6 +292,8 @@
 
 
     main_data.horas.query = ()=>{
+        main_data.horas.data.d_uteis = 0
+        main_data.horas.data.dom_fer = 0
         const sel = document.querySelector('#cmbBusca')
         const field = sel.value
         const signal = sel.options[sel.selectedIndex].getAttribute('signal')
