@@ -92,6 +92,7 @@
             this.he_adn = 0
             this.fal = 0
             this.dsr = 0
+            this.valor = 0
         }
     }
 
@@ -276,12 +277,21 @@
         }
 
         for(let i=0; i<func.length; i++){
+            console.log(func[i])
             const row = document.querySelector('#resumo-'+func[i].id)
             row.cells[1].innerHTML = func[i].horas.hr.toFixed(2)
             row.cells[2].innerHTML = func[i].horas.adn.toFixed(2)
             row.cells[3].innerHTML = func[i].horas.he.toFixed(2)
             row.cells[4].innerHTML = func[i].horas.he_adn.toFixed(2)
-            row.cells[5].innerHTML = func[i].horas.fal.toFixed(2)         
+            row.cells[5].innerHTML = func[i].horas.fal.toFixed(2)
+            if(func[i].tipo == 'HORA'){
+                 func[i].horas.valor = parseFloat(func[i].salario) * (func[i].horas.hr + (func[i].horas.adn * 1.5) + (func[i].horas.he * 2) + (func[i].horas.he_adn * 2.5)) 
+                 func[i].horas.valor = parseFloat(func[i].horas.valor.toFixed(2))
+            }else{
+                func[i].horas.valor = parseFloat(func[i].salario)
+            }
+            func[i].horas.dsr = func[i].horas.valor/main_data.horas.data.d_uteis*main_data.horas.data.dom_fer
+            func[i].horas.dsr = parseFloat(func[i].dsr)
         }
 
         document.querySelector('#tblHoras').innerHTML =''
@@ -289,7 +299,6 @@
             document.querySelector('#tblHoras').innerHTML += tbl[i]+'</tr>'
         }         
     }
-
 
     main_data.horas.query = ()=>{
         main_data.horas.data.d_uteis = 0
@@ -330,7 +339,6 @@
         })
     }
 
-
     document.querySelector('#btnBusca').addEventListener('click',()=>{
         if(checkField(['edtIni','edtFin'])){
             main_data.horas.query()
@@ -364,9 +372,6 @@
 
         openHTML('viewHora.html','pop-up','Relógio de Ponto',data,[100,30])
     })
-
-
-
 
     document.querySelector('#tblResumo').addEventListener('click',(e)=>{
         const data = e.target.parentNode.data

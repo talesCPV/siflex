@@ -861,7 +861,7 @@ function holerite(func,tipo='holerite'){
                 doc.text((salario.h_trab * salario.valor).toFixed(2),135,txt.y)
                 addLine(0.7)
 //                salario.bruto = salario.valor * (func.horas.hr + (func.horas.adn * 1.2) + (func.horas.he * 2) + (func.horas.he_adn * 2.2) )
-                if(func.horas.hr > 0){
+                if(func.horas.he > 0){
                     doc.text('HORA EXTRA 100%',10,txt.y)
                     doc.text(func.horas.he.toFixed(2),90,txt.y)
                     doc.text((func.horas.he * 2 * salario.valor).toFixed(2),135,txt.y)
@@ -884,6 +884,13 @@ function holerite(func,tipo='holerite'){
                 doc.text('SALARIO',10,txt.y)
                 doc.text(salario.h_trab.toFixed(2),90,txt.y)
                 doc.text(salario.bruto.toFixed(2),135,txt.y)
+                addLine(0.7)    
+            }
+
+            if(func.horas.dsr > 0){
+                doc.text('DSR - DESCANSO SEMANAL REMUNERADO',10,txt.y)
+//                doc.text(func.horas.sdr.toFixed(2),90,txt.y)
+                doc.text(func.horas.dsr.toFixed(2),135,txt.y)
                 addLine(0.7)    
             }
 
