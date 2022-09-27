@@ -47,7 +47,7 @@ class ConvertNFsPHP {
             for ($x=0; $x < count($dados); $x++) {
                 if( !empty($dados[$x]) ) {
                     $dados[$x] = preg_replace('/\s\s+/', " ", $dados[$x]);
-                    $dados[$x] = $this->__limpaString(trim($dados[$x]));
+//                    $dados[$x] = $this->__limpaString(trim($dados[$x]));
                 } //end if
             } //end for
 //            echo $dados[0];
@@ -57,9 +57,9 @@ class ConvertNFsPHP {
                 case "10":  //10|CpfCnpj|DtIni|DtFin|TipoArq|Versao|
                     $CpfCnpj = $dom->createElement("CpfCnpj", $dados[1]);
                     $NFe->appendChild($CpfCnpj);
-                    $DtIni = $dom->createElement("DtIni", $this->__formatdate(trim($dados[2])));
+                    $DtIni = $dom->createElement("DtIni", $dados[2]);
                     $NFe->appendChild($DtIni);
-                    $DtFin = $dom->createElement("DtFin", $this->__formatdate(trim($dados[3])));
+                    $DtFin = $dom->createElement("DtFin", $dados[3]);
                     $NFe->appendChild($DtFin);
                     $TipoArq = $dom->createElement("TipoArq", $dados[4]);
                     $NFe->appendChild($TipoArq);
@@ -77,9 +77,9 @@ class ConvertNFsPHP {
                     $Reg20Item->appendChild($NumNf);
                     $SerNf = $dom->createElement("SerNf", $dados[3]);
                     $Reg20Item->appendChild($SerNf);
-                    $DtEmiNf = $dom->createElement("DtEmiNf", $this->__formatdate(trim($dados[4])));
+                    $DtEmiNf = $dom->createElement("DtEmiNf", $dados[4]);
                     $Reg20Item->appendChild($DtEmiNf);
-                    $DtHrGerNf = $dom->createElement("DtHrGerNf", $this->__formatdate(trim($dados[5])));
+                    $DtHrGerNf = $dom->createElement("DtHrGerNf", $dados[5]);
                     $Reg20Item->appendChild($DtHrGerNf);
                     $CodVernf = $dom->createElement("CodVernf", $dados[6]);
                     $Reg20Item->appendChild($CodVernf);
@@ -87,11 +87,11 @@ class ConvertNFsPHP {
                     $Reg20Item->appendChild($NumRps);
                     $SerRps = $dom->createElement("SerRps", $this->__trimnum(trim($dados[8])));
                     $Reg20Item->appendChild($SerRps);
-                    $DtEmiRps = $dom->createElement("DtEmiRps", $this->__formatdate(trim($dados[9])));
+                    $DtEmiRps = $dom->createElement("DtEmiRps", $dados[9]);
                     $Reg20Item->appendChild($DtEmiRps);
                     $TipoCpfCnpjPre = $dom->createElement("TipoCpfCnpjPre", $dados[10]=="2" ? "J" : "F" );
                     $Reg20Item->appendChild($TipoCpfCnpjPre);
-                    $CpfCnpjPre = $dom->createElement("CpfCnpjPre", $dados[11]);
+                    $CpfCnpjPre = $dom->createElement("CpfCnpjPre", $this->__formatcnpj(trim($dados[11])));
                     $Reg20Item->appendChild($CpfCnpjPre);
                     $RazSocPre = $dom->createElement("RazSocPre", $dados[12]);
                     $Reg20Item->appendChild($RazSocPre);
@@ -113,19 +113,19 @@ class ConvertNFsPHP {
                     $Reg20Item->appendChild($EmailPre);
                     $TipoTribPre = $dom->createElement("TipoTribPre", $dados[21]);
                     $Reg20Item->appendChild($TipoTribPre);
-                    $DtAdeSN = $dom->createElement("DtAdeSN", $this->__formatdate(trim($dados[22])));
+                    $DtAdeSN = $dom->createElement("DtAdeSN", $dados[22]);
                     $Reg20Item->appendChild($DtAdeSN);
                     $AlqIssSN = $dom->createElement("AlqIssSN", $this->__decimal(trim($dados[23])));
                     $Reg20Item->appendChild($AlqIssSN);
                     $SitNf = $dom->createElement("SitNf", $dados[24]);
                     $Reg20Item->appendChild($SitNf);
-                    $DataCncNf = $dom->createElement("DataCncNf", $this->__formatdate(trim($dados[25])));
+                    $DataCncNf = $dom->createElement("DataCncNf", $dados[25]);
                     $Reg20Item->appendChild($DataCncNf);
                     $MotivoCncNf = $dom->createElement("MotivoCncNf", $dados[26]);
                     $Reg20Item->appendChild($MotivoCncNf);
                     $TipoCpfCnpjTom = $dom->createElement("TipoCpfCnpjTom", $dados[27]=="2" ? "J" : "F");
                     $Reg20Item->appendChild($TipoCpfCnpjTom);
-                    $CpfCnpjTom = $dom->createElement("CpfCnpjTom", $dados[28]);
+                    $CpfCnpjTom = $dom->createElement("CpfCnpjTom", $this->__formatcnpj(trim($dados[28])));
                     $Reg20Item->appendChild($CpfCnpjTom);
                     $RazSocTom = $dom->createElement("RazSocTom", $dados[29]);
                     $Reg20Item->appendChild($RazSocTom);
@@ -161,13 +161,13 @@ class ConvertNFsPHP {
                     $Reg20Item->appendChild($CepLocPre);
                     $CodSrv = $dom->createElement("CodSrv", $dados[45]);
                     $Reg20Item->appendChild($CodSrv);
-                    $DiscrSrv = $dom->createElement("DiscrSrv", $dados[46]);
+                    $DiscrSrv = $dom->createElement("DiscrSrv", $this->__quebralinha(trim($dados[46])));
                     $Reg20Item->appendChild($DiscrSrv);
                     $VlNFS = $dom->createElement("VlNFS", $this->__decimal(trim($dados[47])));
                     $Reg20Item->appendChild($VlNFS);
                     $VlDed = $dom->createElement("VlDed", $this->__decimal(trim($dados[48])));
                     $Reg20Item->appendChild($VlDed);
-                    $DiscrDed = $dom->createElement("DiscrDed", $dados[49]);
+                    $DiscrDed = $dom->createElement("DiscrDed", $this->__quebralinha(trim($dados[49])));
                     $Reg20Item->appendChild($DiscrDed);
                     $VlBasCalc = $dom->createElement("VlBasCalc", $this->__decimal(trim($dados[50])));
                     $Reg20Item->appendChild($VlBasCalc);
@@ -251,11 +251,20 @@ class ConvertNFsPHP {
 
     private function __trimnum($num){
         return (int)$num ;
-    }//fim __decimal
+    }//fim __trimnum
 
     private function __formatdate($texto){
         return trim($texto) != "" ? substr($texto,0,2).'/'.substr($texto,2,2).'/'.substr($texto,4,4).substr($texto,8,strlen($texto)) : "";
-    }//fim __decimal
+    }//fim __formatdate
+
+    private function __formatcnpj($texto){
+        return trim($texto) != "" ? substr($texto,0,2).'.'.substr($texto,2,3).'.'.substr($texto,5,3).'/'.substr($texto,8,4).'-'.substr($texto,12,2) : "";
+    }//fim __formatcnpj
+
+    private function __quebralinha($texto){
+        return trim($texto) != "" ? str_replace("\\\\","&#xA;",$texto) : "";
+    }//fim __quebralinha
+
 
 } //fim da classe
 

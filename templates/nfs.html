@@ -184,7 +184,6 @@
     listNF('NFs/txt')
     listNF('NFs/xml','xml')
 
-
     document.querySelector('#tab-emitente').click()
     document.querySelector('#edtIni').value = today.iniMonth()
     document.querySelector('#edtFin').value = today.finMonth()
@@ -231,7 +230,7 @@
         main_data.NFs['20'].CepLocPre = local=='TOM' ? getNum(cliente.querySelector('#CEP').value) : getNum(emitente.querySelector('#CEP').value)
 
         main_data.NFs['20'].CodSrv = '14.01'
-        main_data.NFs['20'].DiscrSrv = document.querySelector('#txtServicos').value.replaceAll('\n', '//')
+        main_data.NFs['20'].DiscrSrv = document.querySelector('#txtServicos').value.replaceAll('\n', '\\\\')
         main_data.NFs['20'].VlNFS = getNumComa(document.querySelector('#edtValor').value)
         main_data.NFs['20'].VlDed = '0,00'
         main_data.NFs['20'].VlBasCalc = getNumComa(document.querySelector('#edtValor').value)
@@ -258,11 +257,11 @@
         for(let i=0; i< parc.length; i++){
             now = new Date
             now.change(parseInt(parc[i]))
-            fatura += `//Pgto ${(i+1).toString().padStart(2,"0")}/${(parc.length).toString().padStart(2,"0")} Venc.${now.getFormatBR()} Valor R$${i != (parc.length-1) ? (total/parc.length).toFixed(2) : (total-pg).toFixed(2)}`
+            fatura += `\\\\Pgto ${(i+1).toString().padStart(2,"0")}/${(parc.length).toString().padStart(2,"0")} Venc.${now.getFormatBR()} Valor R$${i != (parc.length-1) ? (total/parc.length).toFixed(2) : (total-pg).toFixed(2)}`
             pg += (total/parc.length)
         }
-        fatura += '//**Tributado pelo ANEXO III Simples Nacional Conforme LC 123/200'
-        main_data.NFs['20'].DiscrDed = document.querySelector('#txtInfo').value.replaceAll('\n', '//') + fatura
+        fatura += '\\\\**Tributado pelo ANEXO III Simples Nacional Conforme LC 123/200'
+        main_data.NFs['20'].DiscrDed = document.querySelector('#txtInfo').value.replaceAll('\n', '\\\\') + fatura
 
 
         NFeConf(main_data.NFs,'NFs.json')
@@ -286,6 +285,7 @@
                 alert('NFs exportada com sucesso!')
                 listNF('NFs/txt')
                 listNF('NFs/xml','xml')
+                document.querySelector('#tab-export').click()
             })          
 
         })
@@ -318,7 +318,7 @@
 
         saveFiscal()
         const txt = getTXT()
-        const filename = 'NFs-'+main_data.NFs['20'].NumNf+'.txt'
+        const filename = 'NFs-'+main_data.NFs['20'].NumNf
         uploadNFs(txt, filename)
 
     })
@@ -380,7 +380,6 @@
             delete link; 
     })
 
-
     document.querySelector('#btnBusca').addEventListener('click',()=>{
 
         const sel = document.querySelector('#cmbBusca')
@@ -438,8 +437,7 @@
                 document.querySelector('#edtValor').value =  (parseFloat(document.querySelector('#edtValor').value)+parseFloat(data.valor)).toFixed(2)
 
             }
-
-
+            document.querySelector('#tab-cliente').click()
         }
 
 
