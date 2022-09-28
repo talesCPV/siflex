@@ -89,6 +89,8 @@
                     localStorage.setItem("cel",json[0].cel);
                     localStorage.setItem("email",json[0].email);
                     openHTML('dashboard.html','main-screen')
+                    document.documentElement.requestFullscreen();
+
                 }else{
                     alert("Usuário ou senha inválido!");
                     localStorage.clear();                
