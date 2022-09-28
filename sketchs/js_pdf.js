@@ -259,7 +259,6 @@ function carrosRelat(obj, origem='AnaFrota'){
     let fontSize = 11
     let desc = 0
     function postCli(data){
-console.log(data)        
         doc.setFontSize(11)
         doc.setFont(undefined, 'bold')
         doc.text('Cliente:' + data.fantasia.trim().toUpperCase() ,15,txt.y)
@@ -751,6 +750,7 @@ function print_pedcomp(){
 function holerite(func,tipo='holerite'){
 
     function drawFrame(Y=5,mode='ADTO'){
+        func.data.change(-1)
         const date =  meses[func.data.getMonth()] +'/'+ func.data.getFullYear()
         const pageWidth = doc.internal.pageSize.getWidth()
         txt.y = Y+5
@@ -808,7 +808,7 @@ function holerite(func,tipo='holerite'){
             }
 
         }
-//console.log(salario)
+
         if(mode=='ADTO'){
 
             doc.setFont(undefined, 'normal')
@@ -860,12 +860,24 @@ function holerite(func,tipo='holerite'){
                 doc.text(salario.h_trab.toFixed(2),90,txt.y)
                 doc.text((salario.h_trab * salario.valor).toFixed(2),135,txt.y)
                 addLine(0.7)
+                doc.text('REPOUSO SEMANAL REMUNERADO',10,txt.y)
+                doc.text((salario.h_trab / func.horas.dsr).toFixed(2),90,txt.y)
+                doc.text((salario.h_trab * salario.valor / func.horas.dsr).toFixed(2),135,txt.y)
+                addLine(0.7)
+                salario.bruto += salario.h_trab * salario.valor / func.horas.dsr
+
 //                salario.bruto = salario.valor * (func.horas.hr + (func.horas.adn * 1.2) + (func.horas.he * 2) + (func.horas.he_adn * 2.2) )
                 if(func.horas.he > 0){
                     doc.text('HORA EXTRA 100%',10,txt.y)
                     doc.text(func.horas.he.toFixed(2),90,txt.y)
                     doc.text((func.horas.he * 2 * salario.valor).toFixed(2),135,txt.y)
                     addLine(0.7)    
+                    doc.text('D.S.R. SOBRE HORAS EXTRAS',10,txt.y)
+//                    doc.text(func.horas.he.toFixed(2),90,txt.y)
+                    doc.text((func.horas.he * 2 * salario.valor / func.horas.dsr).toFixed(2),135,txt.y)
+                    addLine(0.7)    
+                    salario.bruto += func.horas.he * 2 * salario.valor / func.horas.dsr
+
                 }
                 if(func.horas.adn > 0){
                     doc.text('ADICIONAL NOTURNO 50%',10,txt.y)
@@ -885,12 +897,9 @@ function holerite(func,tipo='holerite'){
                 doc.text(salario.h_trab.toFixed(2),90,txt.y)
                 doc.text(salario.bruto.toFixed(2),135,txt.y)
                 addLine(0.7)    
-            }
-
-            if(func.horas.dsr > 0){
-                doc.text('DSR - DESCANSO SEMANAL REMUNERADO',10,txt.y)
-//                doc.text(func.horas.sdr.toFixed(2),90,txt.y)
-                doc.text(func.horas.dsr.toFixed(2),135,txt.y)
+                doc.text('REPOUSO SEMANAL REMUNERADO',10,txt.y)
+                doc.text((salario.h_trab/5).toFixed(2),90,txt.y)
+                doc.text((salario.bruto/5).toFixed(2),135,txt.y)
                 addLine(0.7)    
             }
 
@@ -929,9 +938,6 @@ function holerite(func,tipo='holerite'){
                 doc.text(salario.impostos.VALE_TRANSP.val.toFixed(2),180,txt.y)
                 addLine(0.7)
             }
-
-            console.log()
-
 
             doc.setFont(undefined, 'bold')   
 
@@ -1025,7 +1031,6 @@ function holerite(func,tipo='holerite'){
     }
 
     let imp
-    console.log(func)
     jsPDF.autoTableSetDefaults({
         headStyles: { fillColor: [37, 68, 65] },
     })
@@ -1053,16 +1058,9 @@ function holerite(func,tipo='holerite'){
             drawFrame(5,tipo)
             drawFrame(150,tipo)
         }
-        
-    
+            
         doc.save('holerite.pdf')
 
     })
-
-
-
-
-
-
 
 }

@@ -277,7 +277,6 @@
         }
 
         for(let i=0; i<func.length; i++){
-            console.log(func[i])
             const row = document.querySelector('#resumo-'+func[i].id)
             row.cells[1].innerHTML = func[i].horas.hr.toFixed(2)
             row.cells[2].innerHTML = func[i].horas.adn.toFixed(2)
@@ -290,8 +289,8 @@
             }else{
                 func[i].horas.valor = parseFloat(func[i].salario)
             }
-            func[i].horas.dsr = func[i].horas.valor/main_data.horas.data.d_uteis*main_data.horas.data.dom_fer
-            func[i].horas.dsr = parseFloat(func[i].dsr)
+            func[i].horas.dsr = main_data.horas.data.d_uteis/main_data.horas.data.dom_fer
+
         }
 
         document.querySelector('#tblHoras').innerHTML =''
