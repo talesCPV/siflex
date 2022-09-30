@@ -95,6 +95,8 @@
                 <div class="inline">
                     <label> CNPJ </label>
                     <input type="text" id="CNPJ" maxlength="18" onkeyup="valCNPJ(this)"/>
+                    <label> Insc. MUn. </label>
+                    <input type="text" id="IM" maxlength="18" onkeyup="valInt(this)"/>
                 </div>
                 <div class="inline">
                     <label> Endereço </label>
@@ -205,42 +207,59 @@
 
         main_data.NFs.CONF.DefRPS = document.querySelector('#edtRps').value.trim()
 
-        let now = new Date
-        main_data.NFs['20'].TipoNf = 'P'
-        main_data.NFs['20'].NumNf = document.querySelector('#edtNfsNum').value.trim().padStart(9,'0')
-        main_data.NFs['20'].SerNf = 'NFE'
-        main_data.NFs['20'].DtEmiNf = now.getFormatBR()
-        main_data.NFs['20'].DtHrGerNf = now.getFullDate()
-        main_data.NFs['20'].NumRps = (parseInt(document.querySelector('#edtNfsNum').value)-parseInt(document.querySelector('#edtRps').value)).toString().padStart(9,'0')
-        main_data.NFs['20'].SerRps = '001'
-        main_data.NFs['20'].DtEmiRps = now.getFormatBR()
-        main_data.NFs['20'].TipoCpfCnpjPre = '2' // 1-CPF 2-CNPJ
-        main_data.NFs['20'].AlqIssSN = getNumComa(document.querySelector('#edtAliq').value)
-        main_data.NFs['20'].SitNf = '1' // 1-Normal. 2-Cancelada. 3-Extraviada. 4-devolução. 5-não tributada.
-
+        const emitente = document.querySelector('#emitente')
         const local = document.querySelector('#cmbLocal').value
         const cliente = document.querySelector('#cliente')
-        const emitente = document.querySelector('#emitente')
-        main_data.NFs['20'].LogLocPre = local=='TOM' ? cliente.querySelector('#xLgr').value : emitente.querySelector('#xLgr').value
-        main_data.NFs['20'].NumLocPre = local=='TOM' ? cliente.querySelector('#nro').value : emitente.querySelector('#nro').value
-        main_data.NFs['20'].CompLocPre = local=='TOM' ? cliente.querySelector('#cpl').value : emitente.querySelector('#nro').value
-        main_data.NFs['20'].BairroLocPre = local=='TOM' ? cliente.querySelector('#bairro').value : emitente.querySelector('#bairro').value
-        main_data.NFs['20'].MunLocPre = local=='TOM' ? cliente.querySelector('#xMun').value : emitente.querySelector('#xMun').value
-        main_data.NFs['20'].SiglaUFLocPre = local=='TOM' ? cliente.querySelector('#UF').value : emitente.querySelector('#UF').value
-        main_data.NFs['20'].CepLocPre = local=='TOM' ? getNum(cliente.querySelector('#CEP').value) : getNum(emitente.querySelector('#CEP').value)
-
-        main_data.NFs['20'].CodSrv = '14.01'
-        main_data.NFs['20'].DiscrSrv = document.querySelector('#txtServicos').value.replaceAll('\n', '\\\\')
-        main_data.NFs['20'].VlNFS = getNumComa(document.querySelector('#edtValor').value)
-        main_data.NFs['20'].VlDed = '0,00'
-        main_data.NFs['20'].VlBasCalc = getNumComa(document.querySelector('#edtValor').value)
-        main_data.NFs['20'].AlqIss = getNumComa(document.querySelector('#edtAliq').value)
-
         const retido = document.querySelector('#cmbRetFont').value
         const iss = getNumComa(parseFloat(document.querySelector('#edtValor').value)*(parseFloat(document.querySelector('#edtAliq').value)/100))
 
+        const parc = document.querySelector('#edtDias').value.split('/')
+        const total = parseFloat(document.querySelector('#edtValor').value)        
+        let fatura = ''
+        let pg = 0
+        let now = new Date
+        for(let i=0; i< parc.length; i++){
+            now = new Date
+            now.change(parseInt(parc[i]))
+            fatura += `\\\\Pgto ${(i+1).toString().padStart(2,"0")}/${(parc.length).toString().padStart(2,"0")} Venc.${now.getFormatBR()} Valor R$${i != (parc.length-1) ? (total/parc.length).toFixed(2) : (total-pg).toFixed(2)}`
+            pg += (total/parc.length)
+        }
+        fatura += '\\\\**Tributado pelo ANEXO III Simples Nacional Conforme LC 123/2006'
+
+        now = new Date
+        main_data.NFs['10'].CpfCnpj = getNum(emitente.querySelector('#CNPJ').value)
+        main_data.NFs['10'].DtIni = now.getFormatBR()
+        main_data.NFs['10'].DtFin = now.getFormatBR()
+        main_data.NFs['10'].TipoTrib = '4'
+        main_data.NFs['10'].AlqIssSN_IP = getNumComa(document.querySelector('#edtAliq').value)
+        main_data.NFs['10'].Versao = '2.00'
+
+        main_data.NFs['20'].TipoNFS = 'RPS'
+        main_data.NFs['20'].NumRps = (parseInt(document.querySelector('#edtNfsNum').value)-parseInt(document.querySelector('#edtRps').value)).toString().padStart(9,'0')
+        main_data.NFs['20'].SerRps = '001'
+        main_data.NFs['20'].DtEmi = now.getFormatBR()
+        main_data.NFs['20'].RetFonte = retido
+        main_data.NFs['20'].CodSrv = '14.01'
+        main_data.NFs['20'].DiscrSrv = document.querySelector('#txtServicos').value.replaceAll('\n', '\\\\')
+        main_data.NFs['20'].VlNFS = getNumComa(document.querySelector('#edtValor').value)
+        main_data.NFs['20'].VlDed =  '0,00'
+        main_data.NFs['20'].DiscrDed = document.querySelector('#txtInfo').value.replaceAll('\n', '\\\\') + fatura
+        main_data.NFs['20'].VlBasCalc = getNumComa(document.querySelector('#edtValor').value)
+        main_data.NFs['20'].AlqIss = getNumComa(document.querySelector('#edtAliq').value)
         main_data.NFs['20'].VlIss = retido=='SIM' ? '0,00' : iss
         main_data.NFs['20'].VlIssRet = retido=='SIM' ? iss : '0,00' 
+
+        main_data.NFs['20'].TipoLogLocPre = local=='TOM' ? 'R.' : ''
+        main_data.NFs['20'].LogLocPre = local=='TOM' ? cliente.querySelector('#xLgr').value : ''
+        main_data.NFs['20'].NumEndLocPre = local=='TOM' ? cliente.querySelector('#nro').value : ''
+        main_data.NFs['20'].ComplEndLocPre = local=='TOM' ? cliente.querySelector('#cpl').value : ''
+        main_data.NFs['20'].BairroLocPre = local=='TOM' ? cliente.querySelector('#bairro').value : ''
+        main_data.NFs['20'].MunLocPre = local=='TOM' ? cliente.querySelector('#xMun').value : ''
+        main_data.NFs['20'].SiglaUFLocPre = local=='TOM' ? cliente.querySelector('#UF').value : ''
+        main_data.NFs['20'].CepLocPre = local=='TOM' ? getNum(cliente.querySelector('#CEP').value) : ''
+        main_data.NFs['20'].EMail_1 = emitente.querySelector('#email').value.trim().toLowerCase()
+        main_data.NFs['20'].EMail_2 = cliente.querySelector('#email').value.trim().toLowerCase()
+        main_data.NFs['20'].EMail_3 = ''
 
         main_data.NFs['90'].QtdRegNormal = '00001'
         main_data.NFs['90'].ValorNFS = getNumComa(document.querySelector('#edtValor').value)
@@ -250,21 +269,11 @@
         main_data.NFs['90'].QtdReg30 = '0'
         main_data.NFs['90'].ValTrib = '0,00'
 
-        const parc = document.querySelector('#edtDias').value.split('/')
-        const total = parseFloat(document.querySelector('#edtValor').value)        
-        let fatura = ''
-        let pg = 0
-        for(let i=0; i< parc.length; i++){
-            now = new Date
-            now.change(parseInt(parc[i]))
-            fatura += `\\\\Pgto ${(i+1).toString().padStart(2,"0")}/${(parc.length).toString().padStart(2,"0")} Venc.${now.getFormatBR()} Valor R$${i != (parc.length-1) ? (total/parc.length).toFixed(2) : (total-pg).toFixed(2)}`
-            pg += (total/parc.length)
-        }
-        fatura += '\\\\**Tributado pelo ANEXO III Simples Nacional Conforme LC 123/200'
-        main_data.NFs['20'].DiscrDed = document.querySelector('#txtInfo').value.replaceAll('\n', '\\\\') + fatura
-
+        main_data.NFs['CONF'].numNFS = document.querySelector('#edtNfsNum').value.trim().padStart(9,'0')
+        main_data.NFs['CONF'].DtHrGerNf = now.getFullDate()
 
         NFeConf(main_data.NFs,'NFs.json')
+        console.log(main_data.NFs)
     }
 
     function uploadNFs(txt, filename){
@@ -295,21 +304,21 @@
         NFeConf('','NFs.json').then((txt)=>{
             main_data.NFs = JSON.parse(txt)
             const emitente = document.querySelector('#emitente')
-            emitente.querySelector('#xNome').value = main_data.NFs['20'].RazSocPre
-            emitente.querySelector('#CNPJ').value = getCNPJ(main_data.NFs['20'].CpfCnpjPre)
-            emitente.querySelector('#xLgr').value = main_data.NFs['20'].LogPre
-            emitente.querySelector('#nro').value = main_data.NFs['20'].NumEndPre
-            emitente.querySelector('#bairro').value = main_data.NFs['20'].BairroPre
-            emitente.querySelector('#cpl').value = main_data.NFs['20'].ComplEndPre
-            emitente.querySelector('#xMun').value = main_data.NFs['20'].MunPre
-            emitente.querySelector('#UF').value = main_data.NFs['20'].SiglaUFPre
-            emitente.querySelector('#CEP').value = getCEP(main_data.NFs['20'].CepPre)
-            emitente.querySelector('#email').value = main_data.NFs['20'].EmailPre.toLowerCase()
+            emitente.querySelector('#xNome').value = main_data.NFs.CONF.RazSocPre
+            emitente.querySelector('#CNPJ').value = getCNPJ(main_data.NFs.CONF.CpfCnpjPre)
+            emitente.querySelector('#xLgr').value = main_data.NFs.CONF.LogPre
+            emitente.querySelector('#nro').value = main_data.NFs.CONF.NumEndPre
+            emitente.querySelector('#bairro').value = main_data.NFs.CONF.BairroPre
+            emitente.querySelector('#cpl').value = main_data.NFs.CONF.ComplEndPre
+            emitente.querySelector('#xMun').value = main_data.NFs.CONF.MunPre
+            emitente.querySelector('#UF').value = main_data.NFs.CONF.SiglaUFPre
+            emitente.querySelector('#CEP').value = getCEP(main_data.NFs.CONF.CepPre)
+            emitente.querySelector('#email').value = main_data.NFs['20'].EMail_1.toLowerCase()
 
             const fatura = document.querySelector('#fatura')
-            fatura.querySelector('#edtNfsNum').value = parseInt(main_data.NFs['20'].NumNf)+1
+            fatura.querySelector('#edtNfsNum').value = parseInt(main_data.NFs.CONF.numNFS)+1
             fatura.querySelector('#edtRps').value = main_data.NFs.CONF.DefRPS
-            fatura.querySelector('#edtAliq').value = (main_data.NFs['20'].AlqIssSN)
+            fatura.querySelector('#edtAliq').value = (main_data.NFs['10'].AlqIssSN_IP)
             document.querySelector('#edtAliq').onkeyup()
         })
     }
@@ -318,33 +327,32 @@
 
         saveFiscal()
         const txt = getTXT()
-        const filename = 'NFs-'+main_data.NFs['20'].NumNf
+        const filename = 'NFs-'+main_data.NFs['CONF'].numNFS
         uploadNFs(txt, filename)
 
     })
 
     document.querySelector('#btnSaveEmit').addEventListener('click',()=>{
         const emitente = document.querySelector('#emitente')
-        main_data.NFs['20'].RazSocPre = emitente.querySelector('#xNome').value.trim().toUpperCase()
-        main_data.NFs['20'].TipoCpfCnpjPre = '2'
-        main_data.NFs['20'].CpfCnpjPre = getNum(emitente.querySelector('#CNPJ').value)
-        main_data.NFs['10'].CpfCnpj = getNum(emitente.querySelector('#CNPJ').value)
-        main_data.NFs['20'].LogPre = emitente.querySelector('#xLgr').value.trim().toUpperCase()
-        main_data.NFs['20'].NumEndPre = emitente.querySelector('#nro').value.trim().toUpperCase()
-        main_data.NFs['20'].ComplEndPre = emitente.querySelector('#cpl').value.trim().toUpperCase()
-        main_data.NFs['20'].BairroPre = emitente.querySelector('#bairro').value.trim().toUpperCase()
-        main_data.NFs['20'].MunPre = emitente.querySelector('#xMun').value.trim().toUpperCase()
-        main_data.NFs['20'].SiglaUFPre = emitente.querySelector('#UF').value.trim().toUpperCase()
-        main_data.NFs['20'].CepPre = getNum(emitente.querySelector('#CEP').value)
-        main_data.NFs['20'].EmailPre = emitente.querySelector('#email').value.trim().toLowerCase()
+        main_data.NFs.CONF.RazSocPre = emitente.querySelector('#xNome').value.trim().toUpperCase()
+        main_data.NFs.CONF.TipoCpfCnpjPre = '2'
+        main_data.NFs.CONF.CpfCnpjPre = getNum(emitente.querySelector('#CNPJ').value)
+        main_data.NFs.CONF.LogPre = emitente.querySelector('#xLgr').value.trim().toUpperCase()
+        main_data.NFs.CONF.NumEndPre = emitente.querySelector('#nro').value.trim().toUpperCase()
+        main_data.NFs.CONF.ComplEndPre = emitente.querySelector('#cpl').value.trim().toUpperCase()
+        main_data.NFs.CONF.BairroPre = emitente.querySelector('#bairro').value.trim().toUpperCase()
+        main_data.NFs.CONF.MunPre = emitente.querySelector('#xMun').value.trim().toUpperCase()
+        main_data.NFs.CONF.SiglaUFPre = emitente.querySelector('#UF').value.trim().toUpperCase()
+        main_data.NFs.CONF.CepPre = getNum(emitente.querySelector('#CEP').value)
+        main_data.NFs['20'].EMail_1 = emitente.querySelector('#email').value.trim().toLowerCase()
         NFeConf(main_data.NFs,'NFs.json')
     })
 
     document.querySelector('#btnSaveCli').addEventListener('click',()=>{
         const cliente = document.querySelector('#cliente')
         main_data.NFs['20'].RazSocTom = cliente.querySelector('#xNome').value.trim().toUpperCase()
-        main_data.NFs['20'].TipoCpfCnpjTom = '2'
         main_data.NFs['20'].CpfCnpjTom = getNum(cliente.querySelector('#CNPJ').value)
+        main_data.NFs['20'].TipoLogtom = ''
         main_data.NFs['20'].LogTom = cliente.querySelector('#xLgr').value.trim().toUpperCase()
         main_data.NFs['20'].NumEndTom = cliente.querySelector('#nro').value.trim().toUpperCase()
         main_data.NFs['20'].ComplEndTom = cliente.querySelector('#cpl').value.trim().toUpperCase()
@@ -352,7 +360,8 @@
         main_data.NFs['20'].MunTom = cliente.querySelector('#xMun').value.trim().toUpperCase()
         main_data.NFs['20'].SiglaUFTom = cliente.querySelector('#UF').value.trim().toUpperCase()
         main_data.NFs['20'].CepTom = getNum(cliente.querySelector('#CEP').value)
-        main_data.NFs['20'].EMailTom = cliente.querySelector('#email').value.trim().toLowerCase()
+        main_data.NFs['20'].Telefone = ''
+        main_data.NFs['20'].EMail_2 = cliente.querySelector('#email').value.trim().toLowerCase()
         NFeConf(main_data.NFs,'NFs.json')
     })
 
@@ -437,7 +446,7 @@
                 document.querySelector('#edtValor').value =  (parseFloat(document.querySelector('#edtValor').value)+parseFloat(data.valor)).toFixed(2)
 
             }
-            document.querySelector('#tab-cliente').click()
+//            document.querySelector('#tab-cliente').click()
         }
 
 
