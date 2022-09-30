@@ -214,14 +214,23 @@
         const iss = getNumComa(parseFloat(document.querySelector('#edtValor').value)*(parseFloat(document.querySelector('#edtAliq').value)/100))
 
         const parc = document.querySelector('#edtDias').value.split('/')
-        const total = parseFloat(document.querySelector('#edtValor').value)        
+        const total = parseFloat(document.querySelector('#edtValor').value)
+        main_data.NFs.fatura = []
         let fatura = ''
         let pg = 0
         let now = new Date
         for(let i=0; i< parc.length; i++){
-            now = new Date
+            now = new Date            
             now.change(parseInt(parc[i]))
-            fatura += `\\\\Pgto ${(i+1).toString().padStart(2,"0")}/${(parc.length).toString().padStart(2,"0")} Venc.${now.getFormatBR()} Valor R$${i != (parc.length-1) ? (total/parc.length).toFixed(2) : (total-pg).toFixed(2)}`
+            const pgto = new Object            
+                pgto.sac = main_data.NFs['20'].RazSocTom.split(' ')[0]
+                pgto.nf = document.querySelector('#edtNfsNum').value.trim()
+                pgto.ref =  (i+1).toString().padStart(2,"0") / (parc.length).toString().padStart(2,"0")
+                pgto.venc = now.getFormatDate()
+                pgto.val = i != (parc.length-1) ? (total/parc.length).toFixed(2) : (total-pg).toFixed(2)
+            main_data.NFs.fatura.push(pgto)
+
+            fatura += `\\\\Pgto ${pgto.ref} Venc.${now.getFormatBR()} Valor R$${pgto.val}`
             pg += (total/parc.length)
         }
         fatura += '\\\\**Tributado pelo ANEXO III Simples Nacional Conforme LC 123/2006'
@@ -249,7 +258,7 @@
         main_data.NFs['20'].VlIss = retido=='SIM' ? '0,00' : iss
         main_data.NFs['20'].VlIssRet = retido=='SIM' ? iss : '0,00' 
 
-        main_data.NFs['20'].TipoLogLocPre = local=='TOM' ? 'R.' : ''
+        main_data.NFs['20'].TipoLogLocPre = local=='TOM' ? '.' : ''
         main_data.NFs['20'].LogLocPre = local=='TOM' ? cliente.querySelector('#xLgr').value : ''
         main_data.NFs['20'].NumEndLocPre = local=='TOM' ? cliente.querySelector('#nro').value : ''
         main_data.NFs['20'].ComplEndLocPre = local=='TOM' ? cliente.querySelector('#cpl').value : ''
@@ -294,11 +303,35 @@
                 alert('NFs exportada com sucesso!')
                 listNF('NFs/txt')
                 listNF('NFs/xml','xml')
+                if (confirm(`Deseja lançar od boletos?`)) {
+                    for(let i=0; i<main_data.NFs.fatura.length; i++){
+                        addBoleto(main_data.NFs.fatura[i])
+                    }
+                }
                 document.querySelector('#tab-export').click()
             })          
 
         })
     }
+
+    function addBoleto(obj){
+
+        const lanc = new Date
+        const params = new Object;
+                params.id = 'DEFAULT'
+                params.tipo = 'ENTRADA'
+                params.data_ini = lanc.getFormatDate() 
+                params.data_pg = obj.venc
+                params.preco = obj.val
+                params.ref = `NFs-${obj.nf} ${obj.ref}`
+                params.resp = 'SISTEMA'
+                params.emp = obj.sac
+                params.origem = 'SAN'
+                params.pgto = 'BOL'
+
+            const myPromisse = queryDB(params,21);
+    }
+
 
     function importData(){
         NFeConf('','NFs.json').then((txt)=>{
