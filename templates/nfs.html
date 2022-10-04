@@ -225,7 +225,7 @@
             const pgto = new Object            
                 pgto.sac = main_data.NFs['20'].RazSocTom.split(' ')[0]
                 pgto.nf = document.querySelector('#edtNfsNum').value.trim()
-                pgto.ref =  (i+1).toString().padStart(2,"0") / (parc.length).toString().padStart(2,"0")
+                pgto.ref =  (i+1).toString().padStart(2,"0") +'/'+ (parc.length).toString().padStart(2,"0")
                 pgto.venc = now.getFormatDate()
                 pgto.val = i != (parc.length-1) ? (total/parc.length).toFixed(2) : (total-pg).toFixed(2)
             main_data.NFs.fatura.push(pgto)

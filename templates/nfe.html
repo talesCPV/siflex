@@ -532,6 +532,17 @@
                 alert('NFe exportada com sucesso!!')
                 listNF('NFe/txt')
                 listNF('NFe/xml','xml')
+                if (confirm(`Deseja lançar od boletos?`)) {
+                    for(let i=0; i<main_data.NFe.Y07.length; i++){
+                        const pgto = new Object            
+                        pgto.sac = main_data.NFe.E.xNome.split(' ')[0]
+                        pgto.nf = main_data.NFe.B.nNF
+                        pgto.ref =  (i+1).toString().padStart(2,"0") +'/'+ (main_data.NFe.Y07.length).toString().padStart(2,"0")
+                        pgto.venc = main_data.NFe.Y07[i].Y07.date
+                        pgto.val = main_data.NFe.Y07[i].Y07.valor
+                        addBoleto(pgto)
+                    }
+                }
                 document.querySelector('#tab-export').click()
             })            
         })
@@ -671,6 +682,22 @@
         main_data.NFe.Z.infCpl = document.querySelector('#txaTextoCompl').value
     
         NFeConf(main_data.NFe)
+    }
+
+    function addBoleto(obj){
+    const lanc = new Date
+    const params = new Object;
+            params.id = 'DEFAULT'
+            params.tipo = 'ENTRADA'
+            params.data_ini = lanc.getFormatDate() 
+            params.data_pg = obj.venc
+            params.preco = obj.val
+            params.ref = `NFe-${obj.nf} ${obj.ref}`
+            params.resp = 'SISTEMA'
+            params.emp = obj.sac
+            params.origem = 'SAN'
+            params.pgto = 'BOL'
+        const myPromisse = queryDB(params,21);
     }
 
     function getTXT(){
