@@ -14,10 +14,7 @@
 </template>
 <script>
 
-    document.querySelector('#up_file').accept =  main_data.uploadFile.data.ext
-
     function uploadFile(fileID,path,filename){
-
         const up_data = new FormData();        
             up_data.append("up_file",  document.getElementById(fileID).files[0]);
             up_data.append("path", path);
@@ -42,8 +39,8 @@
         return myPromisse
     }
 
-
-
+    document.querySelector('#up_file').accept =  main_data.uploadFile.data.ext
+    
     document.querySelector('#btnUpload').addEventListener('click',()=>{
         const upload = uploadFile('up_file',main_data.uploadFile.data.path,main_data.uploadFile.data.filename)
 
@@ -56,11 +53,17 @@
                     const myPromisse = queryDB(main_data.uploadFile.data.params,main_data.uploadFile.data.query);
                     myPromisse.then((resolve)=>{
                         document.querySelector('#btnBusca').click()
+                        data.path = '../../nf/servico/'
+                        listNF('../../nf/servico','pdf')
+
                         closeModal('uploadFile')
                     })
                 }
             }
         })
     })
+
+
+
 
 </script>

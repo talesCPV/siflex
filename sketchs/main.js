@@ -598,9 +598,9 @@ function listNF(folder,ext='txt'){
     });        
     myPromisse.then((txt)=>{
         const list = JSON.parse(txt)
-        const sel = ext=='txt' ? document.querySelector('#txtFiles') : document.querySelector('#xmlFiles')
+        const sel = document.querySelector(`#${ext}Files`)
         sel.innerHTML=''
-        for(let i=2; i<list.length; i++){
+        for(let i=list.length-1; i>1;  i--){
             sel.innerHTML += `<option value="${list[i]}">${list[i]}</option>`
         }
     })

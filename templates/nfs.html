@@ -168,9 +168,10 @@
                     <legend>TXT</legend>
                     <select id="txtFiles" size="20"></select>
                 </fieldset>
+                <button id="btnUpPDF">UPLOAD PDF</button>
                 <fieldset>
-                    <legend>XML</legend>
-                    <select id="xmlFiles" size="20"></select>
+                    <legend>PDF</legend>
+                    <select id="pdfFiles" size="20"></select>
                 </fieldset>                
             </div>                
         </div>
@@ -184,7 +185,7 @@
 
     importData()
     listNF('NFs/txt')
-    listNF('NFs/xml','xml')
+    listNF('../../nf/servico','pdf')
 
     document.querySelector('#tab-emitente').click()
     document.querySelector('#edtIni').value = today.iniMonth()
@@ -302,7 +303,7 @@
             fetch(myRequest2).then(()=>{
                 alert('NFs exportada com sucesso!')
                 listNF('NFs/txt')
-                listNF('NFs/xml','xml')
+                listNF('../../nf/servico','pdf')
                 if (confirm(`Deseja lançar od boletos?`)) {
                     for(let i=0; i<main_data.NFs.fatura.length; i++){
                         addBoleto(main_data.NFs.fatura[i])
@@ -410,9 +411,9 @@
             delete link; 
     })
 
-    document.querySelector('#xmlFiles').addEventListener('dblclick',()=>{
-        const file = document.getElementById('xmlFiles').value
-        const path = 'assets/NFs/xml/' + file;
+    document.querySelector('#pdfFiles').addEventListener('dblclick',()=>{
+        const file = document.getElementById('pdfFiles').value
+        const path = '../../nf/servico/' + file;
         var link = document.createElement("a");
             link.download = file;
             link.href = path;
@@ -482,6 +483,18 @@
 //            document.querySelector('#tab-cliente').click()
         }
 
+
+
+    })
+
+    document.querySelector('#btnUpPDF').addEventListener('click',()=>{
+
+        const data = new Object
+        data.ext = '.pdf'
+        data.path = '../../nf/servico/'
+        data.filename = ''
+
+        openHTML('uploadFile.html','pop-up','Nota Fiscal de Serviço',data)
 
 
     })
