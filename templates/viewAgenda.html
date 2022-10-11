@@ -72,7 +72,7 @@
             
         const myPromisse = queryDB(params,38);
         myPromisse.then((resolve)=>{
-            main_data.viewAgenda.data != 'new' ?document.querySelector('#btnBusca').click() :0            
+            main_data.viewAgenda.data != 'new' ?document.querySelector('#edtBuscaAgd').click() :0            
             closeModal('viewAgenda')
         })
     })
@@ -85,7 +85,7 @@
 
             const myPromisse = queryDB(params,39);
             myPromisse.then((resolve)=>{
-                document.querySelector('#btnBusca').click()
+                document.querySelector('#edtBuscaAgd').click()
                 closeModal('viewAgenda')                
             })
         }

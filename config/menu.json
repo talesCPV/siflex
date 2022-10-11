@@ -29,7 +29,15 @@
 							"class"  : "",
 							"icone"  : "fa fa-archive",
 							"itens"  : []
-						}				
+						},
+						{
+							"modulo" : "Inventário",
+							"script" : "javascript:openHTML('inventario.html','pop-up','Inventário','new')",
+							"access" : [10,4],
+							"class"  : "",
+							"icone"  : "fa fa-archive",
+							"itens"  : []
+						}						
 					]
 				},
 				{

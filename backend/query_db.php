@@ -174,6 +174,8 @@
             UPDATE tipo="x02",ini_range="x03",fin_range="x04",valor="x05", acumulado="x06";',
          "69" => 'DELETE FROM tb_aliquota WHERE y00="x00" AND (SELECT U.class FROM tb_usuario AS U WHERE hash="x01") IN (10,4,1);',
          "70" => 'DELETE FROM tb_imposto WHERE y02="x02" AND (SELECT U.class FROM tb_usuario AS U WHERE hash="x01") IN (10,4,1);',
+         "71" => 'UPDATE tb_produto SET estoque = estoque+x01 WHERE cod = x00;',
+
             
       );
 
