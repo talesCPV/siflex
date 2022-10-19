@@ -6,6 +6,10 @@
             width: 98%;
         }
 
+        #btnAddAll{
+            display: none;
+        }
+
     </style>
 
     <div class="form-base">
@@ -84,7 +88,7 @@
                 </fieldset>
 
                 <table id="tblServExec"></table>
-
+                <button id="btnAddAll">Adicionar Todos</button>
 
             </div>
             <div id="cliente" class="tab">
@@ -333,6 +337,20 @@
             const myPromisse = queryDB(params,21);
     }
 
+    function addCliente(obj){
+        const cliente = document.querySelector('#cliente')
+        cliente.querySelector('#xNome').value = obj.razao_social.trim().toUpperCase()
+        cliente.querySelector('#CNPJ').value = getCNPJ(obj.cnpj)
+        cliente.querySelector('#xLgr').value = obj.endereco.trim().toUpperCase()
+        cliente.querySelector('#nro').value = obj.num.trim().toUpperCase()
+        cliente.querySelector('#bairro').value = obj.bairro.trim().toUpperCase()
+        cliente.querySelector('#cpl').value = ''
+        cliente.querySelector('#xMun').value = obj.cidade.trim().toUpperCase()
+        cliente.querySelector('#UF').value = obj.estado.trim().toUpperCase()
+        cliente.querySelector('#CEP').value = getCEP(obj.cep)
+        cliente.querySelector('#email').value = ''
+        document.querySelector('#btnSaveCli').click()
+    }
 
     function importData(){
         NFeConf('','NFs.json').then((txt)=>{
@@ -444,7 +462,8 @@
 
         myPromisse.then((resolve)=>{
             if(resolve.trim() != ""){
-                const json = JSON.parse(resolve);                
+                const json = JSON.parse(resolve);
+                document.querySelector('#btnAddAll').style.display = json.length > 0 ? 'block' : 'none'
                 tbl.head('Cod.|mobHide,Cliente,Carro,Data|mobHide,NF|mobHide,Valor R$|mobHide')                                             
                 for(let i=0; i<json.length;i++){
                     tbl.plot(json[i],'id|mobHide,fantasia,num_carro,data_exec,nf|mobHide,valor|mobHide','int,Upp,str,date,str,R$.')
@@ -458,33 +477,16 @@
         data.mode = 'edit'
 
         if (confirm(`Carregar Carro.${data.num_carro} de ${data.fantasia.toUpperCase()}?`)) {
-            const cliente = document.querySelector('#cliente')
-            cliente.querySelector('#xNome').value = data.razao_social.trim().toUpperCase()
-            cliente.querySelector('#CNPJ').value = getCNPJ(data.cnpj)
-            cliente.querySelector('#xLgr').value = data.endereco.trim().toUpperCase()
-            cliente.querySelector('#nro').value = data.num.trim().toUpperCase()
-            cliente.querySelector('#bairro').value = data.bairro.trim().toUpperCase()
-            cliente.querySelector('#cpl').value = ''
-            cliente.querySelector('#xMun').value = data.cidade.trim().toUpperCase()
-            cliente.querySelector('#UF').value = data.estado.trim().toUpperCase()
-            cliente.querySelector('#CEP').value = getCEP(data.cep)
-            cliente.querySelector('#email').value = ''
-            document.querySelector('#btnSaveCli').click()
             const serv = document.querySelector('#txtServicos')
             if(serv.innerHTML.trim() == ''){
+                addCliente(data)          
                 serv.innerHTML = `CARRO:${data.num_carro}\n` + data.obs +'\n'
                 document.querySelector('#edtValor').value = data.valor
-
             }else if (confirm(`Adicionar o carro ${data.num_carro} a NFs atual?`)){
                 serv.innerHTML += `\nCARRO:${data.num_carro}\n` + data.obs +'\n'
                 document.querySelector('#edtValor').value =  (parseFloat(document.querySelector('#edtValor').value)+parseFloat(data.valor)).toFixed(2)
-
             }
-//            document.querySelector('#tab-cliente').click()
         }
-
-
-
     })
 
     document.querySelector('#btnUpPDF').addEventListener('click',()=>{
@@ -496,6 +498,29 @@
 
         openHTML('uploadFile.html','pop-up','Nota Fiscal de Serviço',data)
 
+
+    })
+
+    document.querySelector('#btnAddAll').addEventListener('click',()=>{        
+        if (confirm('Deseja adicionar todos os ítens acima?')) {
+            const rows = document.querySelector('#tblServExec').querySelectorAll('tr')
+            const serv = document.querySelector('#txtServicos')
+            const info = document.querySelector('#txtInfo')
+            let pedidos = ['']
+            document.querySelector('#edtValor').value = '0'
+            serv.innerHTML = ''
+
+            info.innerHTML = rows.length > 2 ? 'Serviço aprovado conforme Pedidos:' : 'Serviço aprovado conforme Pedido:'
+            console.log(rows[0].data)
+            addCliente(rows[1].data)
+            for(let i=1; i<rows.length; i++){
+                console.log(rows[i].data)
+                serv.innerHTML += `\nCARRO:${rows[i].data.num_carro}\n` + rows[i].data.obs +'\n'
+                document.querySelector('#edtValor').value =  (parseFloat(document.querySelector('#edtValor').value)+parseFloat(rows[i].data.valor)).toFixed(2)
+                info.innerHTML += pedidos.includes(rows[i].data.pedido.trim()) ? '' : rows[i].data.pedido.trim()+' '
+                pedidos.push(rows[i].data.pedido.trim())
+            }
+        }
 
     })
 
