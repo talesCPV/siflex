@@ -140,7 +140,7 @@
 					"class"  : "",
 					"access" : [10,4,3,1],
 					"itens"  : []
-				},				
+				},	
 				{
 					"modulo" : "Financeiro",
 					"script" : "#",
@@ -288,7 +288,15 @@
 					"class"  : "",
 					"icone"  : "fa fa-archive",
 					"itens"  : []
-				}				
+				},
+				{
+					"modulo" : "MDFe",
+					"script" : "javascript:openHTML('mdfe.html','content-screen')",
+					"icone"  : "fa fa-home",
+					"class"  : "",
+					"access" : [10],
+					"itens"  : []
+				}
 			]
 		},			
 		{

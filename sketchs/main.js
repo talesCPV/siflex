@@ -96,7 +96,6 @@ Date.prototype.getFullDateTime = function(){
     return `${this.getFormatDate()}T${this.getFullHour()}-03:00`
 }
 
-
 Date.prototype.getWeekDay = function(){
     const dia = ['Dom','Seg','Ter','Qua','Qui','Sex','Sab']
     return dia[this.getDay()]
