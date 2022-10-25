@@ -1,4 +1,1 @@
-{
-    "emit":{"xNome":"FLEXIBUS SANFONADOS LTDA","xFant":"","IE":"","IM":"","CNPJ":"","CNAE":"","CRT":"1","xLgr":"","nro":"","bairro":"","cpl":"","xMun":"","cMun":"","UF":"","xPais":"","cPais":"","CEP":"12283020","fone":"","IEST":""},
-    "cli" : {"xNome":"Teste","IE":"123","IM":"456","CNPJ":"","CNAE":"","CRT":"1","xLgr":"","nro":"","bairro":"","cpl":"","xMun":"","cMun":"","UF":"","xPais":"","cPais":"","CEP":"12283020","fone":"","IEST":""}
-}
+{"emit":{"xNome":"FLEXIBUS SANFONADOS LTDA","xFant":"","IE":"","IM":"","CNPJ":"","CNAE":"","CRT":"1","xLgr":"","nro":"","bairro":"","cpl":"","xMun":"","cMun":"","UF":"","xPais":"","cPais":"","CEP":"12283020","fone":"","IEST":""},"cli":{"xNome":"TESTE","IE":"123","IM":"456","CNPJ":"123456789456123","CNAE":"","CRT":"1","xLgr":"","nro":"","bairro":"","cpl":"","xMun":"","cMun":"","UF":"","xPais":"","cPais":"","CEP":"12283020","fone":"","IEST":"","email":""}}
