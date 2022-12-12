@@ -136,6 +136,7 @@
     document.querySelector('#btnAdd').addEventListener('click',()=>{
         
         main_data.viewComp.data.addItem = function(data){
+            console.log(data)
             if(data.qtd > 0){
                 const params = new Object;
                     params.id = 'DEFAULT' 
@@ -195,6 +196,7 @@
     document.querySelector('#tblItens').addEventListener('click',(e)=>{
         if(main_data.viewComp.data.status == 'ABERTO'){
             const data = e.target.parentNode.data
+            console.log(data)
             data.mode = 'edit'
             data.edt = function(data){
                 const params = new Object;
@@ -246,6 +248,8 @@
 
     document.querySelector('#btnPed').addEventListener('click',()=>{
         main_data.viewComp.data.label = 'PEDIDO DE COMPRA - ' + main_data.viewComp.data.nf.toUpperCase()
+        console.log(main_data.viewComp.data)
+        alert()
         print_pedcomp()
     })
 

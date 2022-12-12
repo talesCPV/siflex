@@ -471,7 +471,7 @@ function openMenu(){
                 const lbl = document.createElement('label')
                 lbl.htmlFor = `drop-${drop}`
                 lbl.classList = 'toggle'
-                lbl.innerHTML = obj[i].modulo + ' +'                  
+                lbl.innerHTML = obj[i].modulo + ' ▸'                  
                 li.appendChild(lbl)
 
                 li.appendChild(a)
@@ -605,4 +605,3 @@ function listNF(folder,ext='txt'){
         }
     })
 }
-

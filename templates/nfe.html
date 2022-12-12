@@ -201,6 +201,7 @@
 
                     <label>Processo de emissão da NF-e</label>
                     <select id="procEmi" >
+                        <option value="" selected></option>
                         <option value="0">emissão de NF-e com aplicativo do contribuinte</option>
                         <option value="1">emissão de NF-e avulsa pelo Fisco</option>
                         <option value="2">emissão de NF-e avulsa, pelo contribuinte com seu certificado digital, através do site do Fisco</option>
@@ -989,6 +990,7 @@
         const fiscal = document.querySelector('#fiscal')
         const emitente = document.querySelector('#emitente')
         const now = new Date(fiscal.querySelector('#dhEmi').value)
+        now.change(1)
         main_data.NFe.A.versao = '4.00'
         main_data.NFe.A.id = ''
         main_data.NFe.A.indSinc = ''
@@ -999,7 +1001,9 @@
         main_data.NFe.B.natOp = fiscal.querySelector('#natOp').value.trim().toUpperCase()
         main_data.NFe.B.mod = fiscal.querySelector('#mod').value.trim()
         main_data.NFe.B.serie = fiscal.querySelector('#serie').value
+        now.setHours(7)
         main_data.NFe.B.dhEmi = now.getFullDateTime()
+        now.setHours(16)
         main_data.NFe.B.dhSaiEnt = now.getFullDateTime()
         main_data.NFe.B.tpNF = fiscal.querySelector('#tpNF').value
         main_data.NFe.B.idDest = fiscal.querySelector('#idDest').value

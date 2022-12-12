@@ -14,7 +14,7 @@
             <option value="nome" signal="LIKE">Todos</option>
             <option value="id" signal="=">Código</option>
             <option value="nome" signal="LIKE">Razão Social</option>
-            <option value="fantasia" signal="LIKE" val="SERVICO" selected>Nome Fantasia</option>
+            <option value="fantasia" signal="LIKE" selected>Nome Fantasia</option>
         </select>
         <input type="text" id="edtAddEmp" onkeypress="return getEnter(event, 'btnAddEmp')">
         <button id="btnAddEmp">Busca</button>
@@ -35,7 +35,7 @@
         const sel = document.querySelector('#cmbAddProd')
         const field = sel.value
         const signal = sel.options[sel.selectedIndex].getAttribute('signal')        
-        let value = sel.selectedIndex == 0 ? '' : sel.options[sel.selectedIndex].hasAttribute('val') ? sel.options[sel.selectedIndex].getAttribute('val') : document.querySelector('#edtAddEmp').value.trim()
+        let value = sel.selectedIndex == 0 ? '' : document.querySelector('#edtAddEmp').value.trim()
         value = signal=='LIKE' ? `%${value}%` : value
 
         const tbl = document.getElementById('tblAddEmp')
@@ -63,10 +63,10 @@
 
     document.querySelector('#tblAddEmp').addEventListener('click',(e)=>{
         const data = e.target.parentNode.data
-            data.estoque = parseInt(data.estoque)
-            data.qtd = parseInt(prompt(`Digite a quantidade desejada | estq:${data.estoque}`))
-            data.qtd = data.qtd == NaN ? 0 : data.qtd
-            main_data.addProd.data.addItem(data)
+        if(confirm(`Carregar a empresa ${data.nome}?`)){
+            main_data.addEmp.data.addEmp(data)
+        }
+        
     })
 
 

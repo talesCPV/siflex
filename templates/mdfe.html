@@ -14,12 +14,9 @@
         margin-left: 20px;
     }
 
-
     button{
         width: 98%;
     }
-
-
 
     </style>
   
@@ -112,14 +109,6 @@
                     <input type="text" id="xNome" maxlength="60"/>
                 </div>
                 <div class="inline">
-                    <label> ICMS</label>
-                    <select id="indIEDest">
-                        <option value="1">Contribuinte ICMS (informar a IE do destinatário)</option>
-                        <option value="2">Contribuinte isento de Inscrição no cadastro de Contribuintes do ICMS (Não possui IE)</option>
-                        <option value="9">Não Contribuinte, que pode ou não possuir Inscrição Estadual no Cadastro de Contribuintes do ICMS</option>
-                    </select>
-                </div>
-                <div class="inline">
                     <label> Insc. Estadual </label>
                     <input type="text" id="IE" maxlength="15" onkeyup="valIE(this)"/>
                     <input type="hidden" id="ISUF">
@@ -170,16 +159,12 @@
                 <button id="btnSaveCli">Salvar</button>
             </div>        
             <div id="gerar" class="tab">
-    <!--                <h2>Itens</h2>-->
+
                 
                 <table id="tblItens"></table>
 
-    <!--                    <button id="btnTeste">Teste*</button> -->
-
-
             </div>            
             <div id="export" class="tab">
-    <!--                <h2>Arquivos TXT</h2>-->
 
                     <fieldset>
                         <legend>XML</legend>
@@ -201,44 +186,6 @@
 //    document.querySelector('#edtFin').value =  today.finMonth()
 
 /* FUNÇÔES */    
-
-    document.querySelector('#btnAssina').addEventListener('click',()=>{
-
-        let filename = document.querySelector('#xmlFiles').value.split('/')
-        filename = filename[filename.length-1].split('.')[0]      
-        
-        
-        
-        console.log()
-
-        if(filename.substring(11,15) == ''){
-            const data = new URLSearchParams();        
-                data.append("filename",filename);
-            const myRequest = new Request("backend/signNFe.php",{
-                method : "POST",
-                body : data
-            });
-            const myPromisse = new Promise((resolve,reject) =>{
-
-                fetch(myRequest)
-                .then(function (response){
-                    if (response.status === 200) { 
-                        resolve(response.text());             
-                    } else { 
-                        reject(new Error("Houve algum erro na comunicação com o servidor"));                    
-                    } 
-                })
-                .then(function (response){
-                    listNF('NFe/xml','xml')
-                })
-            })            
-        }else{
-            alert('XML já foi assinado!')
-        }
-
-
-
-    })
 
     function importData(){
         NFeConf('','MDFe.json').then((txt)=>{
@@ -280,56 +227,9 @@
             cliente.querySelector('#cPais').value = main_data.MDFe.cli.cPais
             cliente.querySelector('#CEP').value = getCEP(main_data.MDFe.cli.CEP)
             cliente.querySelector('#fone').value = getFone(main_data.MDFe.cli.fone)
-            
+            document.querySelector('#btnBuscaIBGE').click()
         })
 
-    }
-
-    function somaNFeItens(){
-        let tot = 0
-        const tbl = document.querySelector('#tblItens').rows
-        for(let i=1; i<tbl.length; i++){
-            let val = parseFloat(tbl[i].cells[4].innerHTML) 
-            val = val == NaN ? 0 : val
-            tot += val
-        }
-        document.querySelector('#edtValorNF').value = tot.toFixed(2)
-        document.querySelector('#txaTextoCompl').value = `DOC. EMITIDO POR ME OU EPP OPTANTE S.NACIONAL, NÃO GERA DIREITO A CREDITO FISCAL DE ISSQN E IPI, PERMITE O APROVEITAMENTO DE CREDITO DO ICMS NO VALOR DE  R$${(tot*0.0282).toFixed(2)} CORRESPONDENTE A ALIQUOTA DE 2,82% NOS TERMOS DO ARTIGO 23 DA LC 123. Aprovado conforme pedido(s) ${document.querySelector('#hdnPed').value}`
-    }
-
-    function uploadNFe(txt, filename){
-        const data = new URLSearchParams();        
-            data.append("txt",txt);
-            data.append("filename",filename);
-            data.append("folder",'NFe/txt');
-
-        const myRequest = new Request("backend/nfe_SAVE.php",{
-            method : "POST",
-            body : data
-        });
-        fetch(myRequest).then(()=>{
-            const myRequest2 = new Request("backend/nfe_TXT2XML.php",{
-                method : "POST",
-                body : data
-            })
-            fetch(myRequest2).then(()=>{
-                alert('NFe exportada com sucesso!!')
-                listNF('NFe/txt')
-                listNF('NFe/xml','xml')
-                if (confirm(`Deseja lançar od boletos?`)) {
-                    for(let i=0; i<main_data.NFe.Y07.length; i++){
-                        const pgto = new Object            
-                        pgto.sac = main_data.NFe.E.xNome.split(' ')[0]
-                        pgto.nf = main_data.NFe.B.nNF
-                        pgto.ref =  (i+1).toString().padStart(2,"0") +'/'+ (main_data.NFe.Y07.length).toString().padStart(2,"0")
-                        pgto.venc = main_data.NFe.Y07[i].Y07.date
-                        pgto.val = main_data.NFe.Y07[i].Y07.valor
-                        addBoleto(pgto)
-                    }
-                }
-                document.querySelector('#tab-export').click()
-            })            
-        })
     }
     
     function IBGE_cMun(C,E){
@@ -366,7 +266,7 @@
                             const json = JSON.parse(resolve);
                             for(let j=0; j<json.length; j++){
                                 if(json[j].nome.trim().toLowerCase() == C){
-                                    document.querySelector('#E05').querySelector('#cMun').value =  json[j].id;
+                                    document.querySelector('#cliente').querySelector('#cMun').value =  json[j].id;
                                     document.getElementById('btnSaveCli').click()
                                     break;
                                 }
@@ -387,7 +287,6 @@
         data = e.target.data
         data.mode = 'edtItens'
 
-        console.log(data)
 //        main_data.mdfe.row_item = e.target.parentNode
 //        openHTML('viewNFeItens.html','pop-up','Edição de Ítem de NFe',data)
 
@@ -451,24 +350,29 @@
     document.getElementById('btnAddCli').addEventListener('click',(event)=>{
         main_data.mdfe.data = new Object
         main_data.mdfe.data.addEmp = function(data){
-        console.log(data)
-/*            
-            const opt = document.createElement('option')
-                opt.setAttribute('cod',data.cod) 
-                opt.setAttribute('qtd',data.qtd) 
-                opt.setAttribute('id_prod',data.id) 
-                opt.data = data
-                opt.innerHTML =  `${Math.abs(data.qtd)} - ${data.descricao}` 
-
-            document.querySelector('#lbxItens').appendChild(opt)
-*/            
+            const cliente = document.querySelector('#cliente')
+            cliente.querySelector('#xNome').value = data.nome
+            cliente.querySelector('#IE').value = data.ie != null ? getIE(data.ie) : ''
+            cliente.querySelector('#IM').value = data.im != null ? data.im : ''
+            cliente.querySelector('#CNPJ').value = data.cnpj != null ? getCNPJ(data.cnpj) : ''
+            cliente.querySelector('#xLgr').value = data.endereco != null ? data.endereco : ''
+            cliente.querySelector('#nro').value = data.num != null ? data.num : ''
+            cliente.querySelector('#bairro').value = data.bairro != null ? data.bairro : ''
+            cliente.querySelector('#cpl').value = ''
+            cliente.querySelector('#xMun').value = data.cidade != null ? data.cidade : ''
+            cliente.querySelector('#cMun').value = ''
+            cliente.querySelector('#UF').value = data.estado != null ? data.estado : ''
+            cliente.querySelector('#xPais').value = 'BRASIL'
+            cliente.querySelector('#cPais').value = '1058'
+            cliente.querySelector('#CEP').value = data.cep != null ? getCEP(data.cep) : ''
+            cliente.querySelector('#fone').value = data.tel != null ? getFone(data.tel) : ''
+            document.getElementById('btnSaveCli').click()
             closeModal('addEmp')
         }
 
         openHTML('addEmp.html','pop-up','Selecione um Cliente',main_data.mdfe.data,[100,30])
     })
     
-
     document.getElementById('btnSaveCli').addEventListener('click',()=>{
         const cliente = document.querySelector('#cliente')
         main_data.MDFe.cli.xNome = cliente.querySelector('#xNome').value.trim().toUpperCase()
@@ -491,7 +395,7 @@
     })
 
     document.querySelector('#btnBuscaIBGE').addEventListener('click',()=>{
-        IBGE_cMun(document.querySelector('#E05').querySelector('#xMun').value,document.querySelector('#E05').querySelector('#UF').value)
+        IBGE_cMun(document.querySelector('#cliente').querySelector('#xMun').value,document.querySelector('#cliente').querySelector('#UF').value)
     })
 
 

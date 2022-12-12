@@ -12,7 +12,7 @@
         <label for="edtAddProd">por:</label>
         <select id="cmbAddProd">
             <option value="p.descricao" signal="LIKE">Todos</option>
-            <option value="p.cod" signal="=">Código</option>
+            <option value="p.cod" signal="=" selected>Código</option>
             <option value="e.nome" signal="LIKE">Fornecedor</option>
             <option value="p.tipo" signal="=" val="SERVICO">Serviços</option>
             <option value="p.tipo" signal="=" val="CONJ">Conjuntos</option>
@@ -35,6 +35,7 @@
 <script>
 
 //    const localData = getModalData('addProd')
+    document.querySelector('#edtAddProd').focus()
 
     document.querySelector('#btnAddProd').addEventListener('click',()=>{
 

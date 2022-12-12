@@ -33,7 +33,7 @@
             id_emp="x01", data_analise="x02", num_carro="x03", func="x04", local="x05", valor="x06", obs="x07", exec="x08";',
          "18" => 'SELECT A.*, E.fantasia, E.id AS id_emp, E.cnpj, E.endereco, E.num, E.cidade, E.estado 
             FROM tb_analise_frota as A INNER JOIN tb_empresa as E 
-            ON x00 x01 x02 AND A.id_emp = E.id AND A.data_analise >= "x03" AND A.data_analise <= "x04" ORDER BY A.data_analise DESC;',
+            ON x00 x01 x02 AND A.id_emp = E.id AND A.data_analise >= "x03" AND A.data_analise <= "x04" ORDER BY A.valor DESC, A.data_analise DESC;',
          "19" => 'DELETE FROM tb_analise_frota WHERE id="x00" AND (SELECT U.class FROM tb_usuario AS U WHERE hash="x01") IN (10,4);',
          "20" => 'SELECT * FROM tb_financeiro WHERE x00 x01 x02 AND data_pg >= "x03" AND data_pg <= "x04" ORDER BY data_pg DESC; ',
          "21" => 'INSERT INTO tb_financeiro (id, tipo, data_ini, data_pg, preco, ref, resp, emp, origem, pgto) 

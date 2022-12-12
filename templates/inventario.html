@@ -60,7 +60,11 @@ document.querySelector('#btnProc').addEventListener('click',()=>{
             params.cod = parseInt(opt[i].getAttribute('cod'))
             params.estoque = parseInt(opt[i].getAttribute('qtd'))
 
-            queryDB(params,71);
+            const ret = queryDB(params,71);
+            ret.then(()=>{
+                alert('Inventário lançado com sucesso.')
+                closeModal('inventario')
+            })
 
         }
 
