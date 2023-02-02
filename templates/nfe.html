@@ -1002,9 +1002,11 @@
         main_data.NFe.B.mod = fiscal.querySelector('#mod').value.trim()
         main_data.NFe.B.serie = fiscal.querySelector('#serie').value
         now.setHours(7)
-        main_data.NFe.B.dhEmi = now.getFullDateTime()
+//        main_data.NFe.B.dhEmi = now.getFullDateTime()
+        main_data.NFe.B.dhEmi = fiscal.querySelector('#dhEmi').value+'T:'+now.getFullHour()+'-03:00'
         now.setHours(16)
-        main_data.NFe.B.dhSaiEnt = now.getFullDateTime()
+//        main_data.NFe.B.dhSaiEnt = now.getFullDateTime()
+        main_data.NFe.B.dhSaiEnt = fiscal.querySelector('#dhSaiEnt').value+'T:'+now.getFullHour()+'-03:00'
         main_data.NFe.B.tpNF = fiscal.querySelector('#tpNF').value
         main_data.NFe.B.idDest = fiscal.querySelector('#idDest').value
         main_data.NFe.B.cMunFG = getNum(emitente.querySelector('#cMun').value)
