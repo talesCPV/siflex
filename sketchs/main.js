@@ -439,8 +439,9 @@ function openMenu(){
         fetch(myRequest)
         .then(function (response){
             if (response.status === 200) { 
-                document.querySelector('#usr-name').innerHTML = localStorage.getItem('username').toUpperCase()
-                resolve(response.text());                    
+                document.querySelector('#usr-name').innerHTML = '<span id="badge" class="badge"></span> '+localStorage.getItem('username').toUpperCase()
+                resolve(response.text()); 
+                checkMail()                   
             } else { 
                 reject(new Error("Houve algum erro na comunicação com o servidor"));                    
             } 
@@ -517,6 +518,21 @@ function fillCombo(combo, params, cod, fields, value=''){
         }
     })
 
+}
+
+function checkMail(){
+    const params = new Object;
+        params.id_user = localStorage.getItem('id')
+    const myPromisse = queryDB(params,72)
+    myPromisse.then((txt)=>{
+        const json = JSON.parse(txt)
+        let unread = 0
+        for(let i=0; i<json.length; i++){
+            unread += parseInt(json[i].nao_lida)
+        }     
+        document.querySelector('#badge').innerHTML = unread > 0 ? unread : '' 
+        document.querySelector('#badge_mobile').innerHTML = unread > 0 ? unread : ''                   
+    })
 }
 
 /* IMAGE */

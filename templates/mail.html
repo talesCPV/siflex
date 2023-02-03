@@ -1,0 +1,135 @@
+
+<template>
+    <style>
+
+        #cmbMail > option:hover{
+            background-color: crimson;
+            color: aliceblue;
+            cursor: pointer;
+        }
+
+    </style>
+  
+    <h1>Mensagens</h1>
+    <fieldset>
+        <legend>Recebidas</legend>
+        <select id="cmbMail" size="10"></select>
+        <div class="inline">
+            <button id="btnLer">Ler</button>
+            <button id="btnDel">Deletar</button>
+        </div>
+    </fieldset>          
+        
+    <fieldset>
+        <legend>Nova</legend>
+        <div class="inline">
+            <label for="cmbUser">Destinatário</label>
+            <select id="cmbUser"></select>
+        </div>
+        <textarea id="edtMail" cols="30" rows="10" maxlength="255"></textarea>
+        <button id="btnEnviar">Enviar</button>
+    </fieldset>
+
+</template>
+
+<script>
+
+    main_data.mail.fillUsers = ()=>{
+        const params = new Object;
+            params.id = localStorage.getItem('id')
+        fillCombo('cmbUser',params,75,['id','nome'], '#')
+    }
+
+    main_data.mail.fillMail = ()=>{
+        const params = new Object;
+            params.id_user = localStorage.getItem('id')
+        const myPromisse = queryDB(params,72)
+        myPromisse.then((txt)=>{
+            const json = JSON.parse(txt)
+            const sel = document.querySelector('#cmbMail')
+            sel.innerHTML = ''
+            let unread = 0
+            for(let i=0; i<json.length; i++){
+                const dt = new Date(json[i].data)
+                unread += parseInt(json[i].nao_lida)
+                const op = document.createElement('option')
+                op.value = json[i].id
+                op.innerHTML =`${dt.getFormatBR()} as ${dt.getFullHour()} (${json[i].remetente.substr(0,20).trim()}) -> ${json[i].txt.substr(0,40).trim()}`
+                op.style = json[i].nao_lida == '1' ? 'font-weight: 900;' : 'font-weight: 200;'
+                op.data = json[i]
+                sel.appendChild(op)
+            }     
+            document.querySelector('#badge').innerHTML = unread > 0 ? unread : ''            
+            console.log(json)
+        })
+    }
+
+    main_data.mail.fillUsers()
+    main_data.mail.fillMail()
+
+    document.querySelector('#btnEnviar').addEventListener('click',()=>{
+        const sel = document.querySelector('#cmbUser')
+        
+        if(sel.value != ''){
+            const params = new Object;
+                params.de = localStorage.getItem('id')
+                params.para = sel.value
+                params.txt = document.querySelector('#edtMail').value
+            const myPromisse = queryDB(params,73)
+            myPromisse.then(()=>{
+                alert('Mensagem enviada com sucesso')
+                closeModal('mail')
+            })
+
+        }else{
+            alert('Selecione um destinatário!')
+            sel.focus()
+        }
+
+    })
+
+    function readMail(){
+        const sel = document.querySelector('#cmbMail')
+        if(sel.value != ''){
+            const data = sel.options[sel.selectedIndex].data     
+            alert(data.txt)
+            const params = new Object;
+                params.id = data.id
+            const myPromisse = queryDB(params,74)
+            myPromisse.then(()=>{
+                checkMail()
+            })
+        }else{
+            alert('Nenhuma mensagem foi selecionada!')
+        }
+    }
+
+    document.querySelector('#cmbMail').addEventListener('dblclick',()=>{
+        readMail()
+    })
+
+    document.querySelector('#btnLer').addEventListener('click',()=>{
+        readMail()
+    })
+
+    document.querySelector('#btnDel').addEventListener('click',()=>{
+        const sel = document.querySelector('#cmbMail')
+        if(sel.value != ''){
+            if (confirm('Após deletada, essa mensagem não poderá ser recuperada, deseja prosseguir?')) {
+                const params = new Object;
+                    params.para = localStorage.getItem('id_user')
+                    params.id = sel.value
+                    params.signal = '='
+                const myPromisse = queryDB(params,76)
+                myPromisse.then(()=>{
+                    main_data.mail.fillMail()
+                })
+            }
+        }else{
+            alert('Nenhuma mensagem foi selecionada!')
+        }
+    })
+
+
+
+</script>

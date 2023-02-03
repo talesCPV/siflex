@@ -175,7 +175,16 @@
          "69" => 'DELETE FROM tb_aliquota WHERE y00="x00" AND (SELECT U.class FROM tb_usuario AS U WHERE hash="x01") IN (10,4,1);',
          "70" => 'DELETE FROM tb_imposto WHERE y02="x02" AND (SELECT U.class FROM tb_usuario AS U WHERE hash="x01") IN (10,4,1);',
          "71" => 'UPDATE tb_produto SET estoque = estoque+x01 WHERE cod = x00;',
-
+         "72" => 'SELECT MAIL.*, USER.nome AS remetente
+            FROM tb_mail AS MAIL 
+            INNER JOIN tb_usuario AS USER
+            ON MAIL.de=USER.id
+            AND MAIL.para=x00
+            ORDER BY MAIL.id DESC;',
+         "73" => 'INSERT INTO tb_mail (id, de, para, txt) VALUES(DEFAULT, x00, x01, "x02");',
+         "74" => 'UPDATE tb_mail  SET nao_lida=FALSE  WHERE id=x00;',
+         "75" => 'SELECT id, nome FROM tb_usuario WHERE id NOT IN (x00) ORDER BY nome;',
+         "76" => 'DELETE FROM tb_mail WHERE para=x00 AND y01 x02 x01;',
             
       );
 

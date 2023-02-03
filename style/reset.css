@@ -124,6 +124,21 @@
         font-size: large;
     }
 
+    /* BADGES */
+
+    .badge{
+        display: inline-block;
+        padding: 0;
+        border-radius: 50%;
+        background-color: rgb(201, 42, 42);
+        width: 30px;
+        height: 30px;
+    } 
+    .badge:empty{
+
+        background-color: rgba(0, 0, 0, 0);
+    }
+
 
     /* CLASSES */
 
@@ -222,6 +237,10 @@
         .control-size{
             flex-direction: column;
             width: 100% !important;
+        }
+
+        .badge{
+            padding-left: 10px;
         }
 
         .ckBOX{
