@@ -69,6 +69,10 @@
                 <label for="edtObs">Obs:</label>
                 <textarea id="edtObs" cols="30" rows="10"></textarea>
             </div>
+            <div class="inline">
+                <label for="edtRodape">Rodapé:</label>
+                <textarea id="edtRodape" cols="30" rows="3"></textarea>
+            </div>
 
             <div class="inline">            
                 <button id="btnRelat">Reltório</button>
@@ -134,6 +138,7 @@
         main_data.anafrota.data.desc = parseFloat(document.querySelector('#edtDesc').value)
         main_data.anafrota.data.cor = document.querySelector('#edtCor').value
         main_data.anafrota.data.objeto = document.querySelector('#edtObj').value
+        main_data.servexec.data.rodape = document.querySelector('#edtRodape').value
         main_data.anafrota.data.fontsize = parseFloat(document.querySelector('#edtFont').value)
         carrosRelat(document.getElementById('tblAnaFrota'),'AnaFrota' )
     })
@@ -143,6 +148,7 @@
         main_data.anafrota.data.desc = parseFloat(document.querySelector('#edtDesc').value)
         main_data.anafrota.data.cor = document.querySelector('#edtCor').value
         main_data.anafrota.data.objeto = document.querySelector('#edtObj').value
+        main_data.servexec.data.rodape = document.querySelector('#edtRodape').value
         main_data.anafrota.data.fontsize = parseFloat(document.querySelector('#edtFont').value)
         carrosRelat(document.getElementById('tblAnaFrota'), 'AnaFrotaOrc')
     })
