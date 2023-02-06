@@ -306,23 +306,24 @@ function carrosRelat(obj, origem='AnaFrota'){
         let head
         let colspan
         let celWidth
+        console.log(obj)
         if(origem == 'AnaFrota'){
-            head =  [["Carro","Análise", "Exec.",'Valor']]
+            head =  [[main_data.anafrota.data.objeto,"Análise", "Exec.",'Valor']]
             colspan = 3
             celWidth = 20
             fontSize = main_data.anafrota.data.fontsize
         }else if(origem == 'AnaFrotaOrc'){
-            head =  [["Carro","Local", "Serviço a ser Executado"]]
+            head =  [[main_data.anafrota.data.objeto,"Local", "Serviço a ser Executado"]]
             colspan = 2
             celWidth = 100
             fontSize = main_data.anafrota.data.fontsize
         }else if(origem == 'ServExec'){
-            head =  [["Carro","Pedido", "NF.",'Valor']]
+            head =  [[main_data.servexec.data.objeto,"Pedido", "NF.",'Valor']]
             colspan = 3
             celWidth = 20
             fontSize = main_data.servexec.data.fontsize
         }else{
-            head =  [["Carro","NF","Pedido","Serviço Executado"]]
+            head =  [[main_data.servexec.data.objeto,"NF","Pedido","Serviço Executado"]]
             colspan = 3
             celWidth = 20
             fontSize = main_data.servexec.data.fontsize
