@@ -148,7 +148,7 @@
             AND x04 = "x05"
             AND HE.entrada >= "x06"
             AND HE.entrada <= DATE_ADD("x07", INTERVAL 2 DAY)
-            ORDER BY HE.entrada ASC,FUNC.nome ASC;',
+            ORDER BY  CAST(HE.entrada AS date) ASC,FUNC.nome ASC;',
          "60" => 'SELECT id, LPAD(dia,2,"0") AS dia,LPAD(mes,2,"0") AS mes, ano, nome 
             FROM tb_feriados 
             WHERE (SELECT U.class FROM tb_usuario AS U WHERE hash="x03") IN (10,4,1) ORDER BY mes,dia;',

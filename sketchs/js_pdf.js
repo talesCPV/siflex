@@ -432,10 +432,18 @@ function carrosRelat(obj, origem='AnaFrota'){
         addLine()
     }
 
-    if(main_data.servexec.data.rodape.trim().length > 0){
-        doc.setTextColor(main_data.servexec.data.cor);
-        box(main_data.servexec.data.rodape,15,txt.y,170,0.7)
+    if(['AnaFrota','AnaFrotaOrc'].includes(origem)){
+        if(main_data.anafrota.data.rodape.trim().length > 0){
+            doc.setTextColor(main_data.anafrota.data.cor);
+            box(main_data.anafrota.data.rodape,15,txt.y,170,0.7)
+        }
+    }else{
+        if(main_data.servexec.data.rodape.trim().length > 0){
+            doc.setTextColor(main_data.servexec.data.cor);
+            box(main_data.servexec.data.rodape,15,txt.y,170,0.7)
+        }
     }
+
 
 
     doc.save('RelAnaFrot.pdf')
