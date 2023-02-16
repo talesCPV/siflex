@@ -263,10 +263,10 @@ function carrosRelat(obj, origem='AnaFrota'){
 function postCli(data){
         doc.setFontSize(11)
         doc.setFont(undefined, 'bold')
-        doc.text('Cliente:' + data.fantasia.trim().toUpperCase() ,15,txt.y)
+        doc.text('Cliente: ' + data.fantasia.trim().toUpperCase() ,15,txt.y)
         doc.setFont(undefined, 'normal')
         doc.setFontSize(10)
-        data.cnpj.trim() != '' ? doc.text('CNPJ:' + getCNPJ(data.cnpj) ,130,txt.y) :0
+        data.cnpj.trim() != '' ? doc.text('CNPJ: ' + getCNPJ(data.cnpj) ,130,txt.y) :0
         addLine()
         data.endereco.trim() != '' ? doc.text('End. '+ data.endereco.trim().toUpperCase()+','+data.num.trim(),15,txt.y) :0
         data.cidade.trim()!= '' ? doc.text(data.cidade.trim().toUpperCase()+'-'+data.estado,130,txt.y) :0    
