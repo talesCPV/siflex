@@ -258,7 +258,9 @@ function carrosRelat(obj, origem='AnaFrota'){
     let color = [0,0,0]
     let fontSize = 11
     let desc = 0
-    function postCli(data){
+    const dt_ini = (dataBR(origem == 'AnaFrota' ? main_data.anafrota.data.data_ini : main_data.servexec.data.data_ini))
+    const dt_fin = (dataBR(origem == 'AnaFrota' ? main_data.anafrota.data.data_fin : main_data.servexec.data.data_fin))
+function postCli(data){
         doc.setFontSize(11)
         doc.setFont(undefined, 'bold')
         doc.text('Cliente:' + data.fantasia.trim().toUpperCase() ,15,txt.y)
@@ -270,12 +272,12 @@ function carrosRelat(obj, origem='AnaFrota'){
         data.cidade.trim()!= '' ? doc.text(data.cidade.trim().toUpperCase()+'-'+data.estado,130,txt.y) :0    
         addLine()
         if(['AnaFrota','AnaFrotaOrc'].includes(origem)){
-            doc.text('Data da Avaliação:'+ dataBR(data.data_analise),15,txt.y)
+            doc.text('Data da Avaliação de '+ dt_ini+' até '+dt_fin,15,txt.y)
             color = main_data.anafrota.data.cor
             desc = main_data.anafrota.data.desc
             doc.setTextColor(color); 
         }else{
-            doc.text('Data da Execução:'+ dataBR(data.data_exec),15,txt.y)
+            doc.text('Data da Execução de '+ dt_ini+' até '+dt_fin,15,txt.y)
             color = main_data.servexec.data.cor
             desc = main_data.servexec.data.desc
             doc.setTextColor(color); 
@@ -306,7 +308,6 @@ function carrosRelat(obj, origem='AnaFrota'){
         let head
         let colspan
         let celWidth
-        console.log(obj)
         if(origem == 'AnaFrota'){
             head =  [[main_data.anafrota.data.objeto,"Análise", "Exec.",'Valor']]
             colspan = 3
@@ -318,8 +319,8 @@ function carrosRelat(obj, origem='AnaFrota'){
             celWidth = 100
             fontSize = main_data.anafrota.data.fontsize
         }else if(origem == 'ServExec'){
-            head =  [[main_data.servexec.data.objeto,"Pedido", "NF.",'Valor']]
-            colspan = 3
+            head =  [['Data',main_data.servexec.data.objeto,"Pedido", "NF.",'Valor']]
+            colspan = 4
             celWidth = 20
             fontSize = main_data.servexec.data.fontsize
         }else{
@@ -396,7 +397,7 @@ function carrosRelat(obj, origem='AnaFrota'){
             tbl_body.push(['','','Valor: '+viewMoneyBR(parseFloat(data.valor).toFixed(2))])
             tbl_body.push(['','',''])
         }else if(origem == 'ServExec'){
-            tbl_body.push([data.num_carro,data.pedido,data.nf,viewMoneyBR(parseFloat(data.valor).toFixed(2))]) 
+            tbl_body.push([dataBR(data.data_exec),data.num_carro,data.pedido,data.nf,viewMoneyBR(parseFloat(data.valor).toFixed(2))]) 
         }else{
             tbl_body.push([data.num_carro,data.nf,data.pedido,data.obs])
             tbl_body.push(['','','','Valor: '+viewMoneyBR(parseFloat(data.valor).toFixed(2))])
