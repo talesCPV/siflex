@@ -258,8 +258,8 @@ function carrosRelat(obj, origem='AnaFrota'){
     let color = [0,0,0]
     let fontSize = 11
     let desc = 0
-    const dt_ini = (dataBR(origem == 'AnaFrota' ? main_data.anafrota.data.data_ini : main_data.servexec.data.data_ini))
-    const dt_fin = (dataBR(origem == 'AnaFrota' ? main_data.anafrota.data.data_fin : main_data.servexec.data.data_fin))
+    const dt_ini = (dataBR(origem.substr(0,8) == 'AnaFrota' ? main_data.anafrota.data.data_ini : main_data.servexec.data.data_ini))
+    const dt_fin = (dataBR(origem.substr(0,8) == 'AnaFrota' ? main_data.anafrota.data.data_fin : main_data.servexec.data.data_fin))
 function postCli(data){
         doc.setFontSize(11)
         doc.setFont(undefined, 'bold')
