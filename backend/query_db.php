@@ -42,10 +42,10 @@
          "22" => 'DELETE FROM tb_financeiro WHERE id="x00" AND (SELECT U.class FROM tb_usuario AS U WHERE hash="x01") IN (10,4);',
          "23" => 'UPDATE tb_produto SET img_path="x01" WHERE id=x00;',
          "24" => 'SELECT * FROM tb_empresa WHERE x00 x01 x02;',
-         "25" => 'INSERT INTO tb_empresa (id, nome, fantasia, tipo, cnpj, ie, im, endereco, num, cidade, estado, bairro, cep, tel)
-           VALUES(x00,"x01","x02","x03","x04","x05","x06","x07","x08","x09","x10","x11","x12","x13")
+         "25" => 'INSERT INTO tb_empresa (id, nome, fantasia, tipo, cnpj, ie, im, endereco, num, cidade, estado, bairro, cep, tel, email)
+           VALUES(x00,"x01","x02","x03","x04","x05","x06","x07","x08","x09","x10","x11","x12","x13","x14")
            ON DUPLICATE KEY UPDATE 
-           nome ="x01", fantasia="x02", tipo="x03", cnpj="x04", ie="x05", im="x06", endereco="x07", num="x08", cidade="x09", estado="x10", bairro="x11", cep="x12", tel="x13";',
+           nome ="x01", fantasia="x02", tipo="x03", cnpj="x04", ie="x05", im="x06", endereco="x07", num="x08", cidade="x09", estado="x10", bairro="x11", cep="x12", tel="x13", email="x14";',
          "26" => 'DELETE FROM tb_empresa WHERE id="x00" AND (SELECT U.class FROM tb_usuario AS U WHERE hash="x01") IN (10,4);',
          "27" => 'SELECT p.*, e.fantasia, e.nome AS nome_emp, e.cnpj, e.ie,e.im,e.endereco, e.cidade, e.num,e.estado,e.cep, e.tel,e.bairro, i.venda FROM tb_pedido AS p 
             INNER JOIN tb_empresa AS e
@@ -85,7 +85,7 @@
             id_emp="x01", nome="x02", email="x03", depart="x04", cel1="x05", cel2="x06";',
          "39" => 'DELETE FROM tb_agenda WHERE id="x00" AND (SELECT U.class FROM tb_usuario AS U WHERE hash="x01") IN (10,4,3); ',
          "40" => 'UPDATE tb_pedido SET status="x01", path="x02" WHERE id=x00;',
-         "41" => 'SELECT ENT.*, EMP.fantasia, EMP.id AS emp_id
+         "41" => 'SELECT ENT.*, EMP.fantasia, EMP.id AS emp_id, EMP.endereco, EMP.num, EMP.cidade, EMP.estado, EMP.bairro
             FROM tb_entrada AS ENT
             INNER JOIN tb_empresa AS EMP 
             ON ENT.id_emp = EMP.id

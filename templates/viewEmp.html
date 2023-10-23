@@ -22,7 +22,7 @@
 
         <div class="inline">
             <label for="edtNome">Nome *</label>
-            <input type="text" id="edtNome" maxlength="50" disabled>
+            <input type="text" id="edtNome" maxlength="80" disabled>
         </div>
         <div class="inline">
         <label for="edtFant">Fantasia</label>
@@ -87,8 +87,12 @@
             <input type="text" id="edtCEP" maxlength="10" onkeyup="valCEP(this)" style="width: 200px;" disabled>
             <label for="edtTel">Tel</label>
             <input type="text" id="edtTel" onkeyup="phone(this)" maxlength="15" style="width: 200px;" disabled>            
-
         </div>
+        <div class="inline">
+            <label for="edtMail">Email</label>
+            <input type="email" id="edtMail" maxlength="255" disabled>
+        </div>
+
         <button id="btnSave">Salvar</button>
         <button id="btnDel">Deletar</button>
         <button id="btnEdit">Editar</button>
@@ -116,6 +120,7 @@
             document.querySelector('#edtBairro').value = main_data.viewEmp.data.bairro == null ? '' : main_data.viewEmp.data.bairro.toUpperCase()
             document.querySelector('#edtCEP').value = main_data.viewEmp.data.cep == null ? '' : main_data.viewEmp.data.cep
             document.querySelector('#edtTel').value = main_data.viewEmp.data.tel == null ? '' : main_data.viewEmp.data.tel
+            document.querySelector('#edtMail').value = main_data.viewEmp.data.email == null ? '' : main_data.viewEmp.data.email
         }
         const params = new Object;
             params.hash = localStorage.getItem('hash');
@@ -165,6 +170,7 @@
             params.bairro = document.querySelector('#edtBairro').value.trim().toUpperCase()
             params.cep = document.querySelector('#edtCEP').value
             params.tel = document.querySelector('#edtTel').value.trim().toUpperCase()
+            params.email = document.querySelector('#edtMail').value.trim().toLowerCase()
             
 
         const myPromisse = queryDB(params,25);

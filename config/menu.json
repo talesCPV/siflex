@@ -5,19 +5,19 @@
 			"script" : "#",
 			"class"  : "",
 			"icone"  : "fa fa-home",
-			"access" : [3,4,10],
+			"access" : [3,4,10,2],
 			"itens"  : [
 				{
 					"modulo" : "Produtos",
 					"script" : "#",
 					"class"  : "",
 					"icone"  : "fa fa-home",
-					"access" : [3,4,10],
+					"access" : [3,4,10,2],
 					"itens"  : [
 						{
 							"modulo" : "Pesquisa",
 							"script" : "javascript:openHTML('produtos.html','content-screen')",
-							"access" : [10,4,3],
+							"access" : [10,4,3,2],
 							"class"  : "",
 							"icone"  : "fa fa-archive",
 							"itens"  : []
@@ -45,12 +45,12 @@
 					"script" : "#",
 					"class"  : "",
 					"icone"  : "fa fa-home",
-					"access" : [3,4,10],
+					"access" : [3,4,10,2],
 					"itens"  : [
 						{
 							"modulo" : "Pesquisa",
 							"script" : "javascript:openHTML('empresas.html','content-screen')",
-							"access" : [10,4,3],
+							"access" : [10,4,3,2],
 							"class"  : "",
 							"icone"  : "fa fa-archive",
 							"itens"  : []
@@ -68,14 +68,14 @@
 				{
 					"modulo" : "Análise Frota",
 					"script" : "#",
-					"access" : [10,4,3],
+					"access" : [10,4,3,2],
 					"class"  : "",
 					"icone"  : "fa fa-industry",
 					"itens"  : [
 						{
 							"modulo" : "Pesquisa",
 							"script" : "javascript:openHTML('anafrota.html','content-screen','CADASTRO',0)",
-							"access" : [10,4,3],
+							"access" : [10,4,3,2],
 							"class"  : "",
 							"icone"  : "fa fa-archive",
 							"itens"  : []
@@ -121,7 +121,7 @@
 		{
 			"modulo" : "Ferramentas",
 			"script" : "#",
-			"access" : [10,4,3,1],
+			"access" : [10,4,3,1,2],
 			"class"  : "",
 			"icone"  : "fa fa-edit",
 			"itens"  : [
@@ -138,7 +138,7 @@
 					"script" : "javascript:openHTML('calendar.html','content-screen')",
 					"icone"  : "fa fa-home",
 					"class"  : "",
-					"access" : [10,4,3,1],
+					"access" : [10,4,3,1,2],
 					"itens"  : []
 				},	
 				{
@@ -195,14 +195,14 @@
 		{
 			"modulo" : "Comercial",
 			"script" : "#",
-			"access" : [10,4,3],
+			"access" : [10,4,3,2],
 			"class"  : "",
 			"icone"  : "fa fa-cogs",
 			"itens"  : [
 				{
 					"modulo" : "Cotações",
 					"script" : "javascript:openHTML('cotacoes.html','content-screen','Cotações e Pedidos')",
-					"access" : [10,4,3],
+					"access" : [10,4,3,2],
 					"class"  : "",
 					"icone"  : "fa fa-archive",
 					"itens"  : []
@@ -218,7 +218,7 @@
 				{
 					"modulo" : "Contatos",
 					"script" : "javascript:openHTML('agenda.html','pop-up','Contatos Comerciais')",
-					"access" : [10,4,3],
+					"access" : [10,4,3,2],
 					"class"  : "",
 					"icone"  : "fa fa-archive",
 					"itens"  : []
@@ -302,7 +302,7 @@
 		{
 			"modulo" : "Mensagens <span id='badge_mobile' class='badge'></span>",
 			"script" : "javascript:openHTML('mail.html','pop-up')",
-			"access" : [10,4,1],
+			"access" : [10,4,1,2],
 			"class"  : "hideMenu",
 			"icone"  : "fa fa-industry",
 			"itens"  : []
@@ -310,7 +310,7 @@
 		{
 			"modulo" : "Logout",
 			"script" : "javascript:localStorage.clear();this.location.reload(true);",
-			"access" : [10,4],
+			"access" : [10,4,2],
 			"class"  : "hideMenu",
 			"icone"  : "fa fa-industry",
 			"itens"  : []
