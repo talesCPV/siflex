@@ -260,7 +260,8 @@ function carrosRelat(obj, origem='AnaFrota'){
     let desc = 0
     const dt_ini = (dataBR(origem.substr(0,8) == 'AnaFrota' ? main_data.anafrota.data.data_ini : main_data.servexec.data.data_ini))
     const dt_fin = (dataBR(origem.substr(0,8) == 'AnaFrota' ? main_data.anafrota.data.data_fin : main_data.servexec.data.data_fin))
-function postCli(data){
+    
+    function postCli(data){
         doc.setFontSize(11)
         doc.setFont(undefined, 'bold')
         doc.text('Cliente: ' + data.fantasia.trim().toUpperCase() ,15,txt.y)
@@ -324,23 +325,24 @@ function postCli(data){
             celWidth = 20
             fontSize = main_data.servexec.data.fontsize
         }else{
-            head =  [[main_data.servexec.data.objeto,"NF","Pedido","Serviço Executado"]]
-            colspan = 3
-            celWidth = 20
+            head =  [['Data',main_data.servexec.data.objeto,"Serviço Executado"]]
+            colspan = 2
+            celWidth = 10
             fontSize = main_data.servexec.data.fontsize
         }
 
-        pushTot(qtd+' carros','Total '+viewMoneyBR(subTot.toFixed(2)))
+        pushTot(qtd+' '+main_data.servexec.data.objeto+'(s)','Total '+viewMoneyBR(subTot.toFixed(2)))
         qtd = 0
 
         doc.autoTable({
             head: head,
             body: tbl_body,
+
             columnStyles: {
-                0: {cellWidth: fontSize+10},
-                1: {cellWidth: fontSize+15},
-                2: {cellWidth: fontSize+celWidth}
+                0: {cellWidth: 25},
+                1: {cellWidth: 25}
             },
+            
             styles :{fontSize: fontSize},
             startY: txt.y
         });
@@ -399,9 +401,9 @@ function postCli(data){
         }else if(origem == 'ServExec'){
             tbl_body.push([dataBR(data.data_exec),data.num_carro,data.pedido,data.nf,viewMoneyBR(parseFloat(data.valor).toFixed(2))]) 
         }else{
-            tbl_body.push([data.num_carro,data.nf,data.pedido,data.obs])
-            tbl_body.push(['','','','Valor: '+viewMoneyBR(parseFloat(data.valor).toFixed(2))])
-            tbl_body.push(['','','',''])
+            tbl_body.push([dataBR(data.data_exec),data.num_carro,data.obs])
+            tbl_body.push(['','','Valor: '+viewMoneyBR(parseFloat(data.valor).toFixed(2))])
+//            tbl_body.push(['','',''])
         }
         qtd++
         subTot += parseFloat(data.valor)
