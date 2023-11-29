@@ -121,7 +121,7 @@
             AND x00 x01 x02
             AND SERV.data_exec >= "x03" 
             AND SERV.data_exec <= "x04"
-            ORDER BY SERV.data_exec DESC;',
+            ORDER BY SERV.data_exec ASC;',
          "53" => 'SELECT *	FROM tb_cargos WHERE (SELECT U.class FROM tb_usuario AS U WHERE hash="x00") IN (10,4,1) ORDER BY cargo;',
          "54" => 'INSERT INTO tb_cargos (id,cargo,tipo,cbo,salario) 
             VALUES (x00,"x01","x02","x03","x04") ON DUPLICATE KEY
