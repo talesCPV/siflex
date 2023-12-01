@@ -513,8 +513,8 @@ function print_prod(obj){
     let tbl_body = []
     let total = 0
     for(let i=1; i< obj.rows.length;i++){
-        const data = obj.rows[i].data
-        tbl_body.push([data.id,data.descricao.maxWidth(25).toUpperCase(),data.tipo,data.nome.maxWidth(15).toUpperCase(),data.cod_bar,data.estoque,data.unidade])
+        const data = obj.rows[i].data                
+        tbl_body.push([data.cod,data.descricao.maxWidth(25).toUpperCase(),data.tipo,data.nome.maxWidth(15).toUpperCase(),data.cod_bar,data.estoque,data.unidade])
     }
 
     doc = new jsPDF();
