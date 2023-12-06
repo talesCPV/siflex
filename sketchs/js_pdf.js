@@ -309,29 +309,34 @@ function carrosRelat(obj, origem='AnaFrota'){
         let head
         let colspan
         let celWidth
+        let obj = ''
         if(origem == 'AnaFrota'){
             head =  [[main_data.anafrota.data.objeto,"Análise", "Exec.",'Valor']]
             colspan = 3
             celWidth = 20
             fontSize = main_data.anafrota.data.fontsize
+            obj = main_data.anafrota.data.objeto
         }else if(origem == 'AnaFrotaOrc'){
             head =  [[main_data.anafrota.data.objeto,"Local", "Serviço a ser Executado"]]
             colspan = 2
             celWidth = 100
             fontSize = main_data.anafrota.data.fontsize
+            obj = main_data.anafrota.data.objeto
         }else if(origem == 'ServExec'){
             head =  [['Data',main_data.servexec.data.objeto,"Pedido", "NF.",'Valor']]
             colspan = 4
             celWidth = 20
             fontSize = main_data.servexec.data.fontsize
+            obj = main_data.servexec.data.objeto
         }else{
             head =  [['Data',main_data.servexec.data.objeto,"Serviço Executado"]]
             colspan = 2
             celWidth = 10
             fontSize = main_data.servexec.data.fontsize
+            obj = main_data.servexec.data.objeto
         }
 
-        pushTot(qtd+' '+main_data.servexec.data.objeto+'(s)','Total '+viewMoneyBR(subTot.toFixed(2)))
+        pushTot(qtd+' '+obj+'(s)','Total '+viewMoneyBR(subTot.toFixed(2)))
         qtd = 0
 
         doc.autoTable({
