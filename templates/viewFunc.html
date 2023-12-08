@@ -175,7 +175,20 @@
         main_data.viewFunc.data.horas = new Object
         main_data.viewFunc.data.horas.vale =  parseFloat(prompt(`Digite o valor:`))
 
-        console.log(main_data.viewFunc.data)
+        const params = new Object;
+            params.hash = localStorage.getItem('hash')
+            params.id = 0
+            params.id_func = main_data.viewFunc.data.id
+            params.valor = main_data.viewFunc.data.horas.vale
+            params.quitado = 0
+            params.obs = 'teste'
+
+        const myPromisse = queryDB(params,77);
+        myPromisse.then((resolve)=>{
+            console.log(resolve)
+        })
+        
+//        console.log(main_data.viewFunc.data)
 
         holerite(main_data.viewFunc.data,'VALE')
 
