@@ -24,3 +24,5 @@ DELIMITER $$
 
 	END $$
 DELIMITER ;
+
+CALL sp_setVale("IFi:2r'|S*#V-%Y0(¨3+_6.b91e<4h",0,1,150,0,"teste");

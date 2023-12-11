@@ -86,15 +86,21 @@
         <label for="edtImp">Impostos</label>
         <input type="text" id="edtImp">
     </div>
-    <button id="btnSalvar">Salvar</button>
-    <button id="btnDel">Deletar</button>
-    <button id="btnRecibo">Recibo</button>
+    <div class="inline">
+        <button id="btnDel">Deletar</button>
+        <button id="btnSalvar">Salvar</button>
+    </div>
+    <div class="inline">
+        <button id="btnRecibo">Recibo</button>
+        <button id="btnVale">Vales</button>
+    </div>
+
   </fieldset>
 
 
 </template>
 <script>
-    console.log(main_data.viewFunc.data)
+//    console.log(main_data.viewFunc.data)
     const params = new Object;
             params.hash = localStorage.getItem('hash')
     fillCombo('cmbCargo',params,53,['id','cargo'], main_data.viewFunc.data.callby == 'edit' ? main_data.viewFunc.data.id_cargo :'' )
@@ -175,22 +181,12 @@
         main_data.viewFunc.data.horas = new Object
         main_data.viewFunc.data.horas.vale =  parseFloat(prompt(`Digite o valor:`))
 
-        const params = new Object;
-            params.hash = localStorage.getItem('hash')
-            params.id = 0
-            params.id_func = main_data.viewFunc.data.id
-            params.valor = main_data.viewFunc.data.horas.vale
-            params.quitado = 0
-            params.obs = 'teste'
-
-        const myPromisse = queryDB(params,77);
-        myPromisse.then((resolve)=>{
-            console.log(resolve)
-        })
-        
-//        console.log(main_data.viewFunc.data)
-
         holerite(main_data.viewFunc.data,'VALE')
+
+    })
+
+    document.querySelector('#btnVale').addEventListener('click',()=>{        
+        openHTML('vale.html','pop-up','Vales',main_data.viewFunc.data)
 
     })
 

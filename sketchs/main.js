@@ -169,7 +169,10 @@ HTMLTableElement.prototype.plot = function(obj, fields,type='',file=false){
                         html +=  obj[campo[j]] 
                         html += j<campo.length-1 ? op[1] : ''
                     }
-                    break;                     
+                    break;  
+                case 'let':                            
+                    html = arr[0]
+                    break;                                       
                 default:
                   html = obj[arr[0]] != null ? obj[arr[0]] :''
             }            

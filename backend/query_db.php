@@ -186,6 +186,7 @@
          "75" => 'SELECT id, nome FROM tb_usuario WHERE id NOT IN (x00) ORDER BY nome;',
          "76" => 'DELETE FROM tb_mail WHERE para=x00 AND y01 x02 x01;',
          "77" => 'CALL sp_setVale("x00",x01,x02,x03,x04,"x05");',
+         "78" => 'SELECT * FROM tb_vale WHERE id_func=x00 ORDER BY data DESC;',
             
       );
 
