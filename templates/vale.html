@@ -8,12 +8,7 @@
         #edtVal{
             max-width: 150px;
         }
-
-        .tbl-scroll{
-            overflow-y: scroll;
-        }
-
-
+        
 
     </style>
     
@@ -36,10 +31,13 @@
 
         </fieldset>
 
-
-        <div class="tbl-scroll">
+        <fieldset>
+            <legend>Histórico</legend>
             <table id="tblVale"></table>
-        </div>
+
+        </fieldset>
+
+
 
 
 
@@ -57,37 +55,18 @@
         const obs = document.querySelector('#edtDesc').value.trim()
 
         if(val.length >0 && obs.length>0){
-
-            addVal(0,val,0,obs)
-
-/*            
-            const params = new Object;
-                params.hash = localStorage.getItem('hash')
-                params.id = 0
-                params.id_func = data.id
-                params.valor = val
-                params.quitado = 0
-                params.obs = obs
-
-            const myPromisse = queryDB(params,77);
-            myPromisse.then((resolve)=>{
-                console.log(resolve)
-                fillVale()
-                document.querySelector('#edtVal').value = 0
-                document.querySelector('#edtDesc').value = ''
-            })
-*/            
+            addVal(0,val,0,obs)         
         }else{
             alert('Favor preencher descrição e valor.')
         }
-
-
-
     })
 
     document.querySelector('#tblVale').addEventListener('click',(e)=>{
         dt = e.target.parentNode.data
 
+        openHTML('viewVale.html','pop-up',data.nome,dt)
+
+/*
         if(dt.quitado == '0'){
             const val =  parseFloat(prompt(`Quitar:`,parseFloat(dt.valor).toFixed(2)))
             if(val){
@@ -101,10 +80,10 @@
                 }
             }
         }
-
+*/
     })
 
-    function fillVale(){
+    data.fillVale = ()=>{
         const params = new Object;
             params.id = data.id
 
@@ -114,12 +93,12 @@
             tbl.innerHTML = ''
             const json = JSON.parse(resolve)
             let tot = 0
-            tbl.head('Data|l-data,Descrição,Valor|l-val,Quitado|l-quit')
+            tbl.head('Data|l-data,Descrição,Valor|l-val,Pgto.|l-quit')
             for(let i=0; i<json.length;i++){
                 tbl.plot(json[i],'data,obs,valor,quitado','date,Upp,R$.,cha 0=NÃO 1=SIM')
                 tot += json[i].quitado == '0' ? parseFloat(json[i].valor) : 0
             }
-            tbl.plot(json[0],',,Total,R$'+tot.toFixed(2),'let,let,let,let')
+            tbl.plot(json[0],',,Saldo Devedor,R$'+tot.toFixed(2),'let,let,let,let')
         })
     } 
 
@@ -135,15 +114,14 @@
 
         const myPromisse = queryDB(params,77);
         myPromisse.then((resolve)=>{
-            console.log(resolve)
-            fillVale()
+            data.fillVale()
             document.querySelector('#edtVal').value = 0
             document.querySelector('#edtDesc').value = ''
         })
     }
 
 
-    fillVale()
+    data.fillVale()
 
 
 </script>

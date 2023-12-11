@@ -44,6 +44,16 @@ String.prototype.maxWidth = function(N=0){
     return ((N>0 && N<this.length) ? this.valueOf().substring(0,N) : this.valueOf())
 }
 
+String.prototype.showDate = function(){
+    const str = this.valueOf()
+    return str.substr(8,2).padStart(2,0)+'/'+str.substr(5,2).padStart(2,0)+'/'+str.substr(0,4)
+}
+
+String.prototype.showTime = function(){
+    const str = this.valueOf()
+    return str.substr(11,5)
+}
+
 /* DATE */
 Date.prototype.change = function(N=1){
     this.setDate(this.getDate()+N)

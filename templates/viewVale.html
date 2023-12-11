@@ -1,0 +1,170 @@
+
+<template>
+    <style>
+
+        .saldo{
+            text-align: end;
+        }
+
+
+    </style>
+
+    <fieldset>
+        <legend>Vale</legend>
+        <div class="inline">
+            <label for="edtDescVal">Descrição*</label>
+            <input type="text" id="edtDescVal" maxlength="200">
+        </div>
+        <div class="inline">
+            <label for="edtDataVal">Data</label>
+            <input type="date" id="edtDataVal" readonly>
+            <label for="edtValVal">Valor*</label>
+            <input type="text" id="edtValVal" readonly>
+        </div>
+
+        <button id="btnDelVale">Deletar</button>
+
+    </fieldset>
+
+    <fieldset>
+        <legend>Pagamentos</legend>
+
+        <table id="tblPgto"></table>
+
+        <div class="inline">
+            <label for="edtDatapgto">Data</label>
+            <input type="date" id="edtDatapgto" >
+            <label for="edtValPgto">Valor*</label>
+            <input type="text" id="edtValPgto" onkeyup="return valFloat(this)" value="0">
+        </div>
+
+        <div class="inline">
+            <label for="edtObsPgto">Obs.</label>
+            <input type="text" id="edtObsPgto" maxlength="200">
+        </div>
+
+        <button id="btnPgtoVale">Adicionar</button>
+
+    </fieldset>
+
+    <button id="btnPrint">Imprimir</button>
+
+
+</template>
+<script>
+    const data = main_data.viewVale.data
+
+    document.querySelector('#edtDescVal').value = data.obs
+    document.querySelector('#edtDataVal').value = data.data.substr(0,10)
+    document.querySelector('#edtValVal').value = data.valor
+    document.querySelector('#edtDatapgto').value = today.getFormatDate()
+
+    fillPgto()
+
+    document.querySelector('#btnPgtoVale').addEventListener('click',()=>{
+        const val = document.querySelector('#edtValPgto').value.trim()
+        const obs = document.querySelector('#edtObsPgto').value.trim()
+        const dt = document.querySelector('#edtDatapgto').value+' 00:00:00'
+
+        if(val.length >0 && obs.length>0){
+            addPgto(val,obs,dt)         
+        }else{
+            alert('Favor preencher descrição e valor.')
+        }
+    })
+
+
+    function fillPgto(){
+        const params = new Object;
+            params.id = data.id
+
+        const myPromisse = queryDB(params,79);
+        myPromisse.then((resolve)=>{
+            const tbl = document.querySelector('#tblPgto')
+            tbl.innerHTML = ''
+            const json = JSON.parse(resolve)
+            let tot = 0
+            tbl.head('Data|l-data,Descrição,Valor|l-val')
+            tbl.plot(data,'data,EMPRÉSTIMO,valor','date,let,R$.')
+            for(let i=0; i<json.length;i++){
+                tbl.plot(json[i],'data,obs,valor','date,Upp,R$.')
+                tot += parseFloat(json[i].valor)
+            }
+            tot = parseFloat(data.valor) - tot            
+            tbl.plot(json[0],',Saldo Devedor|saldo,R$'+tot.toFixed(2),'let,let,let')
+            if(tot <=0 && data.quitado == '0'){
+                quitar()
+            }
+        })        
+    }
+
+    function addPgto(val,obs,dt){
+
+        const params = new Object;
+            params.hash = localStorage.getItem('hash')
+            params.id = data.id
+            params.valor = val
+            params.data = dt
+            params.obs = obs
+
+        const myPromisse = queryDB(params,80);
+        myPromisse.then((resolve)=>{
+            console.log(resolve)
+            fillPgto()
+            document.querySelector('#edtValPgto').value = 0
+            document.querySelector('#edtObsPgto').value = ''
+        })
+    }
+
+    function quitar(){
+
+        const params = new Object;
+            params.hash = localStorage.getItem('hash')
+            params.id = data.id
+            params.id_func = data.id_func
+            params.valor = data.valor
+            params.quitado = 1
+            params.obs = data.obs
+
+        const myPromisse = queryDB(params,77);
+        myPromisse.then((resolve)=>{
+            main_data.vale.data.fillVale()
+            closeModal(0)
+        })
+    }
+
+    document.querySelector('#btnPrint').addEventListener('click',()=>{
+
+        const rows = document.querySelector('#tblPgto').rows
+        const out = main_data.vale.data
+        out.data = today
+        out.impostos = ''
+        out.horas = new Object
+        out.horas.vale = 10
+
+        out.pgto = []
+
+        console.log(rows)
+
+        for(let i=1; i<rows.length-1; i++){
+            const obj = new Object
+        
+            obj.obs = rows[i].data.obs
+            obj.valor = rows[i].data.valor
+            obj.data = rows[i].data.data
+            obj.sinal = i==1 ? 1 : -1
+            out.pgto.push(obj)
+            
+        }
+
+        console.log(out)
+
+
+        holerite(out,'EMP')
+
+
+    })
+
+
+
+</script>

@@ -20,9 +20,32 @@ DELIMITER $$
 			END IF;
         END IF;
 
-		SELECT * FROM tb_vale;
+		SELECT @edit;
 
 	END $$
 DELIMITER ;
 
-CALL sp_setVale("IFi:2r'|S*#V-%Y0(¨3+_6.b91e<4h",0,1,150,0,"teste");
+CALL sp_setVale("IFi:2r'|S*#V-%Y0(¨3+_6.b91e<4h",0	,1,150,0,"teste");
+
+CALL sp_setVale("IFi:2r'|S*#V-%Y0(¨3+_6.b91e<4h",0,1,15,0,"teste 3");
+
+ DROP PROCEDURE sp_setValePgto;
+DELIMITER $$
+	CREATE PROCEDURE sp_setValePgto(
+		IN Ihash varchar(30),
+		IN Iid int(11),
+        IN Ivalor double,
+        IN Idata datetime,
+		IN Iobs varchar(200)        
+    )
+	BEGIN
+        SET @class = (SELECT class FROM tb_usuario WHERE hash COLLATE utf8_general_ci = Ihash COLLATE utf8_general_ci LIMIT 1);
+
+		IF(@class >=4)THEN
+			INSERT INTO tb_vale_pgto (id_vale,valor,obs,data) VALUES (Iid,Ivalor,Iobs,Idata);
+        END IF;
+
+		SELECT * FROM tb_vale_pgto WHERE id_vale=Iid;
+
+	END $$
+DELIMITER ;

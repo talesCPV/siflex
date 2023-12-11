@@ -1000,6 +1000,65 @@ function holerite(func,tipo='holerite'){
             addLine(0.7)
             line(txt.y)
             addLine(0.7)
+
+        }else if(mode=='EMP'){
+
+            const pgto = func.pgto
+            doc.setFont(undefined, 'normal')
+
+            let emp =  parseFloat(pgto[0].valor)
+            let tot = 0
+            for(let i=0; i<pgto.length; i++){
+
+
+                const dt = pgto[i].data.showDate()
+                const parcela = i.toString().padStart(2,0)
+
+
+                tot += i>0? parseFloat(pgto[i].valor) : 0
+                doc.text( `${dt} ${i==0?'(EMPRÉSTIMO)':'(DESCONTO '+parcela+')'} ${pgto[i].obs}` ,10,txt.y)
+                //            doc.text(parseFloat(func.horas.vale).toFixed(2),90,txt.y)
+                doc.text(parseFloat(pgto[i].valor).toFixed(2),135,txt.y)
+    
+                addLine(0.7)
+                    
+            }
+            doc.setFont(undefined, 'bold')    
+            txt.y = Y+80
+            line(txt.y)
+            addLine(0.7)
+            doc.text('Total Empréstimo ->',135,txt.y)
+            doc.text(viewMoneyBR(emp.toFixed(2)),180,txt.y)
+            addLine(0.7)
+            doc.text('Total Desconto   ->',135,txt.y)
+            doc.text(viewMoneyBR(tot.toFixed(2)),180,txt.y)
+            addLine(0.7)
+            doc.text('Saldo Devedor    ->',135,txt.y)
+            doc.text(viewMoneyBR((emp-tot).toFixed(2)),180,txt.y)
+            addLine(0.7)
+            line(txt.y)
+            addLine(0.7)
+            doc.text('Salario Base',10,txt.y)
+            doc.text('SalContr.INSS',60,txt.y)
+            doc.text('Base Calc. FGTS',90,txt.y)
+            doc.text('FGTS do MES',120,txt.y)
+            doc.text('Base Calc. IRRF',150,txt.y)
+            doc.text('Faixa IRRF',180,txt.y)
+            addLine(0.7)
+            doc.text(viewMoneyBR(salario.valor.toFixed(2)),10,txt.y)
+            doc.text('*****',65,txt.y)
+            doc.text('*****',95,txt.y)
+            doc.text('*****',125,txt.y)
+            doc.text('*****',155,txt.y)
+            doc.text('*****',185,txt.y)
+
+            addLine(0.7)
+            line(txt.y)
+            addLine(0.7)
+
+
+
+
         }else{
             doc.setFont(undefined, 'normal')
 
@@ -1068,7 +1127,7 @@ function holerite(func,tipo='holerite'){
     clearTxt(37,10,[210,297])
 
     const params = new Object; 
-        params.id = func.impostos
+        params.id = func.impostos.trim() == '' ? '0' : func.impostos
         params.hash = localStorage.getItem('hash')
 
     const myPromisse = queryDB(params,66);
@@ -1082,9 +1141,11 @@ function holerite(func,tipo='holerite'){
             txt.y = 46        
             drawFrame(5,'PGTO')
             drawFrame(150,'PGTO')
-        }else{
+        }else if(tipo == 'VALE'){
             drawFrame(5,tipo)
             drawFrame(150,tipo)
+        }else{
+            drawFrame(5,'EMP')
         }
             
         doc.save('holerite.pdf')
