@@ -6,6 +6,10 @@
             text-align: end;
         }
 
+        #btnPrint{
+            width: 98%;
+        }
+
 
     </style>
 
@@ -62,17 +66,60 @@
     fillPgto()
 
     document.querySelector('#btnPgtoVale').addEventListener('click',()=>{
-        const val = document.querySelector('#edtValPgto').value.trim()
-        const obs = document.querySelector('#edtObsPgto').value.trim()
-        const dt = document.querySelector('#edtDatapgto').value+' 00:00:00'
 
-        if(val.length >0 && obs.length>0){
-            addPgto(val,obs,dt)         
+        if(data.quitado == '0'){
+            const val = document.querySelector('#edtValPgto').value.trim()
+            const obs = document.querySelector('#edtObsPgto').value.trim()
+            const dt = document.querySelector('#edtDatapgto').value+' 00:00:00'
+            if(val.length >0 && obs.length>0){
+                addPgto(val,obs,dt)         
+            }else{
+                alert('Favor preencher descrição e valor.')
+            }
         }else{
-            alert('Favor preencher descrição e valor.')
+            alert('Empréstimo já quitado!')
         }
     })
 
+    document.querySelector('#btnDelVale').addEventListener('click',()=>{
+        if(data.quitado == '0'){
+            if(confirm('Deseja deletar este empréstimo definitivamente?')){
+//                console.log(data)
+                const params = new Object;
+                    params.hash = localStorage.getItem('hash')
+                    params.id = data.id
+                const myPromisse = queryDB(params,81);
+                myPromisse.then((resolve)=>{
+                    main_data.vale.data.fillVale()
+                    closeModal('viewVale')
+                })
+            }
+        }else{
+            alert('Empréstimo já quitado! (Não pode ser deletado)')
+        }
+    })
+
+
+    document.querySelector('#tblPgto').addEventListener('click',(e)=>{
+        if(data.quitado == '0'){
+            const dt = e.target.parentNode.data
+            if(e.target.parentNode.rowIndex >1){
+                if(confirm('Deseja deletar este pagamento?')){
+                    const params = new Object;
+                        params.hash = localStorage.getItem('hash')
+                        params.id = dt.id
+                    const myPromisse = queryDB(params,82);
+                    myPromisse.then((resolve)=>{
+                        fillPgto()
+                        document.querySelector('#edtValPgto').value = 0
+                        document.querySelector('#edtObsPgto').value = ''
+                    })
+                }
+            }   
+        }else{
+            alert('Empréstimo já quitado!')
+        }
+    })
 
     function fillPgto(){
         const params = new Object;
@@ -109,7 +156,7 @@
 
         const myPromisse = queryDB(params,80);
         myPromisse.then((resolve)=>{
-            console.log(resolve)
+//            console.log(resolve)
             fillPgto()
             document.querySelector('#edtValPgto').value = 0
             document.querySelector('#edtObsPgto').value = ''
@@ -144,7 +191,7 @@
 
         out.pgto = []
 
-        console.log(rows)
+//        console.log(rows)
 
         for(let i=1; i<rows.length-1; i++){
             const obj = new Object
@@ -157,7 +204,7 @@
             
         }
 
-        console.log(out)
+//        console.log(out)
 
 
         holerite(out,'EMP')

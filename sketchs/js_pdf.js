@@ -1018,7 +1018,8 @@ function holerite(func,tipo='holerite'){
                 tot += i>0? parseFloat(pgto[i].valor) : 0
                 doc.text( `${dt} ${i==0?'(EMPRÉSTIMO)':'(DESCONTO '+parcela+')'} ${pgto[i].obs}` ,10,txt.y)
                 //            doc.text(parseFloat(func.horas.vale).toFixed(2),90,txt.y)
-                doc.text(parseFloat(pgto[i].valor).toFixed(2),135,txt.y)
+                const valor = parseFloat( pgto[i].valor).toFixed(2)
+                doc.text( i>0 ? `(${valor})` : valor ,135,txt.y)
     
                 addLine(0.7)
                     
@@ -1030,11 +1031,11 @@ function holerite(func,tipo='holerite'){
             doc.text('Total Empréstimo ->',135,txt.y)
             doc.text(viewMoneyBR(emp.toFixed(2)),180,txt.y)
             addLine(0.7)
-            doc.text('Total Desconto   ->',135,txt.y)
-            doc.text(viewMoneyBR(tot.toFixed(2)),180,txt.y)
+            doc.text('Total Desconto     ->',135,txt.y)
+            doc.text('('+viewMoneyBR(tot.toFixed(2))+')',180,txt.y)
             addLine(0.7)
-            doc.text('Saldo Devedor    ->',135,txt.y)
-            doc.text(viewMoneyBR((emp-tot).toFixed(2)),180,txt.y)
+            doc.text('Saldo Devedor      ->',135,txt.y)
+            doc.text('('+viewMoneyBR((emp-tot).toFixed(2))+')',180,txt.y)
             addLine(0.7)
             line(txt.y)
             addLine(0.7)

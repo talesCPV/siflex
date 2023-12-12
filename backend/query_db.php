@@ -185,10 +185,12 @@
          "74" => 'UPDATE tb_mail  SET nao_lida=FALSE  WHERE id=x00;',
          "75" => 'SELECT id, nome FROM tb_usuario WHERE id NOT IN (x00) ORDER BY nome;',
          "76" => 'DELETE FROM tb_mail WHERE para=x00 AND y01 x02 x01;',
-         "77" => 'CALL sp_setVale("x00",x01,x02,x03,x04,"x05");',
-         "78" => 'SELECT * FROM tb_vale WHERE id_func=x00 ORDER BY data DESC;',
+         "77" => 'CALL sp_setVale("x00",x01,x02,x03,x04,"x05","x06");',
+         "78" => 'SELECT * FROM vw_vales WHERE id_func=x00 ORDER BY data DESC;',
          "79" => 'SELECT * FROM tb_vale_pgto WHERE id_vale=x00 ORDER BY data;',
          "80" => 'CALL sp_setValePgto("x00",x01,x02,"x03","x04");',
+         "81" => 'CALL sp_delVale("x00",x01);',
+         "82" => 'CALL sp_delValePgto("x00",x01);',
             
       );
 

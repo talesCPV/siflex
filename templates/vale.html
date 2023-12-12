@@ -5,9 +5,6 @@
             width: 150px;
         }
 
-        #edtVal{
-            max-width: 150px;
-        }
         
 
     </style>
@@ -19,8 +16,12 @@
             <div class="inline">
                 <label for="edtDesc">Descrição*</label>
                 <input type="text" id="edtDesc" maxlength="200">
+            </div>
+            <div class="inline">
                 <label for="edtVal">Valor*</label>
                 <input type="text" id="edtVal" onkeyup="return valFloat(this)">
+                <label for="edtDataVale">Data</label>
+                <input type="date" id="edtDataVale" > 
             </div>
             <div class="inline">
                 <button id="btnNovoVale" >Adicionar</button>
@@ -48,7 +49,7 @@
 
     const data = main_data.vale.data
 
-    console.log(data)
+    document.querySelector('#edtDataVale').value = today.getFormatDate()
 
     document.querySelector('#btnNovoVale').addEventListener('click',()=>{
         const val = document.querySelector('#edtVal').value.trim()
@@ -66,21 +67,6 @@
 
         openHTML('viewVale.html','pop-up',data.nome,dt)
 
-/*
-        if(dt.quitado == '0'){
-            const val =  parseFloat(prompt(`Quitar:`,parseFloat(dt.valor).toFixed(2)))
-            if(val){
-                if(val >= parseFloat(dt.valor).toFixed(2)){
-                    addVal(dt.id,val,1,dt.obs)
-                }else{
-                    addVal(dt.id,dt.valor,1,dt.obs)
-                    const nval = parseFloat(dt.valor).toFixed(2) -val
-                    const nobs = dt.obs.split('(SALDO)')
-                    addVal(0,nval,0,`PGTO R$${val} (SALDO) ${nobs[nobs.length-1]}`)
-                }
-            }
-        }
-*/
     })
 
     data.fillVale = ()=>{
@@ -96,7 +82,7 @@
             tbl.head('Data|l-data,Descrição,Valor|l-val,Pgto.|l-quit')
             for(let i=0; i<json.length;i++){
                 tbl.plot(json[i],'data,obs,valor,quitado','date,Upp,R$.,cha 0=NÃO 1=SIM')
-                tot += json[i].quitado == '0' ? parseFloat(json[i].valor) : 0
+                tot += json[i].quitado == '0' ? parseFloat(json[i].SALDO) : 0
             }
             tbl.plot(json[0],',,Saldo Devedor,R$'+tot.toFixed(2),'let,let,let,let')
         })
@@ -111,6 +97,7 @@
             params.valor = val
             params.quitado = quit
             params.obs = obs
+            params.data = document.querySelector('#edtDataVale').value + ' 00:00:00'
 
         const myPromisse = queryDB(params,77);
         myPromisse.then((resolve)=>{
