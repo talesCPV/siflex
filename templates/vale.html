@@ -64,8 +64,11 @@
 
     document.querySelector('#tblVale').addEventListener('click',(e)=>{
         dt = e.target.parentNode.data
-
-        openHTML('viewVale.html','pop-up',data.nome,dt)
+//        console.log(e.target.parentNode.parentNode.rows.length)
+//        console.log(e.target.parentNode.rowIndex)
+        if(e.target.parentNode.rowIndex >0 && e.target.parentNode.rowIndex < e.target.parentNode.parentNode.rows.length-1){
+            openHTML('viewVale.html','pop-up',data.nome,dt)
+        }
 
     })
 
@@ -79,7 +82,7 @@
             tbl.innerHTML = ''
             const json = JSON.parse(resolve)
             let tot = 0
-            tbl.head('Data|l-data,Descrição,Valor|l-val,Pgto.|l-quit')
+            tbl.head('Data|l-data,Descrição,Valor|l-val,Quitado.|l-quit')
             for(let i=0; i<json.length;i++){
                 tbl.plot(json[i],'data,obs,valor,quitado','date,Upp,R$.,cha 0=NÃO 1=SIM')
                 tot += json[i].quitado == '0' ? parseFloat(json[i].SALDO) : 0

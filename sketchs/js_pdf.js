@@ -1001,7 +1001,7 @@ function holerite(func,tipo='holerite'){
             line(txt.y)
             addLine(0.7)
 
-        }else if(mode=='EMP'){
+        }else if(mode=='EMPRESTIMO'){
 
             const pgto = func.pgto
             doc.setFont(undefined, 'normal')
@@ -1016,10 +1016,10 @@ function holerite(func,tipo='holerite'){
 
 
                 tot += i>0? parseFloat(pgto[i].valor) : 0
-                doc.text( `${dt} ${i==0?'(EMPRÉSTIMO)':'(DESCONTO '+parcela+')'} ${pgto[i].obs}` ,10,txt.y)
+                doc.text( `${dt}  ${pgto[i].obs.toUpperCase()}` ,10,txt.y)
                 //            doc.text(parseFloat(func.horas.vale).toFixed(2),90,txt.y)
                 const valor = parseFloat( pgto[i].valor).toFixed(2)
-                doc.text( i>0 ? `(${valor})` : valor ,135,txt.y)
+                doc.text(valor , i==0? 135 : 180,txt.y)
     
                 addLine(0.7)
                     
@@ -1146,7 +1146,8 @@ function holerite(func,tipo='holerite'){
             drawFrame(5,tipo)
             drawFrame(150,tipo)
         }else{
-            drawFrame(5,'EMP')
+            drawFrame(5,'EMPRESTIMO')
+            drawFrame(150,'EMPRESTIMO')
         }
             
         doc.save('holerite.pdf')
