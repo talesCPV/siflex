@@ -25,8 +25,11 @@
             <label for="edtValVal">Valor*</label>
             <input type="text" id="edtValVal" readonly>
         </div>
+        <div class="inline">
+            <button id="btnDelVale">Deletar</button>
+            <button id="btnSaveVale">Salvar</button>
+        </div>
 
-        <button id="btnDelVale">Deletar</button>
 
     </fieldset>
 
@@ -96,6 +99,28 @@
             }
         }else{
             alert('Empréstimo já quitado! (Não pode ser deletado)')
+        }
+    })
+
+    document.querySelector('#btnSaveVale').addEventListener('click',()=>{
+        if(data.quitado == '0'){
+            if(confirm('Deseja Alterar a Descrição?')){
+                const params = new Object;
+                    params.hash = localStorage.getItem('hash')
+                    params.id = data.id
+                    params.id_func = data.id_func
+                    params.valor = data.valor
+                    params.quitado = 0
+                    params.obs = document.querySelector('#edtDescVal').value
+                    params.data = data.data
+
+                const myPromisse = queryDB(params,77);
+                myPromisse.then((resolve)=>{
+                    main_data.vale.data.fillVale()
+                })
+            }
+        }else{
+            alert('Empréstimo já quitado! (Não pode ser alterado)')
         }
     })
 
