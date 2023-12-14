@@ -775,6 +775,36 @@ function print_pedcomp(){
 
 }
 
+function timbrado(titulo,rodape,texto){
+
+    jsPDF.autoTableSetDefaults({
+        headStyles: { fillColor: [37, 68, 65] },
+    })
+
+    doc = new jsPDF();
+    
+    clearTxt(37,10,[210,297])
+    frame()
+    logo([14,15,45,10])
+
+//    line(txt.y)
+
+
+    txt.y = 280
+
+    doc.setFontSize(8)
+    doc.setFont(undefined, 'normal')
+    doc.text('Av. Dr. Rosalvo de Almeida Telles, 2070  Cacapava-SP - CEP 12.283-020 - CNPJ 00.519.547/0001-06', 42,txt.y);
+    addLine()
+    doc.text('www.flexibus.com.br | comercial@flexibus.com.br | (12) 3653-2230', 63,txt.y);
+
+    txt.y = 50
+
+    doc.save('timbrado.pdf')
+
+
+}
+
 function holerite(func,tipo='holerite'){
 
     function drawFrame(Y=5,mode='ADTO'){

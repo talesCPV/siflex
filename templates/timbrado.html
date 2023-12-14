@@ -1,0 +1,46 @@
+
+<template>
+    <style>
+
+
+    </style>
+  
+    <div class="form-base">
+        <h1>Timbrado</h1>
+        <fieldset>
+            <legend id="lgdSem">Cabeçalho/ Rodapé</legend>
+
+            <div class="inline">
+                <label for="edtTitulo">Título</label>
+                <input type="text" id="edtTitulo">
+            </div>
+
+            <div class="inline">
+                <label for="edtRodape">Rodapé</label>
+                <input type="text" id="edtRodape">
+            </div>
+
+            <div class="inline">
+                <label for="edtTexto">Texto</label>
+                <textarea id="edtTexto" cols="30" rows="15"></textarea>
+            </div>
+
+            <button id="btnPrint">Imprimir</button>
+        </fieldset>
+
+    </div>
+
+</template>
+<script>
+   
+    document.querySelector('#btnPrint').addEventListener('click',()=>{
+        const titulo = document.querySelector('#edtTitulo').value.trim()
+        const rodape = document.querySelector('#edtRodape').value.trim()
+        const texto = document.querySelector('#edtTexto').value.trim()
+
+        timbrado(titulo,rodape,texto)
+
+    })
+
+
+</script>

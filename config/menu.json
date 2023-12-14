@@ -134,6 +134,14 @@
 					"itens"  : []
 				},
 				{
+					"modulo" : "Papel Timbrado",
+					"script" : "javascript:openHTML('timbrado.html','content-screen')",
+					"access" : [10],
+					"class"  : "",
+					"icone"  : "fa fa-archive",
+					"itens"  : []
+				},
+				{
 					"modulo" : "Agenda",
 					"script" : "javascript:openHTML('calendar.html','content-screen')",
 					"icone"  : "fa fa-home",
