@@ -136,7 +136,7 @@
 				{
 					"modulo" : "Papel Timbrado",
 					"script" : "javascript:openHTML('timbrado.html','content-screen')",
-					"access" : [10],
+					"access" : [10,4,3,1,2],
 					"class"  : "",
 					"icone"  : "fa fa-archive",
 					"itens"  : []

@@ -775,7 +775,7 @@ function print_pedcomp(){
 
 }
 
-function timbrado(titulo,rodape,texto){
+function timbrado(titulo,texto){
 
     jsPDF.autoTableSetDefaults({
         headStyles: { fillColor: [37, 68, 65] },
@@ -794,11 +794,35 @@ function timbrado(titulo,rodape,texto){
 
     doc.setFontSize(8)
     doc.setFont(undefined, 'normal')
-    doc.text('Av. Dr. Rosalvo de Almeida Telles, 2070  Cacapava-SP - CEP 12.283-020 - CNPJ 00.519.547/0001-06', 42,txt.y);
-    addLine()
-    doc.text('www.flexibus.com.br | comercial@flexibus.com.br | (12) 3653-2230', 63,txt.y);
+    center_text('Av. Dr. Rosalvo de Almeida Telles, 2070  Cacapava-SP - CEP 12.283-020 - CNPJ 00.519.547/0001-06')
+    center_text('www.flexibus.com.br | comercial@flexibus.com.br | (12) 3653-2230')
 
     txt.y = 50
+    doc.setFontSize(titulo.font)
+    doc.setTextColor(titulo.color);
+    doc.setFont(undefined, 'bold')
+    if(titulo.align == '1'){
+        doc.text(titulo.text,10,txt.y)
+    }else if(titulo.align == '2'){
+        center_text(titulo.text)
+    }else if(titulo.align == '3'){
+        right_text(titulo.text,10)
+    }
+
+    txt.y = 50 + parseInt(titulo.font)
+    doc.setFontSize(texto.font)
+    doc.setTextColor(texto.color);
+    doc.setFont(undefined, 'normal')
+    box(texto.text,10,txt.y, doc.internal.pageSize.getWidth()-20)
+
+    if(texto.ass != ''){
+        const w = doc.getTextDimensions(texto.ass).w +4
+        addLine()
+        txt.x = texto.align == '1' ? 20 : texto.align=='2' ? doc.internal.pageSize.getWidth()/2 - w/2 : doc.internal.pageSize.getWidth() - w - 10
+        doc.line(txt.x - 3,txt.y-txt.lineHeigth,txt.x+w,txt.y-txt.lineHeigth)
+        addLine
+        doc.text(texto.ass,txt.x,txt.y)
+    }
 
     doc.save('timbrado.pdf')
 
