@@ -83,8 +83,8 @@ function backLine(N=1, botton=0, top=46){
     return true
 }
 
-function box(text,x,y,w,lh=0.8){
-    const h = txt.lineHeigth * lh   
+function box(text,x,y,w,lh=1,bline = true){
+    const h = txt.lineHeigth * doc.getTextDimensions(text).h * (lh * 0.25)
     text = text.trim().split('\n')
     for(let i=0; i<text.length; i++){
         const txt = text[i].trim().split(' ')
@@ -102,7 +102,7 @@ function box(text,x,y,w,lh=0.8){
         }
         lin.trim() != '' ? doc.text(lin,x,y): '';
         y += h
-        addLine()
+        bline ? addLine(h) : addLine()
     }    
 }
 
@@ -247,7 +247,7 @@ function print_pcp(tbl){
                 doc.setFontSize(8)
                 y_ = 0
             }
-            box(tbl[row].cells[cel].innerHTML, x[cel],y[row]+y_,60,0.8)
+            box(tbl[row].cells[cel].innerHTML, x[cel],y[row]+y_,60,1,false)
         }
     }
 
