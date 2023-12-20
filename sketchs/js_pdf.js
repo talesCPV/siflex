@@ -317,7 +317,7 @@ function carrosRelat(obj, origem='AnaFrota'){
             fontSize = main_data.anafrota.data.fontsize
             obj = main_data.anafrota.data.objeto
         }else if(origem == 'AnaFrotaOrc'){
-            head =  [[main_data.anafrota.data.objeto,"Local", "Serviço a ser Executado"]]
+            head =  [[main_data.anafrota.data.objeto,"Local","Feito", "Serviços Previstos"]]
             colspan = 2
             celWidth = 100
             fontSize = main_data.anafrota.data.fontsize
@@ -400,9 +400,9 @@ function carrosRelat(obj, origem='AnaFrota'){
         if(origem == 'AnaFrota'){
             tbl_body.push([data.num_carro,dataBR(data.data_analise),data.exec=='1'?'SIM':'NÃO',viewMoneyBR(parseFloat(data.valor).toFixed(2))]) 
         }else if(origem == 'AnaFrotaOrc'){
-            tbl_body.push([data.num_carro,data.local,data.obs])
-            tbl_body.push(['','','Valor: '+viewMoneyBR(parseFloat(data.valor).toFixed(2))])
-            tbl_body.push(['','',''])
+            tbl_body.push([data.num_carro,data.local,data.exec=='1'?'SIM':'NÃO',data.obs])
+            tbl_body.push(['','','','Valor: '+viewMoneyBR(parseFloat(data.valor).toFixed(2))])
+            tbl_body.push(['','','',''])
         }else if(origem == 'ServExec'){
             tbl_body.push([dataBR(data.data_exec),data.num_carro,data.pedido,data.nf,viewMoneyBR(parseFloat(data.valor).toFixed(2))]) 
         }else{
@@ -590,7 +590,7 @@ function print_cotacao(ped,itens,emp,tipo='cot'){
         doc.text('Obs:',10,txt.y)
         addLine()
         doc.setFont(undefined, 'bold')
-        box(ped.obs,10,txt.y,170)
+        box(ped.obs,10,txt.y,170,1,false)
         doc.setFont(undefined, 'normal')
     }
     line(txt.y)

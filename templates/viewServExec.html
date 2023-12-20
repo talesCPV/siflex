@@ -44,6 +44,8 @@
 </template>
 <script>
 
+    const data = main_data.viewServExec.data
+
     document.querySelector('#edtData').value = today.getFormatDate()
 
     const params = new Object;
@@ -52,18 +54,18 @@
         params.signal = '='
         params.value = 'CLI'
 
-    fillCombo('cmbCli',params,11,['id','cod_nome'],typeof main_data.viewServExec.data === 'object' ? main_data.viewServExec.data.id_emp :'' )
+    fillCombo('cmbCli',params,11,['id','cod_nome'],typeof data === 'object' ? data.id_emp :'' )
 
-    if(typeof main_data.viewServExec.data === 'object'){
-        document.querySelector('#edtData').value = main_data.viewServExec.data.data_exec
-        document.querySelector('#edtNumCarro').value = main_data.viewServExec.data.num_carro
-        document.querySelector('#edtPed').value = main_data.viewServExec.data.pedido
-        document.querySelector('#edtNF').value = main_data.viewServExec.data.nf        
-        document.querySelector('#edtValor').value = parseFloat(main_data.viewServExec.data.valor).toFixed(2)
-        document.querySelector('#edtDetal').value = main_data.viewServExec.data.obs
-        document.querySelector('#edtTecnico').value = main_data.viewServExec.data.func
-        document.querySelector('#btnDel').style.display = 'block'
-        document.querySelector('#btnCad').innerHTML = 'Salvar'
+    if(typeof data === 'object'){
+        document.querySelector('#edtData').value = data.mode =='add' ? today.getFormatDate() : data.data_exec
+        document.querySelector('#edtNumCarro').value = data.num_carro
+        document.querySelector('#edtPed').value = data.mode =='add' ? '': data.pedido
+        document.querySelector('#edtNF').value = data.mode =='add' ? '': data.nf
+        document.querySelector('#edtValor').value = parseFloat(data.valor).toFixed(2)
+        document.querySelector('#edtDetal').value = data.obs
+        document.querySelector('#edtTecnico').value = data.func
+        document.querySelector('#btnDel').style.display = data.mode =='add' ? 'none' : 'block'
+        document.querySelector('#btnCad').innerHTML = data.mode =='add' ? 'Transformar Análise em Serviço' : 'Salvar'
      
     }
 
@@ -71,7 +73,7 @@
 
         if(checkField(['edtData','edtNumCarro','edtDetal','edtTecnico'])){
             const params = new Object;
-                params.id = typeof main_data.viewServExec.data === 'object' ? main_data.viewServExec.data.id :'DEFAULT' 
+                params.id = typeof data === 'object' ? data.mode =='add' ? 'DEFAULT' : data.id :'DEFAULT' 
                 params.id_emp = document.querySelector('#cmbCli').value
                 params.data_exec = document.querySelector('#edtData').value.trim()
                 params.num_carro = document.querySelector('#edtNumCarro').value.trim()
@@ -89,7 +91,17 @@
                 document.querySelector('#edtDetal').value = ''
                 document.querySelector('#edtValor').value = ''
                 document.querySelector('#edtNumCarro').focus()
-                if(main_data.viewServExec.data != 'new'){
+                if(data != 'new'){
+                    if(data.mode =='add'){
+                        const params_ = new Object;
+                            params_.has = localStorage.getItem('hash')
+                            params_.id_serv = data.analise
+                        const myPromisse_ = queryDB(params_,83);
+                        myPromisse_.then((resolve)=>{
+                        
+                        })
+                        
+                    }
                     document.querySelector('#btnBusca').click()
                     closeModal('viewServExec')
                 }else{
@@ -103,7 +115,7 @@
     document.querySelector('#btnDel').addEventListener('click',()=>{
         if (confirm('Deseja realmente deletar este Registro?')) {
             const params = new Object;
-                params.id = main_data.viewServExec.data.id
+                params.id = data.id
                 params.hash = localStorage.getItem('hash')
 
             const myPromisse = queryDB(params,51);

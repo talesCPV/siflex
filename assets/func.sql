@@ -87,3 +87,20 @@ DELIMITER $$
 
 	END $$
 DELIMITER ;
+
+ DROP PROCEDURE sp_anal2servexec;
+DELIMITER $$
+	CREATE PROCEDURE sp_anal2servexec(
+		IN Ihash varchar(30),
+		IN Iid_analise int(11)
+    )
+	BEGIN
+        SET @class = (SELECT class FROM tb_usuario WHERE hash COLLATE utf8_general_ci = Ihash COLLATE utf8_general_ci LIMIT 1);
+		SET @serv = (SELECT MAX(id) FROM tb_serv_exec);
+
+		IF(@class >=4)THEN
+			UPDATE tb_analise_frota SET serv_exec=@serv WHERE id=Iid_analise;
+        END IF;
+
+	END $$
+DELIMITER ;

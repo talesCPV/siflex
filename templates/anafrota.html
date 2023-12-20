@@ -30,9 +30,9 @@
                 </select>
                 <input type="text" id="edtBusca"placeholder="Digite sua Busca" onkeypress="return getEnter(event, 'btnBusca')">
                 <select id="cmbExec">
-                    <option value="1">Todos</option>
-                    <option value="2">Executados</option>
-                    <option value="3" selected>Não Executados</option>
+                    <option value="0,1" selected>Todos</option>
+                    <option value="1">Executados</option>
+                    <option value="0">Não Executados</option>
                 </select>
                 <button id="btnBusca">Busca</button>
             </div>
@@ -111,6 +111,7 @@
             params.value = value
             params.ini = ckb ? document.querySelector('#edtIni').value : '2000-01-01';
             params.fin = ckb ? document.querySelector('#edtFin').value : '2100-12-31';
+            params.exec = document.querySelector('#cmbExec').value
 
         const myPromisse = queryDB(params,18);
 
@@ -130,6 +131,24 @@
         data = e.target.parentNode.data
         data.mode = 'edit'
         openHTML('viewAnaFrota.html','pop-up','Editar Análise de Frota',data)
+
+    })
+
+    document.querySelector('#tblAnaFrota').addEventListener('contextmenu',(e)=>{
+        window.event.returnValue = false;
+        data = e.target.parentNode.data
+        data.analise = data.id
+        data.mode = 'add'
+
+        if(data.exec=='1'){
+            if(data.serv_exec=='0'){
+                if(confirm('Deseja lançar em Serviços Executados?')){
+                    openHTML('viewServExec.html','pop-up','Serviços Executado sobre Análise de Frota',data)
+                }
+            }else{
+                alert(`Análise já transformada, verificar Serviços Executado cod. ${data.serv_exec}`)
+            }
+        }
 
     })
 
