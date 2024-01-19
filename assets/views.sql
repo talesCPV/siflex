@@ -5,3 +5,7 @@ ROUND(valor - IFNULL((SELECT SUM(valor) FROM tb_vale_pgto WHERE id_vale = VL.id)
 FROM tb_vale AS VL;
 
 select * from vw_vales;
+
+-- DROP VIEW vw_icms;
+-- CREATE VIEW vw_icms AS
+SELECT * FROM tb_icms;

@@ -2,7 +2,7 @@
 <template>
     <style>
 
-        #btnNovo{
+        #btnNovo, #btnIcms{
             width: 98%;
         }
 
@@ -16,6 +16,7 @@
         </div>
 
         <button id="btnNovo">Novo</button>
+        <button id="btnIcms">ICMS</button>
 
     </div>
 
@@ -44,6 +45,13 @@
         const data = new Object
         data.callby = 'new'
         openHTML('viewImp.html','pop-up','Cadastro de Impostos',data)
+
+    })
+
+    document.querySelector('#btnIcms').addEventListener('click',()=>{
+        const data = new Object
+        data.callby = 'new'
+        openHTML('viewIcms.html','pop-up','Tabela de ICMS',data,800)
 
     })
 

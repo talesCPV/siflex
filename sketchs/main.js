@@ -154,6 +154,9 @@ HTMLTableElement.prototype.plot = function(obj, fields,type='',file=false){
                 case 'R$.':
                     html = obj[arr[0]] != null ? viewMoneyBR(parseFloat(obj[arr[0]]).toFixed(2)) : ''   //'R$'+ parseFloat(obj[arr[0]]).toFixed(2)
                     break;             
+                case '%..':
+                    html = obj[arr[0]] != null ?parseFloat(obj[arr[0]]).toFixed(2)+'%' : ''   // parseFloat(obj[arr[0]]).toFixed(2) + %
+                    break;             
                 case 'cha':
                     op = type[i].split(' ')
                     html = ''
@@ -240,7 +243,8 @@ function newModal(title, content, pos, id){
         backModal.classList = 'modal'
         backModal.id = 'modal-'+id
         backModal.style.zIndex = 2+index
-        backModal.style.display = 'block'
+        backModal.style.display = 'flex'
+        backModal.style.justifyContent = 'center'
 
     const mod_card = document.createElement('div')
         mod_card.classList = 'modal-content'

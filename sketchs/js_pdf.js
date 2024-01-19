@@ -288,7 +288,7 @@ function carrosRelat(obj, origem='AnaFrota'){
         if(document.querySelector('#edtObs').value.trim() != ''){
             addLine()
             doc.setFontSize(8)
-            box(document.querySelector('#edtObs').value.trim(),15,txt.y,170,0.7)
+            box(document.querySelector('#edtObs').value.trim(),15,txt.y,170,1,false)
         }
         doc.setTextColor(0,0,0); 
     }

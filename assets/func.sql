@@ -104,3 +104,22 @@ DELIMITER $$
 
 	END $$
 DELIMITER ;
+
+ DROP PROCEDURE sp_edtICMS;
+DELIMITER $$
+	CREATE PROCEDURE sp_edtICMS(
+		IN Ihash varchar(30),
+		IN Iid_uf int(11),
+        IN Ivalor double
+    )
+	BEGIN
+        SET @class = (SELECT class FROM tb_usuario WHERE hash COLLATE utf8_general_ci = Ihash COLLATE utf8_general_ci LIMIT 1);
+
+		IF(@class >=4)THEN
+			UPDATE tb_icms SET valor=Ivalor WHERE id=Iid_uf;
+        END IF;
+
+		SELECT * FROM tb_icms;
+
+	END $$
+DELIMITER ;

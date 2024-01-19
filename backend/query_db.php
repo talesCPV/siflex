@@ -192,6 +192,8 @@
          "81" => 'CALL sp_delVale("x00",x01);',
          "82" => 'CALL sp_delValePgto("x00",x01);',
          "83" => 'CALL sp_anal2servexec("x00",x01);',
+         "84" => 'SELECT * FROM tb_icms WHERE "y00"="x00";',
+         "85" => 'CALL sp_edtICMS("x00",x01,x02);',
             
       );
 

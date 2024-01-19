@@ -1,0 +1,41 @@
+
+<template>
+    <style>
+        #btnDel, #fdsAlq{
+            display: none;
+        }
+    </style>
+  
+    <table id="tblIcms"></table>
+
+</template>
+<script>
+
+    const func = main_data.viewIcms.data
+
+    func.fillUF = ()=>{
+        const params = new Object;     
+            params.uf = 'uf'
+
+        const myPromisse = queryDB(params,84);
+        myPromisse.then((resolve)=>{
+            const json = JSON.parse(resolve)
+
+            const tbl = document.querySelector('#tblIcms')  
+            tbl.head('UF,Nome,Valor')
+            for(let i=0; i<json.length;i++){
+                tbl.plot(json[i],'sigla,nome,valor','Upp,Upp,%..')
+            }                      
+        })
+    }
+
+    document.querySelector('#tblIcms').addEventListener('click',(e)=>{
+        data = e.target.parentNode.data
+        data.callby = 'edit'        
+        openHTML('editIcms.html','pop-up',data.nome,data,400)
+    })
+
+
+    func.fillUF()
+
+</script>
