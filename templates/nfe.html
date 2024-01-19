@@ -511,7 +511,9 @@
             tot += val
         }
         document.querySelector('#edtValorNF').value = tot.toFixed(2)
-        document.querySelector('#txaTextoCompl').value = `DOC. EMITIDO POR ME OU EPP OPTANTE S.NACIONAL, NÃO GERA DIREITO A CREDITO FISCAL DE ISSQN E IPI, PERMITE O APROVEITAMENTO DE CREDITO DO ICMS NO VALOR DE  R$${(tot*0.0282).toFixed(2)} CORRESPONDENTE A ALIQUOTA DE 2,82% NOS TERMOS DO ARTIGO 23 DA LC 123. Aprovado conforme pedido(s) ${document.querySelector('#hdnPed').value}`
+        console.log(cument.querySelector('#CRT').value)
+        const txt_compl =  document.querySelector('#CRT').value == '3' ? `DOC. GERA DIREITO A CREDITO FISCAL DO ICMS NO VALOR DE  R$${(tot*0.18).toFixed(2)} CORRESPONDENTE A ALIQUOTA DE 18%. Aprovado conforme pedido(s) ${document.querySelector('#hdnPed').value}` : `DOC. EMITIDO POR ME OU EPP OPTANTE S.NACIONAL, NÃO GERA DIREITO A CREDITO FISCAL DE ISSQN E IPI, PERMITE O APROVEITAMENTO DE CREDITO DO ICMS NO VALOR DE  R$${(tot*0.0282).toFixed(2)} CORRESPONDENTE A ALIQUOTA DE 2,82% NOS TERMOS DO ARTIGO 23 DA LC 123. Aprovado conforme pedido(s) ${document.querySelector('#hdnPed').value}`
+        document.querySelector('#txaTextoCompl').value = txt_compl
     }
 
     function uploadNFe(txt, filename){
@@ -846,7 +848,6 @@
                 cliente.querySelector('#fone').value = getFone(data.tel)
                 document.getElementById('btnSaveCli').click()
                 document.getElementById('btnBuscaIBGE').click()
-
             }    
 
             const params = new Object;
@@ -855,13 +856,14 @@
             myPromisse.then((resolve)=>{
                 const json = JSON.parse(resolve)
                 const tbl = document.querySelector('#tblItens')
+                const regime = document.querySelector('#CRT').value
                 let total
                 if(tbl.rows.length > 0){
                     total = parseFloat(document.querySelector('#edtValorNF').value)
                     if (!confirm(`Adicionar os ítens deste pedido a NFe atual?`)) {
                         document.querySelector('#hdnPed').value = data.num_ped
                         total = 0
-                        tbl.head('Cod.|mobHide,Descrição,Qtd.,Preço Unit.,Sub Total,CFOP')
+                        tbl.head('Cod.|mobHide,Descrição,Qtd.,Preço Unit.,Sub Total,ICMS,%,CFOP')
                         addCli()
                     }else{
                         document.querySelector('#hdnPed').value += ', '+ data.num_ped
@@ -869,7 +871,8 @@
                 }else{
                     document.querySelector('#hdnPed').value = data.num_ped
                     total = 0
-                    tbl.head('Cod.|mobHide,Descrição,Qtd.,Preço Unit.,Sub Total,CFOP') 
+                    tbl.head('Cod.|mobHide,Descrição,Qtd.,Preço Unit.,Sub Total,ICMS,%,CFOP')
+//                    tbl.head('Cod.|mobHide,Descrição,Qtd.,Preço Unit.,Sub Total,CFOP') 
                     addCli()           
                 }
 
@@ -890,10 +893,16 @@
 
                     json[i].cfop = CFOP
 
-                    tbl.plot(json[i],'cod_prod|mobHide,descricao,qtd,preco,total,cfop','str,Upp,str,float,float,str')
+                    json[i].ICMS = ['1','2'].includes(regime) ? 0 : json[i].ICMS
+                    json[i].TOT_ICMS = ['1','2'].includes(regime) ? 0 : json[i].TOT_ICMS
+
+                    tbl.plot(json[i],'cod_prod|mobHide,descricao,qtd,preco,total,TOT_ICMS,ICMS,cfop','str,Upp,str,float,float,R$.,%..,str')
                 }
                 document.querySelector('#edtValorNF').value = total.toFixed(2)
-                document.querySelector('#txaTextoCompl').value = `DOC. EMITIDO POR ME OU EPP OPTANTE S.NACIONAL, NÃO GERA DIREITO A CREDITO FISCAL DE ISSQN E IPI, PERMITE O APROVEITAMENTO DE CREDITO DO ICMS NO VALOR DE  R$${(total*0.0282).toFixed(2)} CORRESPONDENTE A ALIQUOTA DE 2,82% NOS TERMOS DO ARTIGO 23 DA LC 123. Aprovado conforme pedido(s) ${document.querySelector('#hdnPed').value}`
+//                document.querySelector('#txaTextoCompl').value = `DOC. EMITIDO POR ME OU EPP OPTANTE S.NACIONAL, NÃO GERA DIREITO A CREDITO FISCAL DE ISSQN E IPI, PERMITE O APROVEITAMENTO DE CREDITO DO ICMS NO VALOR DE  R$${(total*0.0282).toFixed(2)} CORRESPONDENTE A ALIQUOTA DE 2,82% NOS TERMOS DO ARTIGO 23 DA LC 123. Aprovado conforme pedido(s) ${document.querySelector('#hdnPed').value}`
+                const txt_compl =  document.querySelector('#CRT').value == '3' ? `DOC. GERA DIREITO A CREDITO FISCAL DO ICMS NO VALOR DE  R$${(total*0.18).toFixed(2)} CORRESPONDENTE A ALIQUOTA DE 18%. Aprovado conforme pedido(s) ${document.querySelector('#hdnPed').value}` : `DOC. EMITIDO POR ME OU EPP OPTANTE S.NACIONAL, NÃO GERA DIREITO A CREDITO FISCAL DE ISSQN E IPI, PERMITE O APROVEITAMENTO DE CREDITO DO ICMS NO VALOR DE  R$${(total*0.0282).toFixed(2)} CORRESPONDENTE A ALIQUOTA DE 2,82% NOS TERMOS DO ARTIGO 23 DA LC 123. Aprovado conforme pedido(s) ${document.querySelector('#hdnPed').value}`
+                document.querySelector('#txaTextoCompl').value = txt_compl
+
                 document.querySelector('#tab-cliente').click()
             })
 

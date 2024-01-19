@@ -62,11 +62,7 @@
             ON DUPLICATE KEY UPDATE
             id_emp="x01", data_ped="x02", data_ent="x03", resp="x04", comp="x05", num_ped="x06", origem="x07", cond_pgto="x08", obs="x09", desconto="x10";',
          "29" => 'SELECT COUNT(*) as dg FROM tb_pedido WHERE num_ped LIKE "%x00%" ',
-         "30" => 'SELECT item.*, prod.descricao, prod.cod as cod_prod, prod.id_emp, prod.ncm,  ROUND((item.qtd * item.preco),2) as total
-            FROM tb_item_ped AS item 
-            INNER JOIN tb_produto AS prod 
-            ON item.id_prod = prod.id
-            AND item.id_ped = "x00"; ',
+         "30" => 'SELECT * FROM vw_pedItem WHERE id_ped = "x00";',
          "31" => 'DELETE FROM tb_pedido WHERE id="x00" AND (SELECT U.class FROM tb_usuario AS U WHERE hash="x01") IN (10,4);',
          "32" => 'INSERT INTO tb_item_ped (id, id_prod, id_ped, qtd, preco, und, serv)
             VALUES (x00,"x01","x02","x03","x04","x05","x06") ON DUPLICATE KEY UPDATE 
