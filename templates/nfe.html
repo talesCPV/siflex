@@ -553,6 +553,9 @@
 
     function geraNFeItens(){
         const tblItens = document.querySelector('#tblItens').rows
+        const regime = document.querySelector('#CRT').value
+        main_data.nfe.data = new Object
+        main_data.nfe.data.TOT_ICMS = 0
         main_data.NFe.H = []
         for(let i=1; i< tblItens.length; i++){
             const item = new Object
@@ -586,11 +589,25 @@
             item.M = new Object
             item.M.a = ''
             item.M.b = ''
-            item.N = new Object    
-//N10d|orig|CSOSN|
-            item.N10d = new Object
-            item.N10d.orig = '0'
-            item.N10d.CSOSN = '102'
+            item.N = new Object
+            if(regime == '3'){ 
+                // ICMS INTEGRAL
+                main_data.nfe.data.TOT_ICMS += parseFloat(tblItens[i].data.TOT_ICMS)
+                item.N02= new Object
+                item.N02.orig = '0'
+                item.N02.CST = '00'
+                item.N02.modBC = '3'
+                item.N02.vBC = parseFloat(tblItens[i].data.total).toFixed(2)
+                item.N02.pICMS = parseFloat(tblItens[i].data.ICMS).toFixed(4)
+                item.N02.vICMS = parseFloat(tblItens[i].data.TOT_ICMS).toFixed(2)
+                item.N02.pFCP = ''
+                item.N02.vFCP = ''
+            }else{
+                //N10d|orig|CSOSN|
+                item.N10d = new Object
+                item.N10d.orig = '0'
+                item.N10d.CSOSN = '102'
+            }
 //O|CNPJProd|cSelo|qSelo|cEnq|                
             item.O = new Object
             item.O.CNPJProd = ''
@@ -629,8 +646,8 @@
         main_data.NFe.W = new Object
 //W02|vBC|vICMS|vICMSDeson|vFCPUFDest|vICMSUFDest|vICMSUFRemet|vFCP|vBCST|vST|vFCPST|vFCPSTRet|vProd|vFrete|vSeg|vDesc|vII|vIPI|vIPIDevol|vPIS|vCOFINS|vOutro|vNF|vTotTrib|
         main_data.NFe.W02 = new Object
-        main_data.NFe.W02.vBC = '0.00'
-        main_data.NFe.W02.vICMS = '0.00'
+        main_data.NFe.W02.vBC =  regime == '3' ? parseFloat(document.querySelector('#edtValorNF').value).toFixed(2) : '0.00'
+        main_data.NFe.W02.vICMS =  regime == '3' ? main_data.nfe.data.TOT_ICMS.toFixed(2) : '0.00'
         main_data.NFe.W02.vICMSDeson = '0.00'
 //        main_data.NFe.W02.vFCPUFDest = '0.00'
 //        main_data.NFe.W02.vICMSUFDest = '0.00'

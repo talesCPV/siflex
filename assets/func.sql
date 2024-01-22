@@ -125,12 +125,14 @@ DELIMITER $$
 DELIMITER ;
 
 
-SELECT item.*,EMP.id, prod.descricao, prod.cod as cod_prod, prod.id_emp, prod.ncm,  ROUND((item.qtd * item.preco),2) as total
+SELECT item.*,ROUND(ICMS.valor,2) AS ICMS, prod.descricao, prod.cod as cod_prod, prod.id_emp, prod.ncm,  ROUND((item.qtd * item.preco),2) as total
             FROM tb_item_ped AS item 
             INNER JOIN tb_produto AS prod
             INNER JOIN tb_pedido AS PED
             INNER JOIN tb_empresa AS EMP
+            INNER JOIN tb_icms AS ICMS
             ON item.id_prod = prod.id
             AND item.id_ped = PED.id
             AND PED.id_emp = EMP.id
+            AND ICMS.sigla = EMP.estado
             AND item.id_ped = "1152";
