@@ -1,0 +1,79 @@
+
+<template>
+    <style>
+
+
+    </style>
+  
+
+    <fieldset>
+        <legend>Inventário de Estoque</legend>
+
+        <button id="btnAdd">Adicionar Ítens</button>
+
+        <select id="lbxItens" size="25"></select>
+
+        <button id="btnProc">Processar</button>
+
+    </fieldset>
+
+
+</template>
+<script>
+
+
+document.querySelector('#btnAdd').addEventListener('click',()=>{
+
+    main_data.inventario.data = new Object
+    main_data.inventario.data.addItem = function(data){
+
+        const opt = document.createElement('option')
+            opt.setAttribute('cod',data.cod) 
+            opt.setAttribute('qtd',data.qtd) 
+            opt.setAttribute('id_prod',data.id) 
+            opt.innerHTML =  `${parseInt(data.qtd)>=0 ?'ADICIONAR':'RETIRAR'} ${Math.abs(data.qtd)} - ${data.descricao} DO ESTOQUE` 
+
+        document.querySelector('#lbxItens').appendChild(opt)
+        closeModal('addProd')
+    }
+
+    openHTML('addProd.html','pop-up','Adicione um Produto ou Serviço',main_data.inventario.data,[100,30])
+})
+
+document.querySelector('#lbxItens').addEventListener('dblclick',()=>{
+    if(confirm('Deletar essa linha?')) {
+        const sel =  document.querySelector('#lbxItens')
+        sel.remove(sel.selectedIndex)
+    }
+})
+
+document.querySelector('#btnProc').addEventListener('click',()=>{
+    if(confirm('Processar este inventário?')) {
+        const opt = document.querySelector('#lbxItens').querySelectorAll('option')
+
+        for(let i=0; i<opt.length; i++){
+//            console.log(opt[i].getAttribute('cod'))
+//            console.log(opt[i].getAttribute('qtd'))
+//            console.log(opt[i].getAttribute('id_prod'))
+
+            const params = new Object;
+            params.cod = parseInt(opt[i].getAttribute('cod'))
+            params.estoque = parseInt(opt[i].getAttribute('qtd'))
+
+            const ret = queryDB(params,71);
+            ret.then(()=>{
+                alert('Inventário lançado com sucesso.')
+                closeModal('inventario')
+            })
+
+        }
+
+
+        console.log(opt)
+
+    }
+
+})
+
+
+</script>

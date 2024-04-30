@@ -1,0 +1,109 @@
+
+<template>
+    <style>
+        .l-data, .l-quit, .l-val{
+            width: 150px;
+        }
+
+    </style>
+    
+    <div class="frm-vale">
+
+        <fieldset>
+            <legend>Novo Vale</legend>
+            <div class="inline">
+                <label for="edtDesc">Descrição*</label>
+                <input type="text" id="edtDesc" maxlength="200">
+            </div>
+            <div class="inline">
+                <label for="edtVal">Valor*</label>
+                <input type="text" id="edtVal" onkeyup="return valFloat(this)">
+                <label for="edtDataVale">Data</label>
+                <input type="date" id="edtDataVale" > 
+            </div>
+            <div class="inline">
+                <button id="btnNovoVale" >Adicionar</button>
+            </div>
+
+        </fieldset>
+
+        <fieldset>
+            <legend>Histórico</legend>
+            <table id="tblVale"></table>
+
+        </fieldset>
+
+
+    </div>
+
+</template>
+<script>
+
+    const data = main_data.vale.data
+
+    document.querySelector('#edtDataVale').value = today.getFormatDate()
+
+    document.querySelector('#btnNovoVale').addEventListener('click',()=>{
+        const val = document.querySelector('#edtVal').value.trim()
+        const obs = document.querySelector('#edtDesc').value.trim()
+
+        if(val.length >0 && obs.length>0){
+            addVal(0,val,0,obs)         
+        }else{
+            alert('Favor preencher descrição e valor.')
+        }
+    })
+
+    document.querySelector('#tblVale').addEventListener('click',(e)=>{
+        dt = e.target.parentNode.data
+//        console.log(e.target.parentNode.parentNode.rows.length)
+//        console.log(e.target.parentNode.rowIndex)
+        if(e.target.parentNode.rowIndex >0 && e.target.parentNode.rowIndex < e.target.parentNode.parentNode.rows.length-1){
+            openHTML('viewVale.html','pop-up',data.nome,dt)
+        }
+
+    })
+
+    data.fillVale = ()=>{
+        const params = new Object;
+            params.id = data.id
+
+        const myPromisse = queryDB(params,78);
+        myPromisse.then((resolve)=>{
+            const tbl = document.querySelector('#tblVale')
+            tbl.innerHTML = ''
+            const json = JSON.parse(resolve)
+            let tot = 0
+            tbl.head('Data|l-data,Descrição,Valor|l-val,Quitado.|l-quit')
+            for(let i=0; i<json.length;i++){
+                tbl.plot(json[i],'data,obs,valor,quitado','date,Upp,R$.,cha 0=NÃO 1=SIM')
+                tot += json[i].quitado == '0' ? parseFloat(json[i].SALDO) : 0
+            }
+            tbl.plot(json[0],',,Saldo Devedor,R$'+tot.toFixed(2),'let,let,let,let')
+        })
+    } 
+
+    function addVal(id,val,quit,obs){
+
+        const params = new Object;
+            params.hash = localStorage.getItem('hash')
+            params.id = id
+            params.id_func = data.id
+            params.valor = val
+            params.quitado = quit
+            params.obs = obs
+            params.data = document.querySelector('#edtDataVale').value + ' 00:00:00'
+
+        const myPromisse = queryDB(params,77);
+        myPromisse.then((resolve)=>{
+            data.fillVale()
+            document.querySelector('#edtVal').value = 0
+            document.querySelector('#edtDesc').value = ''
+        })
+    }
+
+
+    data.fillVale()
+
+
+</script>

@@ -1,0 +1,49 @@
+
+<template>
+    <style>
+
+        #edtIcms{
+            margin: 10px;
+            width: 100px;
+        }
+
+        .center{
+            display: flex;
+            justify-content: center;
+        }
+
+    </style>
+  
+    <div class="inline center">
+        <label for="edtIcms" id="lblIcms"></label>
+        <input type="text" id="edtIcms" onkeyup="valFloat(this)">
+        <button id="btnSaveIcms">Salvar</button>
+    </div>
+  
+
+
+</template>
+<script>
+    const data =  main_data.editIcms.data    
+    document.querySelector('#lblIcms').innerHTML = `Valor do ICMS para ${data.sigla} (%)`
+    document.querySelector('#edtIcms').value = parseFloat(data.valor).toFixed(2)
+
+    document.querySelector('#btnSaveIcms').addEventListener('click',()=>{
+
+        const params = new Object;     
+            params.hash = localStorage.getItem('hash')
+            params.id = data.id
+            params.valor = document.querySelector('#edtIcms').value
+
+        const myPromisse = queryDB(params,85);
+        myPromisse.then((resolve)=>{
+            const json = JSON.parse(resolve)
+            main_data.viewIcms.data.fillUF()
+            closeModal('editIcms')
+        })
+
+
+    })
+
+
+</script>

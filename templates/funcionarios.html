@@ -1,0 +1,86 @@
+
+<template>
+    <style>
+        #btnNovo{
+            width: 98%;
+        }
+    </style>
+
+    <div class="form-base">
+        <h1>Funcionários</h1>
+
+        <fieldset>
+            <legend>Busca</legend>
+            <div class="inline">
+                <label for="cmbBusca">Busca por:</label>
+                <select id="cmbBusca">
+                    <option value="true" signal="=" val="true">Todos</option>
+                    <option value="FUNC.status" signal="=" val="ATIVO" selected>Ativos</option>
+                    <option value="FUNC.status" signal="=" val="DEMIT" >Desligados</option>
+                    <option value="FUNC.nome" signal="LIKE">Nome</option>
+                    <option value="CAR.cargo" signal="LIKE">Cargo</option>
+                    <option value="CAR.tipo" signal="=" val="HORA">Horista</option>
+                    <option value="CAR.tipo" signal="=" val="MENSAL">Mensalista</option>
+                </select>
+                <input type="text" id="edtBusca" onkeypress="return getEnter(event, 'btnBusca')">
+                <button id="btnBusca" onclick="main_data.funcionarios.data.query()">Busca</button>
+            </div>
+            <button id="btnNovo">Novo</button>            
+        </fieldset>
+
+        <table id="tblFunc"></table>
+    </div>
+
+</template>
+<script>
+   
+     main_data.funcionarios.data = new Object    
+     main_data.funcionarios.data.query = function(){
+        const sel = document.querySelector('#cmbBusca')
+        const field = sel.value
+        const signal = sel.options[sel.selectedIndex].getAttribute('signal')
+        let value = sel.options[sel.selectedIndex].hasAttribute('val') ? sel.options[sel.selectedIndex].getAttribute('val') : document.querySelector('#edtBusca').value.trim()
+            value = signal=='LIKE' ? `"%${value}%"` : signal=='IN' ? `(${value})` : sel.value=='true'? sel.value : `"${value}"`
+        
+            const values_arr = value.split(',')
+        if(signal=='IN'){
+            value = ''
+            for(let i=0; i< values_arr.length; i++){
+                value += i==0 ? `"${values_arr[i]}"` : `,"${values_arr[i]}"`
+            }
+        }
+
+        const tbl = document.querySelector('#tblFunc')
+        const params = new Object;
+            params.field = field
+            params.signal = signal
+            params.value = value        
+            params.hash = localStorage.getItem('hash')
+            params.field_2 = 1
+            params.value_2 = 1
+
+        const myPromisse = queryDB(params,56);
+        myPromisse.then((resolve)=>{
+            const json = JSON.parse(resolve)
+            tbl.head('Cod|mobHide,Nome,Cargo,Admissão|mobHide')
+            for(let i=0; i<json.length;i++){
+                tbl.plot(json[i],'id|mobHide,nome,cargo,data_adm|mobHide','int,Upp,Upp,date')
+            }          
+        })
+    }
+
+//    main_data.funcionarios.data.query()
+
+    document.querySelector('#tblFunc').addEventListener('click',(e)=>{
+        data = e.target.parentNode.data
+        data.callby = 'edit'
+        openHTML('viewFunc.html','pop-up','Dados do Funcionário',data)
+    })
+
+    document.querySelector('#btnNovo').addEventListener('click',()=>{
+        const data = new Object
+        data.callby = 'new'
+        openHTML('viewFunc.html','pop-up','Cadastro de Funcionário',data)
+    })
+
+</script>

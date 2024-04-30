@@ -1,0 +1,71 @@
+
+<template>
+    <style>
+
+
+    </style>
+
+    <fieldset>
+        <legend>Agenda</legend>
+
+        <div class="inline">
+            <label for="cmbBuscaAgd">Busca por:</label>
+            <select id="cmbBuscaAgd">
+                <option value="ag.nome" signal="LIKE">Nome</option>
+                <option value="emp.fantasia" signal="LIKE">Empresa</option>
+                <option value="ag.id" signal="=">Código</option>
+            </select>
+            <input type="text" id="edtBuscaAgd" placeholder="Digite sua busca" onkeypress="return getEnter(event, 'btnBusca')">
+            <button id="btnBuscaAgd">Busca</button>
+        </div>
+        <button id="btnNovo">Novo Contato</button>
+        <table id="tblAgenda"></table>
+
+
+    </fieldset>
+
+
+</template>
+<script>
+
+    document.querySelector('#btnBuscaAgd').addEventListener('click',()=>{
+
+        const sel = document.querySelector('#cmbBuscaAgd')
+        const field = sel.value
+        const signal = sel.options[sel.selectedIndex].getAttribute('signal')
+        let value = document.querySelector('#edtBuscaAgd').value.trim()
+        value = signal=='LIKE' ? '%'+value+'%' : value
+
+        const tbl = document.getElementById('tblAgenda')
+        tbl.innerHTML = ''
+        const params = new Object;
+            params.field = field
+            params.signal = signal
+            params.value = value
+            params.hash = localStorage.getItem('hash');
+
+        const myPromisse = queryDB(params,37);
+
+        myPromisse.then((resolve)=>{
+            if(resolve.trim() != ""){
+                const json = JSON.parse(resolve);
+                tbl.head('Cod.|mobHide,Nome,Empresa|mobHide,Celular,Telefone|mobHide,email|mobHide')            
+                for(let i=0; i<json.length;i++){
+                    tbl.plot(json[i],'id|mobHide,nome,fantasia|mobHide,cel1,cel2|mobHide,email|mobHide','int,Upp,Upp,str,str,Low')
+                }                
+            }        
+        });
+    })
+
+    document.querySelector('#tblAgenda').addEventListener('click',(e)=>{
+        data = e.target.parentNode.data
+        data.mode = 'edit'
+        openHTML('viewAgenda.html','pop-up',data.id+"-"+data.nome.toUpperCase(),data)
+    })
+
+    document.querySelector('#btnNovo').addEventListener('click',()=>{
+        openHTML('viewAgenda.html','pop-up','Novo Contato','new')
+    })
+
+
+</script>

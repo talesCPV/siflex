@@ -1,0 +1,54 @@
+
+<template>
+    <style>
+
+    </style>
+  <fieldset>
+    <legend>Papel de Parede</legend>
+
+    <div class="inline">
+        <label for="cmbWallpaper">Padrão</label>
+        <select id="cmbWallpaper">
+            <option value="wallpaper_01.jpg">Wallpaper 01</option>
+            <option value="wallpaper_02.jpg">Wallpaper 02</option>
+            <option value="wallpaper_03.jpg">Wallpaper 03</option>
+        </select>
+        <button id="btnUse">Usar</button>
+    </div>
+    <button id="btnUserUp">Upload</button>
+
+  </fieldset>
+
+
+
+
+</template>
+<script>
+
+    const saveBackground = function(filename, path='assets/users/'){ 
+        try{
+            getConfig(localStorage.getItem('username'),'config.json','wallpaper',path+filename)
+            main_data.dashboard.wallpaper()
+            closeModal('uploadFile')
+        }catch{
+            console.log('clear wallpaper')
+        }            
+    }
+
+    document.querySelector('#btnUserUp').addEventListener('click',()=>{
+            const obj = new Object
+                obj.path = '../assets/users/'
+                obj.filename = 'wallpaper_'+localStorage.getItem('username')
+                obj.ext = '.jpg,.jpeg,.png'
+                obj.func = saveBackground
+                
+            openHTML('uploadFile.html','pop-up','Upload de NF',obj,[20,150])
+    })
+
+    document.querySelector('#btnUse').addEventListener('click',()=>{
+        saveBackground(document.querySelector('#cmbWallpaper').value,'assets/')
+        main_data.dashboard.wallpaper()
+    })
+
+
+</script>

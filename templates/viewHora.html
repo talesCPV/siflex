@@ -1,0 +1,67 @@
+
+<template>
+    <style>
+
+    </style>
+
+    <fieldset>
+        <legend id="lgdHoras"></legend>
+        <div class="inline">
+            <label for="edtEnt">Entrada</label>
+            <input type="text" id="edtEnt" maxlength="5" onkeyup="return valTime(this)" onfocusout="return fillTime(this)">
+            <input type="date" id="edtDiaEnt">
+        </div>
+        <div class="inline">
+            <label for="edtSai">Saída</label>
+            <input type="text" id="edtSai" maxlength="5" onkeyup="return valTime(this)" onfocusout="return fillTime(this)">
+            <input type="date" id="edtDiaSai">
+        </div>
+        <button id="btnSave">Salvar</button>
+        <button id="btnClear">Limpar</button>
+    </fieldset>
+
+</template>
+<script>
+
+    const data = main_data.viewHora.data
+
+    document.querySelector('#lgdHoras').innerHTML = data.nome
+    document.querySelector('#edtEnt').value = data.hora_ent
+    document.querySelector('#edtDiaEnt').value = data.data_ent
+    document.querySelector('#edtSai').value = data.hora_sai
+    document.querySelector('#edtDiaSai').value = data.data_sai
+
+    document.querySelector('#btnSave').addEventListener('click',()=>{
+        if(checkField(['edtEnt','edtDiaEnt','edtSai','edtDiaSai'])){
+            const params = new Object;
+                params.id = data.id
+                params.id_func = data.id_func
+                params.entrada = `${document.querySelector('#edtDiaEnt').value} ${document.querySelector('#edtEnt').value}:00`
+                params.saida = `${document.querySelector('#edtDiaSai').value} ${document.querySelector('#edtSai').value}:00`
+            
+            const myPromisse = queryDB(params,63);
+            myPromisse.then((resolve)=>{
+                main_data.horas.query()
+                closeModal('viewHora')
+            })               
+        }        
+    })
+
+    document.querySelector('#btnClear').addEventListener('click',()=>{
+        if (confirm('Deseja realmente deletar esta hora?')) {
+            const params = new Object;
+                    params.id = data.id
+                    params.hash = localStorage.getItem('hash')
+                
+            const myPromisse = queryDB(params,64);
+            myPromisse.then((resolve)=>{
+                main_data.horas.query()
+                closeModal('viewHora')
+            })
+        }
+    })
+
+
+
+
+</script>

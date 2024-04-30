@@ -1,0 +1,123 @@
+
+<template>
+    <style>
+
+        #btnDel{
+            display: none;
+        }
+
+    </style>
+  
+    <fieldset>
+        <legend>Carro</legend>
+        <div class="inline">
+            <label for="cmbCli">Cliente *</label>
+            <select id="cmbCli"></select>
+        </div>
+        <div class="inline">
+            <label for="edtData">Data *</label>
+            <input type="date" id="edtData">
+            <label for="edtNumCarro">Num. do Carro*</label>
+            <input type="text" id="edtNumCarro">           
+        </div>
+        <div class="inline">
+            <label for="edtDetal">Detalhamento *</label>
+            <textarea id="edtDetal" cols="30" rows="10"></textarea>
+        </div>
+        <div class="inline">
+            <label for="edtTecnico">Técnico *</label>
+            <input type="text" id="edtTecnico" value="Bruno Mathias">
+            <label for="cmbLocal">Local de Execução</label>
+            <select id="cmbLocal">
+                <option value="No Cliente">No Cliente</option>
+                <option value="Na Flexibus">Na Fábrica</option>
+            </select>             
+        </div>     
+        <div class="inline">
+            <label for="edtValor">Valor R$</label>
+            <input type="text" id="edtValor" value="0" onkeyup="return valFloat(this)">
+            <label for="cmbExe">Executado</label>
+            <select id="cmbExe">
+                <option value="0">NÃO</option>
+                <option value="1">SIM</option>
+            </select>
+        </div>
+
+        <button id="btnCad">Cadastrar</button>
+        <button id="btnDel">Deletar</button>
+
+    </fieldset>
+
+
+</template>
+<script>
+
+    document.querySelector('#edtData').value = today.getFormatDate()
+
+    const params = new Object;
+        params.hash = localStorage.getItem('hash');
+        params.field = 'tipo'
+        params.signal = '='
+        params.value = 'CLI'
+
+    fillCombo('cmbCli',params,11,['id','cod_nome'],typeof main_data.viewAnaFrota.data === 'object' ? main_data.viewAnaFrota.data.id_emp :'' )
+
+    if(typeof main_data.viewAnaFrota.data === 'object'){
+        document.querySelector('#edtData').value = main_data.viewAnaFrota.data.data_analise
+        document.querySelector('#edtNumCarro').value = main_data.viewAnaFrota.data.num_carro
+        document.querySelector('#edtTecnico').value = main_data.viewAnaFrota.data.func
+        document.querySelector('#cmbLocal').value = main_data.viewAnaFrota.data.local
+        document.querySelector('#edtValor').value = parseFloat(main_data.viewAnaFrota.data.valor).toFixed(2)
+        document.querySelector('#edtDetal').value = main_data.viewAnaFrota.data.obs
+        document.querySelector('#cmbExe').value = main_data.viewAnaFrota.data.exec
+        document.querySelector('#btnDel').style.display = 'block'
+        document.querySelector('#btnCad').innerHTML = 'Salvar'     
+    }
+
+    document.querySelector('#btnCad').addEventListener('click',()=>{
+
+        if(checkField(['edtData','edtNumCarro','edtDetal','edtTecnico'])){
+            const params = new Object;
+                params.id = typeof main_data.viewAnaFrota.data === 'object' ? main_data.viewAnaFrota.data.id :'DEFAULT' 
+                params.id_emp = document.querySelector('#cmbCli').value
+                params.data_analise = document.querySelector('#edtData').value.trim()
+                params.num_carro = document.querySelector('#edtNumCarro').value.trim()
+                params.func = document.querySelector('#edtTecnico').value.trim()
+                params.local = document.querySelector('#cmbLocal').value
+                params.valor = document.querySelector('#edtValor').value.trim()
+                params.obs = document.querySelector('#edtDetal').value.trim()
+                params.exec = document.querySelector('#cmbExe').value
+            const myPromisse = queryDB(params,17);
+            myPromisse.then((resolve)=>{                
+                document.querySelector('#edtNumCarro').value = ''
+                document.querySelector('#edtDetal').value = ''
+                document.querySelector('#edtValor').value = ''
+                document.querySelector('#edtNumCarro').focus()
+                if(main_data.viewAnaFrota.data != 'new'){
+                    document.querySelector('#btnBusca').click()
+                    closeModal('viewAnaFrota')
+                }
+                
+            })
+        }
+    })
+
+    document.querySelector('#btnDel').addEventListener('click',()=>{
+        if (confirm('Deseja realmente deletar este Registro?')) {
+            const params = new Object;
+                params.id = main_data.viewAnaFrota.data.id
+                params.hash = localStorage.getItem('hash')
+
+            const myPromisse = queryDB(params,19);
+
+            myPromisse.then((resolve)=>{
+                document.querySelector('#btnBusca').click()
+                closeModal('viewAnaFrota')                
+            })
+
+
+        }        
+    })
+
+
+</script>

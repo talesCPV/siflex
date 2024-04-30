@@ -1,0 +1,84 @@
+
+<template>
+    <style>
+
+
+    </style>
+  
+    <div class="form-base">
+        <h1>Timbrado</h1>
+        <fieldset>
+            <legend id="lgdSem">Cabeçalho</legend>
+
+            <div class="inline">
+                <label for="edtTitulo">Título</label>
+                <input type="text" id="edtTitulo" placeholder="Título do relatório" value="RECIBO">
+                <label for="edtFont">Fonte</label>
+                <input type="text" id="edtFont" class="mob-wide" onkeyup="return valFloat(this,0)" value="18" style="width: 80px;">
+                <label for="edtCor">Cor</label>
+                <input type="color" id="edtCor" class="mob-wide" style="width: 80px; height: 45px;">
+                <label for="cmbPos">Pos.</label>
+                <select id="cmbPos" style="width: 100px;">
+                    <option value="1">←</option>
+                    <option value="2" selected>≡</option>
+                    <option value="3">→</option>
+                </select>
+            </div>
+
+        </fieldset>
+
+        <fieldset>
+            <legend id="lgdSem">Texto</legend>
+
+            <div class="inline">
+                <label for="edtAss">Assinatura</label>
+                <input type="text" id="edtAss" placeholder="Nome da Assinatura" >
+                <label for="edtFontTxt">Fonte</label>
+                <input type="text" id="edtFontTxt" class="mob-wide" onkeyup="return valFloat(this,0)" value="11" style="width: 80px;">
+                <label for="edtCorTxt">Cor</label>
+                <input type="color" id="edtCorTxt" class="mob-wide" style="width: 80px; height: 45px;">
+                <label for="cmbPosAss">Pos.</label>
+                <select id="cmbPosAss" style="width: 100px;">
+                    <option value="1">←</option>
+                    <option value="2" selected>≡</option>
+                    <option value="3">→</option>
+                </select>
+
+            </div>
+
+            <div class="inline">
+                <label for="edtTexto">Texto</label>
+                <textarea id="edtTexto" cols="30" rows="15"></textarea>
+            </div>
+
+            <button id="btnPrint">Imprimir</button>
+
+        </fieldset>
+
+
+    </div>
+
+</template>
+<script>
+   
+    document.querySelector('#btnPrint').addEventListener('click',()=>{
+                
+        const titulo = new Object
+            titulo.text = document.querySelector('#edtTitulo').value.trim()
+            titulo.font = document.querySelector('#edtFont').value
+            titulo.color = document.querySelector('#edtCor').value
+            titulo.align = document.querySelector('#cmbPos').value
+
+        const texto = new Object
+            texto.text = document.querySelector('#edtTexto').value
+            texto.ass = document.querySelector('#edtAss').value.trim()
+            texto.font = document.querySelector('#edtFontTxt').value
+            texto.color = document.querySelector('#edtCorTxt').value
+            texto.align = document.querySelector('#cmbPosAss').value
+
+        timbrado(titulo,texto)
+
+    })
+
+
+</script>

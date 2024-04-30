@@ -1,0 +1,528 @@
+
+<template>
+    <style>
+
+        button{
+            width: 98%;
+        }
+
+        #btnAddAll{
+            display: none;
+        }
+
+    </style>
+
+    <div class="form-base">
+        <h1>NFs Serviço</h1>
+
+        <div class="tab-bar">
+            <div class="tab-item" id="tab-emitente" onclick="pictab(this)">Emitente    </div>
+            <div class="tab-item" id="tab-pedido"   onclick="pictab(this)">Serviço     </div>
+            <div class="tab-item" id="tab-cliente"  onclick="pictab(this)">Cliente     </div>            
+            <div class="tab-item" id="tab-itens"    onclick="pictab(this)">Itens       </div>
+            <div class="tab-item" id="tab-fatura"   onclick="pictab(this)">Faturamento </div>
+            <div class="tab-item" id="tab-export"   onclick="pictab(this)">Arquivos</div>
+        </div>
+        
+        <div class="tab-screen">        
+            <div id="emitente" class="tab">
+                <div class="inline">
+                    <label> Razão Social *</label>
+                    <input type="text" id="xNome" maxlength="60" />
+                </div>
+                <div class="inline">
+                    <label> CNPJ </label>
+                    <input type="text" id="CNPJ" maxlength="18" onkeyup="valCNPJ(this)"/>
+                </div>
+                <div class="inline">
+                    <label> Endereço </label>
+                    <input type="text" id="xLgr" maxlength="60" />
+                    <label> Número: </label>
+                    <input type="text" id="nro" maxlength="5" style="max-width: 100px;" />
+                </div>
+                <div class="inline">
+                    <label> Bairro </label>
+                    <input type="text" id="bairro" maxlength="60" />
+                    <label> Complemento </label>
+                    <input type="text" id="cpl" maxlength="60" style="max-width: 200px;" />
+                </div>
+                <div class="inline">
+                    <label> Municipio</label>
+                    <input type="text" id="xMun" maxlength="60" />
+                    <label> Sigla da UF </label>
+                    <input type="text" id="UF" maxlength="2" style="max-width: 50px;" />
+                </div>
+                <div class="inline">
+                    <label> CEP </label>
+                    <input type="text" id="CEP" maxlength="10" onkeyup="valCEP(this)"/>
+                    <label> Email </label>
+                    <input type="text" id="email" maxlength="50"/>
+                </div>
+                <button id="btnSaveEmit">Salvar</button>
+            </div>
+            <div id="pedido" class="tab">
+                <fieldset>
+                    <legend>Busca Por:</legend>
+                    <div class="inline">
+                        <select id="cmbBusca">
+                            <option value="true"   signal="="  val="true">Todos</option>
+                            <option value="EMP.fantasia" signal="LIKE">Cliente</option>
+                            <option value="EMP.id" signal="=">Código do Cliente</option>
+                            <option value="SERV.num_carro" signal="LIKE">Num. do Carro</option>
+                            <option value="SERV.nf" signal="IN">NF</option>
+                            <option value="SERV.pedido" signal="IN">Pedido</option>
+                            <option value="SERV.id" signal="IN">Cod. Serv. Executado</option>
+                        </select>
+                        <input type="text" id="edtBusca"placeholder="Digite sua Busca" onkeypress="return getEnter(event, 'btnBusca')">
+                        <button id="btnBusca">Busca</button>
+                    </div>
+                    <div class="inline center-itens">
+                        <div class="ckBOX">
+                            <label for="ckbData">Por data</label>
+                            <input type="checkbox" id="ckbData" checked>
+                        </div>
+                        <input type="date" id="edtIni" onkeypress="return getEnter(event, 'btnBusca')">
+                        <input type="date" id="edtFin" onkeypress="return getEnter(event, 'btnBusca')">
+                    </div>
+        
+                </fieldset>
+
+                <table id="tblServExec"></table>
+                <button id="btnAddAll">Adicionar Todos</button>
+
+            </div>
+            <div id="cliente" class="tab">
+                <div class="inline">
+                    <label> Razão Social *</label>
+                    <input type="text" id="xNome" maxlength="60" />
+                </div>
+                <div class="inline">
+                    <label> CNPJ </label>
+                    <input type="text" id="CNPJ" maxlength="18" onkeyup="valCNPJ(this)"/>
+                    <label> Insc. MUn. </label>
+                    <input type="text" id="IM" maxlength="18" onkeyup="valInt(this)"/>
+                </div>
+                <div class="inline">
+                    <label> Endereço </label>
+                    <input type="text" id="xLgr" maxlength="60" />
+                    <label> Número: </label>
+                    <input type="text" id="nro" maxlength="5" style="max-width: 100px;" />
+                </div>
+                <div class="inline">
+                    <label> Bairro </label>
+                    <input type="text" id="bairro" maxlength="60" />
+                    <label> Complemento </label>
+                    <input type="text" id="cpl" maxlength="60" style="max-width: 200px;" />
+                </div>
+                <div class="inline">
+                    <label> Municipio</label>
+                    <input type="text" id="xMun" maxlength="60" />
+                    <label> Sigla da UF </label>
+                    <input type="text" id="UF" maxlength="2" style="max-width: 50px;" />
+                </div>
+                <div class="inline">
+                    <label> CEP </label>
+                    <input type="text" id="CEP" maxlength="8" onkeyup="valCEP(this)"/>
+                    <label> Email </label>
+                    <input type="text" id="email" maxlength="50"/>
+                </div>
+                <button id="btnSaveCli">Salvar</button>
+            </div>
+            <div id="itens" class="tab">
+                <fieldset>
+                    <legend>Descriminação dos Serviços</legend>
+                    <textarea id="txtServicos" cols="30" rows="80"></textarea>
+                </fieldset>
+            </div>
+            <div id="fatura" class="tab">
+                <div class="inline">
+                    <label for="edtNfsNum">Num NFs</label>
+                    <input type="text" id="edtNfsNum" onkeyup="valInt(this)">
+                    <label for="edtRps">RPS Defasagem</label>
+                    <input type="text" id="edtRps" onkeyup="valInt(this)">
+                </div>
+                <div class="inline">
+                    <label for="edtValor">Valor</label>
+                    <input type="text" id="edtValor" value="0.00" onkeyup="valFloat(this)">
+                    <label for="edtDias">Dias entre Parcelas</label>
+                    <input type="text" id="edtDias" value="28">
+                    <label for="edtAliq">Alíquota</label>
+                    <input type="text" id="edtAliq" onkeyup="valFloat(this)">
+                </div>
+                <div class="inline">
+                    <label for="cmbLocal">Local Execução</label>
+                    <select id="cmbLocal">
+                        <option value="TOM" selected>No Cliente</option>
+                        <option value="PRE">Na Empresa</option>
+                    </select>
+                    <label for="cmbRetFont">ISS Retido na Fonte</label>
+                    <select id="cmbRetFont">
+                        <option value="SIM">Sim</option>
+                        <option value="NAO" selected>Não</option>
+                    </select>
+                </div>
+                <fieldset>
+                    <legend>Dedução / Outras Informações</legend>
+                    <textarea id="txtInfo" cols="30" rows="15">Serviço aprovado conforme Pedido:</textarea>
+                </fieldset>
+                <button id="brnGeraNFs">Gerar NFs</button>
+            </div>
+            <div id="export" class="tab">
+                <fieldset>
+                    <legend>TXT</legend>
+                    <select id="txtFiles" size="20"></select>
+                </fieldset>
+                <button id="btnUpPDF">UPLOAD PDF</button>
+                <fieldset>
+                    <legend>PDF</legend>
+                    <select id="pdfFiles" size="20"></select>
+                </fieldset>                
+            </div>                
+        </div>
+
+    </div>
+
+
+
+</template>
+<script>
+
+    importData()
+    listNF('NFs/txt')
+    listNF('../../nf/servico','pdf')
+
+    document.querySelector('#tab-emitente').click()
+    document.querySelector('#edtIni').value = today.iniMonth()
+    document.querySelector('#edtFin').value = today.finMonth()
+
+    function getTXT(){
+        let out = ''
+            for(let key in main_data.NFs){
+                if(['10','20','90'].includes(key)){
+                    for(let item in main_data.NFs[key]){
+                        out += main_data.NFs[key][item]+'|'
+                    }
+                    out += '\n'
+                }
+            }
+            return out   
+    }
+
+    function saveFiscal(){
+
+        main_data.NFs.CONF.DefRPS = document.querySelector('#edtRps').value.trim()
+
+        const emitente = document.querySelector('#emitente')
+        const local = document.querySelector('#cmbLocal').value
+        const cliente = document.querySelector('#cliente')
+        const retido = document.querySelector('#cmbRetFont').value
+        const iss = getNumComa(parseFloat(document.querySelector('#edtValor').value)*(parseFloat(document.querySelector('#edtAliq').value)/100))
+
+        const parc = document.querySelector('#edtDias').value.split('/')
+        const total = parseFloat(document.querySelector('#edtValor').value)
+        main_data.NFs.fatura = []
+        let fatura = ''
+        let pg = 0
+        let now = new Date
+        for(let i=0; i< parc.length; i++){
+            now = new Date            
+            now.change(parseInt(parc[i]))
+            const pgto = new Object            
+                pgto.sac = main_data.NFs['20'].RazSocTom.split(' ')[0]
+                pgto.nf = document.querySelector('#edtNfsNum').value.trim()
+                pgto.ref =  (i+1).toString().padStart(2,"0") +'/'+ (parc.length).toString().padStart(2,"0")
+                pgto.venc = now.getFormatDate()
+                pgto.val = i != (parc.length-1) ? (total/parc.length).toFixed(2) : (total-pg).toFixed(2)
+            main_data.NFs.fatura.push(pgto)
+
+            fatura += `\\\\Pgto ${pgto.ref} Venc.${now.getFormatBR()} Valor R$${pgto.val}`
+            pg += (total/parc.length)
+        }
+        fatura += '\\\\**Tributado pelo ANEXO III Simples Nacional Conforme LC 123/2006'
+
+        now = new Date
+        main_data.NFs['10'].CpfCnpj = getNum(emitente.querySelector('#CNPJ').value)
+        main_data.NFs['10'].DtIni = now.getFormatBR()
+        main_data.NFs['10'].DtFin = now.getFormatBR()
+        main_data.NFs['10'].TipoTrib = '4'
+        main_data.NFs['10'].AlqIssSN_IP = getNumComa(document.querySelector('#edtAliq').value)
+        main_data.NFs['10'].Versao = '2.00'
+
+        main_data.NFs['20'].TipoNFS = 'RPS'
+        main_data.NFs['20'].NumRps = (parseInt(document.querySelector('#edtNfsNum').value)-parseInt(document.querySelector('#edtRps').value)).toString().padStart(9,'0')
+        main_data.NFs['20'].SerRps = '001'
+        main_data.NFs['20'].DtEmi = now.getFormatBR()
+        main_data.NFs['20'].RetFonte = retido
+        main_data.NFs['20'].CodSrv = '14.01'
+        main_data.NFs['20'].DiscrSrv = document.querySelector('#txtServicos').value.replaceAll('\n', '\\\\')
+        main_data.NFs['20'].VlNFS = getNumComa(document.querySelector('#edtValor').value)
+        main_data.NFs['20'].VlDed =  '0,00'
+        main_data.NFs['20'].DiscrDed = document.querySelector('#txtInfo').value.replaceAll('\n', '\\\\') + fatura
+        main_data.NFs['20'].VlBasCalc = getNumComa(document.querySelector('#edtValor').value)
+        main_data.NFs['20'].AlqIss = getNumComa(document.querySelector('#edtAliq').value)
+        main_data.NFs['20'].VlIss = retido=='SIM' ? '0,00' : iss
+        main_data.NFs['20'].VlIssRet = retido=='SIM' ? iss : '0,00' 
+
+        main_data.NFs['20'].TipoLogLocPre = local=='TOM' ? '.' : ''
+        main_data.NFs['20'].LogLocPre = local=='TOM' ? cliente.querySelector('#xLgr').value : ''
+        main_data.NFs['20'].NumEndLocPre = local=='TOM' ? cliente.querySelector('#nro').value : ''
+        main_data.NFs['20'].ComplEndLocPre = local=='TOM' ? cliente.querySelector('#cpl').value : ''
+        main_data.NFs['20'].BairroLocPre = local=='TOM' ? cliente.querySelector('#bairro').value : ''
+        main_data.NFs['20'].MunLocPre = local=='TOM' ? cliente.querySelector('#xMun').value : ''
+        main_data.NFs['20'].SiglaUFLocPre = local=='TOM' ? cliente.querySelector('#UF').value : ''
+        main_data.NFs['20'].CepLocPre = local=='TOM' ? getNum(cliente.querySelector('#CEP').value) : ''
+        main_data.NFs['20'].EMail_1 = emitente.querySelector('#email').value.trim().toLowerCase()
+        main_data.NFs['20'].EMail_2 = cliente.querySelector('#email').value.trim().toLowerCase()
+        main_data.NFs['20'].EMail_3 = ''
+
+        main_data.NFs['90'].QtdRegNormal = '00001'
+        main_data.NFs['90'].ValorNFS = getNumComa(document.querySelector('#edtValor').value)
+        main_data.NFs['90'].ValorISS = retido=='SIM' ? '0,00' : iss
+        main_data.NFs['90'].ValorDed = '0,00'
+        main_data.NFs['90'].ValorIssRet = retido=='SIM' ? iss : '0,00'
+        main_data.NFs['90'].QtdReg30 = '0'
+        main_data.NFs['90'].ValTrib = '0,00'
+
+        main_data.NFs['CONF'].numNFS = document.querySelector('#edtNfsNum').value.trim().padStart(9,'0')
+        main_data.NFs['CONF'].DtHrGerNf = now.getFullDate()
+
+        NFeConf(main_data.NFs,'NFs.json')
+        console.log(main_data.NFs)
+    }
+
+    function uploadNFs(txt, filename){
+        const data = new URLSearchParams();        
+            data.append("txt",txt);
+            data.append("filename",filename);
+            data.append("folder",'NFs/txt');
+        const myRequest = new Request("backend/nfe_SAVE.php",{
+            method : "POST",
+            body : data
+        });
+        fetch(myRequest).then(()=>{
+            const myRequest2 = new Request("backend/nfs_TXT2XML.php",{
+                method : "POST",
+                body : data
+            });
+            fetch(myRequest2).then(()=>{
+                alert('NFs exportada com sucesso!')
+                listNF('NFs/txt')
+                listNF('../../nf/servico','pdf')
+                if (confirm(`Deseja lançar od boletos?`)) {
+                    for(let i=0; i<main_data.NFs.fatura.length; i++){
+                        addBoleto(main_data.NFs.fatura[i])
+                    }
+                }
+                document.querySelector('#tab-export').click()
+            })          
+
+        })
+    }
+
+    function addBoleto(obj){
+
+        const lanc = new Date
+        const params = new Object;
+                params.id = 'DEFAULT'
+                params.tipo = 'ENTRADA'
+                params.data_ini = lanc.getFormatDate() 
+                params.data_pg = obj.venc
+                params.preco = obj.val
+                params.ref = `NFs-${obj.nf} ${obj.ref}`
+                params.resp = 'SISTEMA'
+                params.emp = obj.sac
+                params.origem = 'SAN'
+                params.pgto = 'BOL'
+
+            const myPromisse = queryDB(params,21);
+    }
+
+    function addCliente(obj){
+        const cliente = document.querySelector('#cliente')
+        cliente.querySelector('#xNome').value = obj.razao_social.trim().toUpperCase()
+        cliente.querySelector('#CNPJ').value = getCNPJ(obj.cnpj)
+        cliente.querySelector('#xLgr').value = obj.endereco.trim().toUpperCase()
+        cliente.querySelector('#nro').value = obj.num.trim().toUpperCase()
+        cliente.querySelector('#bairro').value = obj.bairro.trim().toUpperCase()
+        cliente.querySelector('#cpl').value = ''
+        cliente.querySelector('#xMun').value = obj.cidade.trim().toUpperCase()
+        cliente.querySelector('#UF').value = obj.estado.trim().toUpperCase()
+        cliente.querySelector('#CEP').value = getCEP(obj.cep)
+        cliente.querySelector('#email').value = ''
+        document.querySelector('#btnSaveCli').click()
+    }
+
+    function importData(){
+        NFeConf('','NFs.json').then((txt)=>{
+            main_data.NFs = JSON.parse(txt)
+            const emitente = document.querySelector('#emitente')
+            emitente.querySelector('#xNome').value = main_data.NFs.CONF.RazSocPre
+            emitente.querySelector('#CNPJ').value = getCNPJ(main_data.NFs.CONF.CpfCnpjPre)
+            emitente.querySelector('#xLgr').value = main_data.NFs.CONF.LogPre
+            emitente.querySelector('#nro').value = main_data.NFs.CONF.NumEndPre
+            emitente.querySelector('#bairro').value = main_data.NFs.CONF.BairroPre
+            emitente.querySelector('#cpl').value = main_data.NFs.CONF.ComplEndPre
+            emitente.querySelector('#xMun').value = main_data.NFs.CONF.MunPre
+            emitente.querySelector('#UF').value = main_data.NFs.CONF.SiglaUFPre
+            emitente.querySelector('#CEP').value = getCEP(main_data.NFs.CONF.CepPre)
+            emitente.querySelector('#email').value = main_data.NFs['20'].EMail_1.toLowerCase()
+
+            const fatura = document.querySelector('#fatura')
+            fatura.querySelector('#edtNfsNum').value = parseInt(main_data.NFs.CONF.numNFS)+1
+            fatura.querySelector('#edtRps').value = main_data.NFs.CONF.DefRPS
+            fatura.querySelector('#edtAliq').value = (main_data.NFs['10'].AlqIssSN_IP)
+            document.querySelector('#edtAliq').onkeyup()
+        })
+    }
+
+    document.querySelector('#brnGeraNFs').addEventListener('click',()=>{
+
+        saveFiscal()
+        const txt = getTXT()
+        console.log(txt)
+        const filename = 'NFs-'+main_data.NFs['CONF'].numNFS
+        uploadNFs(txt, filename)
+
+    })
+
+    document.querySelector('#btnSaveEmit').addEventListener('click',()=>{
+        const emitente = document.querySelector('#emitente')
+        main_data.NFs.CONF.RazSocPre = emitente.querySelector('#xNome').value.trim().toUpperCase()
+        main_data.NFs.CONF.TipoCpfCnpjPre = '2'
+        main_data.NFs.CONF.CpfCnpjPre = getNum(emitente.querySelector('#CNPJ').value)
+        main_data.NFs.CONF.LogPre = emitente.querySelector('#xLgr').value.trim().toUpperCase()
+        main_data.NFs.CONF.NumEndPre = emitente.querySelector('#nro').value.trim().toUpperCase()
+        main_data.NFs.CONF.ComplEndPre = emitente.querySelector('#cpl').value.trim().toUpperCase()
+        main_data.NFs.CONF.BairroPre = emitente.querySelector('#bairro').value.trim().toUpperCase()
+        main_data.NFs.CONF.MunPre = emitente.querySelector('#xMun').value.trim().toUpperCase()
+        main_data.NFs.CONF.SiglaUFPre = emitente.querySelector('#UF').value.trim().toUpperCase()
+        main_data.NFs.CONF.CepPre = getNum(emitente.querySelector('#CEP').value)
+        main_data.NFs['20'].EMail_1 = emitente.querySelector('#email').value.trim().toLowerCase()
+        NFeConf(main_data.NFs,'NFs.json')
+    })
+
+    document.querySelector('#btnSaveCli').addEventListener('click',()=>{
+        const cliente = document.querySelector('#cliente')
+        main_data.NFs['20'].RazSocTom = cliente.querySelector('#xNome').value.trim().toUpperCase()
+        main_data.NFs['20'].CpfCnpjTom = getNum(cliente.querySelector('#CNPJ').value)
+        main_data.NFs['20'].TipoLogtom = ''
+        main_data.NFs['20'].LogTom = cliente.querySelector('#xLgr').value.trim().toUpperCase()
+        main_data.NFs['20'].NumEndTom = cliente.querySelector('#nro').value.trim().toUpperCase()
+        main_data.NFs['20'].ComplEndTom = cliente.querySelector('#cpl').value.trim().toUpperCase()
+        main_data.NFs['20'].BairroTom = cliente.querySelector('#bairro').value.trim().toUpperCase()
+        main_data.NFs['20'].MunTom = cliente.querySelector('#xMun').value.trim().toUpperCase()
+        main_data.NFs['20'].SiglaUFTom = cliente.querySelector('#UF').value.trim().toUpperCase()
+        main_data.NFs['20'].CepTom = getNum(cliente.querySelector('#CEP').value)
+        main_data.NFs['20'].Telefone = ''
+        main_data.NFs['20'].EMail_2 = cliente.querySelector('#email').value.trim().toLowerCase()
+        NFeConf(main_data.NFs,'NFs.json')
+    })
+
+    document.querySelector('#txtFiles').addEventListener('dblclick',()=>{
+        const file = document.getElementById('txtFiles').value
+        const path = 'assets/NFs/txt/' + file;
+        var link = document.createElement("a");
+            link.download = file;
+            link.href = path;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            delete link; 
+    })
+
+    document.querySelector('#pdfFiles').addEventListener('dblclick',()=>{
+        const file = document.getElementById('pdfFiles').value
+        const path = '../../nf/servico/' + file;
+        var link = document.createElement("a");
+            link.download = file;
+            link.href = path;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            delete link; 
+    })
+
+    document.querySelector('#btnBusca').addEventListener('click',()=>{
+
+        const sel = document.querySelector('#cmbBusca')
+        const field = sel.value
+        const signal = sel.options[sel.selectedIndex].getAttribute('signal')
+        const ckb = document.querySelector('#ckbData').checked
+        let value = sel.options[sel.selectedIndex].hasAttribute('val') ? sel.options[sel.selectedIndex].getAttribute('val') : document.querySelector('#edtBusca').value.trim()
+        value = signal=='LIKE' ? `"%${value}%"` : signal=='IN' ? `(${value})` : sel.value=='true'? sel.value : `"${value}"`
+
+        const tbl = document.getElementById('tblServExec')
+        const params = new Object;
+            params.field = field
+            params.signal = signal
+            params.value = value
+            params.ini = ckb ? document.querySelector('#edtIni').value : '2000-01-01';
+            params.fin = ckb ? document.querySelector('#edtFin').value : '2100-12-31';
+
+        const myPromisse = queryDB(params,52);
+
+        myPromisse.then((resolve)=>{
+            if(resolve.trim() != ""){
+                const json = JSON.parse(resolve);
+                document.querySelector('#btnAddAll').style.display = json.length > 0 ? 'block' : 'none'
+                tbl.head('Cod.|mobHide,Cliente,Carro,Data|mobHide,NF|mobHide,Valor R$|mobHide')                                             
+                for(let i=0; i<json.length;i++){
+                    tbl.plot(json[i],'id|mobHide,fantasia,num_carro,data_exec,nf|mobHide,valor|mobHide','int,Upp,str,date,str,R$.')
+                }                               
+            }        
+        })
+    })
+
+    document.querySelector('#tblServExec').addEventListener('click',(e)=>{
+        data = e.target.parentNode.data
+        data.mode = 'edit'
+
+        if (confirm(`Carregar Carro.${data.num_carro} de ${data.fantasia.toUpperCase()}?`)) {
+            const serv = document.querySelector('#txtServicos')
+            if(serv.innerHTML.trim() == ''){
+                addCliente(data)          
+                serv.innerHTML = `CARRO:${data.num_carro}\n` + data.obs +'\n'
+                document.querySelector('#edtValor').value = data.valor
+            }else if (confirm(`Adicionar o carro ${data.num_carro} a NFs atual?`)){
+                serv.innerHTML += `\nCARRO:${data.num_carro}\n` + data.obs +'\n'
+                document.querySelector('#edtValor').value =  (parseFloat(document.querySelector('#edtValor').value)+parseFloat(data.valor)).toFixed(2)
+            }
+        }
+    })
+
+    document.querySelector('#btnUpPDF').addEventListener('click',()=>{
+
+        const data = new Object
+        data.ext = '.pdf'
+        data.path = '../../nf/servico/'
+        data.filename = ''
+
+        openHTML('uploadFile.html','pop-up','Nota Fiscal de Serviço',data)
+
+
+    })
+
+    document.querySelector('#btnAddAll').addEventListener('click',()=>{        
+        if (confirm('Deseja adicionar todos os ítens acima?')) {
+            const rows = document.querySelector('#tblServExec').querySelectorAll('tr')
+            const serv = document.querySelector('#txtServicos')
+            const info = document.querySelector('#txtInfo')
+            let pedidos = ['']
+            document.querySelector('#edtValor').value = '0'
+            serv.innerHTML = ''
+
+            info.innerHTML = rows.length > 2 ? 'Serviço aprovado conforme Pedidos:' : 'Serviço aprovado conforme Pedido:'
+            console.log(rows[0].data)
+            addCliente(rows[1].data)
+            for(let i=1; i<rows.length; i++){
+                console.log(rows[i].data)
+                serv.innerHTML += `\nCARRO:${rows[i].data.num_carro}\n` + rows[i].data.obs +'\n'
+                document.querySelector('#edtValor').value =  (parseFloat(document.querySelector('#edtValor').value)+parseFloat(rows[i].data.valor)).toFixed(2)
+                info.innerHTML += pedidos.includes(rows[i].data.pedido.trim()) ? '' : rows[i].data.pedido.trim()+' '
+                pedidos.push(rows[i].data.pedido.trim())
+            }
+        }
+
+    })
+
+</script>

@@ -1,0 +1,57 @@
+<template>
+    <style>
+
+        .form-modal {
+            display: flex;
+            flex-direction: column;
+        }
+
+        #txtSchedule{
+            margin: 10px;
+            padding: 5px;
+            border-radius: 5px;
+        }
+
+
+    </style>
+    <div class='form-modal'>
+        <textarea rows = '20' id='txtSchedule' > </textarea>
+        <button id="btnSalvar" >Salvar</button>
+      </div> 
+
+</template>
+
+<script>
+
+    document.getElementById('txtSchedule').value = document.getElementById(main_data.schedule.data.data).innerHTML.trim()
+    document.getElementById('btnSalvar').addEventListener('click',()=>{
+    
+        const text = document.getElementById('txtSchedule').value;
+    let cod = 5;
+    let color = "#f8f693";
+    let font = "#000000"
+
+    if(text.trim() == ''){
+        cod = 6;
+        color = "#F0F0F0"; 
+        font = "#b6b6b6" 
+    }
+
+    const params = new Object;
+        params.id_user = localStorage.getItem("id");
+        params.data_agd = main_data.schedule.data.data
+        params.obs = text;
+
+    const resp = queryDB(params,cod);
+    resp.then((resolve)=>{
+        document.getElementById(main_data.schedule.data.data).innerHTML = text;
+        document.getElementById(main_data.schedule.data.data).parentNode.style.background = color;
+        document.getElementById(main_data.schedule.data.data).parentNode.style.color = font;
+        closeModal()
+    }); 
+
+
+    })
+
+
+</script>

@@ -1,0 +1,77 @@
+
+<template>
+    <style>
+        .inline textarea{
+            width: 97%;
+            font-size: 1.4em;
+        }
+
+        #btnSave{
+            width: 97%;
+        }
+
+    </style>
+  
+    <fieldset>
+        <legend id="lgdPCP"></legend>
+
+        <div class="inline">
+            <label for="edtFrente">Eq. Frente</label>
+            <textarea id="edtFrente" cols="30" rows="10"></textarea>
+        </div>
+        <div class="inline">
+            <label for="edtSuporte">Eq. Suporte</label>
+            <textarea id="edtSuporte" cols="30" rows="10"></textarea>
+        </div>
+        <div class="inline">
+            <label for="edtCostura">Costura</label>
+            <textarea id="edtCostura" cols="30" rows="10"></textarea>
+        </div>
+        <div class="inline">
+            <label for="edtMontagem">Montagem</label>
+            <textarea id="edtMontagem" cols="30" rows="10"></textarea>
+        </div> 
+        <button id="btnSave">Salvar</button>       
+    </fieldset>
+
+
+
+</template>
+<script>
+
+//    document.querySelector('#lgdPCP').innerHTML = `${main_data.viewPCP.data.dayweek} - ${dataBR(main_data.viewPCP.data.day)}`
+    document.querySelector('#edtFrente').innerHTML = main_data.viewPCP.data.frente != undefined ? main_data.viewPCP.data.frente : ''
+    document.querySelector('#edtSuporte').innerHTML = main_data.viewPCP.data.suporte != undefined ? main_data.viewPCP.data.suporte : ''
+    document.querySelector('#edtCostura').innerHTML = main_data.viewPCP.data.costura != undefined ? main_data.viewPCP.data.costura : ''
+    document.querySelector('#edtMontagem').innerHTML = main_data.viewPCP.data.montagem != undefined ? main_data.viewPCP.data.montagem : ''
+
+    document.querySelector('#btnSave').addEventListener('click',()=>{
+
+        main_data.viewPCP.data.frente = document.querySelector('#edtFrente').value.toUpperCase().trim()
+        main_data.viewPCP.data.suporte = document.querySelector('#edtSuporte').value.toUpperCase().trim()
+        main_data.viewPCP.data.costura = document.querySelector('#edtCostura').value.toUpperCase().trim()
+        main_data.viewPCP.data.montagem = document.querySelector('#edtMontagem').value.toUpperCase().trim()        
+
+        let myPromisse
+        const params = new Object;
+            params.id = main_data.viewPCP.data.id == undefined ? 'DEFAULT' : main_data.viewPCP.data.id
+
+        if(main_data.viewPCP.data.frente == ''&& main_data.viewPCP.data.suporte == ''&& main_data.viewPCP.data.costura == ''&& main_data.viewPCP.data.montagem == ''){            
+            params.hash = localStorage.getItem('hash');
+            myPromisse = queryDB(params,16);
+        }else{
+            params.data = main_data.viewPCP.data.day.getFormatDate()
+            params.suporte = main_data.viewPCP.data.suporte
+            params.frente = main_data.viewPCP.data.frente
+            params.costura = main_data.viewPCP.data.costura
+            params.montagem = main_data.viewPCP.data.montagem
+            myPromisse = queryDB(params,15);
+        }
+
+        myPromisse.then((resolve)=>{
+            main_data.pcp.viewWeek()
+            closeModal('viewPCP')
+        })
+    })
+
+</script>

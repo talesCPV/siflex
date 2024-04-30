@@ -1,0 +1,83 @@
+
+<template>
+    <style>
+
+
+    </style>
+
+<fieldset>
+    <legend>Busca</legend>
+
+    <div class="inline">
+        <label for="edtAddProd">por:</label>
+        <select id="cmbAddProd">
+            <option value="p.descricao" signal="LIKE">Todos</option>
+            <option value="p.cod" signal="=" selected>Código</option>
+            <option value="e.nome" signal="LIKE">Fornecedor</option>
+            <option value="p.tipo" signal="=" val="SERVICO">Serviços</option>
+            <option value="p.tipo" signal="=" val="CONJ">Conjuntos</option>
+            <option value="p.tipo" signal="=" val="TINTA">Tintas</option>
+            <option value="p.tipo" signal="=" val="PIGMTO">Pigmentos</option>
+            <option value="p.cod_bar" signal="=">Código do Produto</option>
+            <option value="p.cod_cli" signal="LIKE">Código de Barras</option>
+            <option value="p.estoque" signal="<=" val="p.etq_min">Estoque Baixo</option>
+        </select>
+        <input type="text" id="edtAddProd" onkeypress="return getEnter(event, 'btnAddProd')">
+        <button id="btnAddProd">Busca</button>
+
+    </div>
+
+    <table id="tblAddProd"></table>
+</fieldset>
+
+
+</template>
+<script>
+
+//    const localData = getModalData('addProd')
+    document.querySelector('#edtAddProd').focus()
+
+    document.querySelector('#btnAddProd').addEventListener('click',()=>{
+
+        const sel = document.querySelector('#cmbAddProd')
+        const field = sel.value
+        const signal = sel.options[sel.selectedIndex].getAttribute('signal')        
+        let value = sel.options[sel.selectedIndex].hasAttribute('val') ? sel.options[sel.selectedIndex].getAttribute('val') : document.querySelector('#edtAddProd').value.trim()
+        value = signal=='LIKE' ? `"%${value}%"` : signal=='IN' ? `(${value})` : sel.value=='true'? sel.value : `"${value}"`
+
+
+        const tbl = document.getElementById('tblAddProd')
+        tbl.innerHTML = ''
+        const params = new Object;
+            params.field = field
+            params.signal = signal
+            params.value = value
+            params.hash = localStorage.getItem('hash');
+
+        const myPromisse = queryDB(params,7);
+
+        myPromisse.then((resolve)=>{
+            if(resolve.trim() != ""){
+                const json = JSON.parse(resolve);
+                tbl.head('Cod.|mobHide,Descrição,Preço')
+                for(let i=0; i<json.length;i++){
+                    if(main_data.addProd.data.callby == 'viewComp'){
+                        tbl.plot(json[i],'cod|mobHide,descricao,preco_comp','int,Upp,R$.')
+                    }else{
+                        tbl.plot(json[i],'cod|mobHide,descricao,preco_venda','int,Upp,R$.')
+                    }
+                }                
+            }        
+        });
+    })
+
+    document.querySelector('#tblAddProd').addEventListener('click',(e)=>{
+        const data = e.target.parentNode.data
+            data.estoque = parseInt(data.estoque)
+            data.qtd = parseInt(prompt(`Digite a quantidade desejada | estq:${data.estoque}`))
+            data.qtd = data.qtd == NaN ? 0 : data.qtd
+            main_data.addProd.data.addItem(data)
+    })
+
+
+</script>

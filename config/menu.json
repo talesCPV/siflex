@@ -1,0 +1,327 @@
+{
+	"menu": [
+		{
+			"modulo" : "Cadastros",
+			"script" : "#",
+			"class"  : "",
+			"icone"  : "fa fa-home",
+			"access" : [3,4,10,2],
+			"itens"  : [
+				{
+					"modulo" : "Produtos",
+					"script" : "#",
+					"class"  : "",
+					"icone"  : "fa fa-home",
+					"access" : [3,4,10,2],
+					"itens"  : [
+						{
+							"modulo" : "Pesquisa",
+							"script" : "javascript:openHTML('produtos.html','content-screen')",
+							"access" : [10,4,3,2],
+							"class"  : "",
+							"icone"  : "fa fa-archive",
+							"itens"  : []
+						},
+						{
+							"modulo" : "Novo",
+							"script" : "javascript:openHTML('viewProd.html','pop-up','Cadastro de Produtos','new')",
+							"access" : [10,4],
+							"class"  : "",
+							"icone"  : "fa fa-archive",
+							"itens"  : []
+						},
+						{
+							"modulo" : "Inventário",
+							"script" : "javascript:openHTML('inventario.html','pop-up','Inventário','new')",
+							"access" : [10,4],
+							"class"  : "",
+							"icone"  : "fa fa-archive",
+							"itens"  : []
+						}						
+					]
+				},
+				{
+					"modulo" : "Empresas",
+					"script" : "#",
+					"class"  : "",
+					"icone"  : "fa fa-home",
+					"access" : [3,4,10,2],
+					"itens"  : [
+						{
+							"modulo" : "Pesquisa",
+							"script" : "javascript:openHTML('empresas.html','content-screen')",
+							"access" : [10,4,3,2],
+							"class"  : "",
+							"icone"  : "fa fa-archive",
+							"itens"  : []
+						},
+						{
+							"modulo" : "Novo",
+							"script" : "javascript:openHTML('viewEmp.html','pop-up','Cadastro de Empresas','new')",
+							"access" : [10,4],
+							"class"  : "",
+							"icone"  : "fa fa-archive",
+							"itens"  : []
+						}				
+					]
+				},
+				{
+					"modulo" : "Análise Frota",
+					"script" : "#",
+					"access" : [10,4,3,2],
+					"class"  : "",
+					"icone"  : "fa fa-industry",
+					"itens"  : [
+						{
+							"modulo" : "Pesquisa",
+							"script" : "javascript:openHTML('anafrota.html','content-screen','CADASTRO',0)",
+							"access" : [10,4,3,2],
+							"class"  : "",
+							"icone"  : "fa fa-archive",
+							"itens"  : []
+						},
+						{
+							"modulo" : "Novo",
+							"script" : "javascript:openHTML('viewAnaFrota.html','pop-up','Análise de Frota','new')",
+							"access" : [10,4,3],
+							"class"  : "",
+							"icone"  : "fa fa-archive",
+							"itens"  : []
+						}
+					]
+				},
+				{
+					"modulo" : "Serv. Executados",
+					"script" : "#",
+					"access" : [10,4],
+					"class"  : "",
+					"icone"  : "fa fa-industry",
+					"itens"  : [
+						{
+							"modulo" : "Pesquisa",
+							"script" : "javascript:openHTML('servexec.html','content-screen','CADASTRO',0)",
+							"access" : [10,4],
+							"class"  : "",
+							"icone"  : "fa fa-archive",
+							"itens"  : []
+						},
+						{
+							"modulo" : "Novo",
+							"script" : "javascript:openHTML('viewServExec.html','pop-up','Serviços Executados','new')",
+							"access" : [10,4],
+							"class"  : "",
+							"icone"  : "fa fa-archive",
+							"itens"  : []
+						}
+					]
+				}							
+			]
+		},		
+
+		{
+			"modulo" : "Ferramentas",
+			"script" : "#",
+			"access" : [10,4,3,1,2],
+			"class"  : "",
+			"icone"  : "fa fa-edit",
+			"itens"  : [
+				{
+					"modulo" : "PCP",
+					"script" : "javascript:openHTML('pcp.html','content-screen')",
+					"access" : [10,4,3],
+					"class"  : "",
+					"icone"  : "fa fa-archive",
+					"itens"  : []
+				},
+				{
+					"modulo" : "Papel Timbrado",
+					"script" : "javascript:openHTML('timbrado.html','content-screen')",
+					"access" : [10,4,3,1,2],
+					"class"  : "",
+					"icone"  : "fa fa-archive",
+					"itens"  : []
+				},
+				{
+					"modulo" : "Agenda",
+					"script" : "javascript:openHTML('calendar.html','content-screen')",
+					"icone"  : "fa fa-home",
+					"class"  : "",
+					"access" : [10,4,3,1,2],
+					"itens"  : []
+				},	
+				{
+					"modulo" : "Financeiro",
+					"script" : "#",
+					"access" : [10,4,1],
+					"class"  : "",
+					"icone"  : "fa fa-cogs",
+					"itens"  : [
+						{
+							"modulo" : "Lançamentos",
+							"script" : "javascript:openHTML('viewFinan.html','pop-up','Financeiro','new')",
+							"access" : [10,4],
+							"class"  : "",
+							"icone"  : "fa fa-archive",
+							"itens"  : []
+						},
+						{
+							"modulo" : "Análise",
+							"script" : "javascript:openHTML('financeiro.html','content-screen','CADASTRO',0)",
+							"access" : [10,4,1],
+							"class"  : "",
+							"icone"  : "fa fa-archive",
+							"itens"  : []
+						},
+						{
+							"modulo" : "Impostos",
+							"script" : "javascript:openHTML('impostos.html','content-screen','IMPOSTOS',0)",
+							"access" : [10,4,1],
+							"class"  : "",
+							"icone"  : "fa fa-archive",
+							"itens"  : []
+						}						
+					]
+				},				
+				{
+					"modulo" : "Usuarios",
+					"script" : "javascript:openHTML('usuarios.html','pop-up','Cadastro de Usuários')",
+					"access" : [10],
+					"class"  : "",
+					"icone"  : "fa fa-industry",
+					"itens"  : []
+				},				
+				{
+					"modulo" : "Configuração",
+					"script" : "javascript:openHTML('config.html','content-screen','Configuração de Sistema')",
+					"access" : [10,4],
+					"class"  : "",
+					"icone"  : "fa fa-industry",
+					"itens"  : []
+				}			
+			]
+		},
+		{
+			"modulo" : "Comercial",
+			"script" : "#",
+			"access" : [10,4,3,2],
+			"class"  : "",
+			"icone"  : "fa fa-cogs",
+			"itens"  : [
+				{
+					"modulo" : "Cotações",
+					"script" : "javascript:openHTML('cotacoes.html','content-screen','Cotações e Pedidos')",
+					"access" : [10,4,3,2],
+					"class"  : "",
+					"icone"  : "fa fa-archive",
+					"itens"  : []
+				},
+				{
+					"modulo" : "Compras",
+					"script" : "javascript:openHTML('compras.html','content-screen','NF de Compra')",
+					"access" : [10,4],
+					"class"  : "",
+					"icone"  : "fa fa-archive",
+					"itens"  : []
+				},
+				{
+					"modulo" : "Contatos",
+					"script" : "javascript:openHTML('agenda.html','pop-up','Contatos Comerciais')",
+					"access" : [10,4,3,2],
+					"class"  : "",
+					"icone"  : "fa fa-archive",
+					"itens"  : []
+				}				
+			]
+		},	
+		{
+			"modulo" : "RH",
+			"script" : "#",
+			"access" : [10,4,1],
+			"class"  : "",
+			"icone"  : "fa fa-cogs",
+			"itens"  : [
+				{
+					"modulo" : "Cargos e Funções",
+					"script" : "javascript:openHTML('cargos.html','content-screen','Cargos e Funções')",
+					"access" : [10,4,1],
+					"class"  : "",
+					"icone"  : "fa fa-archive",
+					"itens"  : []
+				},
+				{
+					"modulo" : "Funcionários",
+					"script" : "javascript:openHTML('funcionarios.html','content-screen','Cargos e Funções')",
+					"access" : [10,4,1],
+					"class"  : "",
+					"icone"  : "fa fa-archive",
+					"itens"  : []
+				},
+				{
+					"modulo" : "Feriados",
+					"script" : "javascript:openHTML('feriados.html','content-screen','Cargos e Funções')",
+					"access" : [10,4,1],
+					"class"  : "",
+					"icone"  : "fa fa-archive",
+					"itens"  : []
+				},				
+				{
+					"modulo" : "Horas",
+					"script" : "javascript:openHTML('horas.html','content-screen','Horas')",
+					"access" : [10,4,1],
+					"class"  : "",
+					"icone"  : "fa fa-archive",
+					"itens"  : []
+				}				
+			]
+		},
+		{
+			"modulo" : "NF",
+			"script" : "#",
+			"access" : [10,4],
+			"class"  : "",
+			"icone"  : "fa fa-cogs",
+			"itens"  : [
+				{
+					"modulo" : "NFe - Vendas",
+					"script" : "javascript:openHTML('nfe.html','content-screen','Nota Fiscal de Venda')",
+					"access" : [10,4],
+					"class"  : "",
+					"icone"  : "fa fa-archive",
+					"itens"  : []
+				},
+				{
+					"modulo" : "NFs - Serviços",
+					"script" : "javascript:openHTML('nfs.html','content-screen','Nota Fiscal de Serviço')",
+					"access" : [10,4],
+					"class"  : "",
+					"icone"  : "fa fa-archive",
+					"itens"  : []
+				},
+				{
+					"modulo" : "MDFe",
+					"script" : "javascript:openHTML('mdfe.html','content-screen')",
+					"icone"  : "fa fa-home",
+					"class"  : "",
+					"access" : [10],
+					"itens"  : []
+				}
+			]
+		},
+		{
+			"modulo" : "Mensagens <span id='badge_mobile' class='badge'></span>",
+			"script" : "javascript:openHTML('mail.html','pop-up')",
+			"access" : [10,4,1,2],
+			"class"  : "hideMenu",
+			"icone"  : "fa fa-industry",
+			"itens"  : []
+		},			
+		{
+			"modulo" : "Logout",
+			"script" : "javascript:localStorage.clear();this.location.reload(true);",
+			"access" : [10,4,2],
+			"class"  : "hideMenu",
+			"icone"  : "fa fa-industry",
+			"itens"  : []
+		}						
+	]		
+}

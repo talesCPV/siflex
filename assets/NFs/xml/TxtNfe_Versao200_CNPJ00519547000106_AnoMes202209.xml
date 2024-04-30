@@ -1,0 +1,79 @@
+<SDTNotasExport xmlns="NFe">
+	<CpfCnpj>00.519.547/0001-06</CpfCnpj>
+	<DtIni>16/09/2022</DtIni>
+	<DtFin>16/09/2022</DtFin>
+	<TipoArq>1</TipoArq>
+	<Versao>2.00</Versao>
+	<Reg20>
+		<Reg20Item>
+			<TipoNf>P</TipoNf>
+			<NumNf>973</NumNf>
+			<SerNf>NFE</SerNf>
+			<DtEmiNf>16/09/2022</DtEmiNf>
+			<DtHrGerNf>16/09/2022 15:06:19</DtHrGerNf>
+			<CodVernf>6F7DFC564BC8EBBCDB48</CodVernf>
+			<NumRps>0</NumRps>
+			<SerRps />
+			<DtEmiRps />
+			<TipoCpfCnpjPre>J</TipoCpfCnpjPre>
+			<CpfCnpjPre>00.519.547/0001-06</CpfCnpjPre>
+			<RazSocPre>FLEXIBUS SANFONADOS LTDA</RazSocPre>
+			<LogPre>Rua Doutor Rosalvo de Almeida Telles</LogPre>
+			<NumEndPre>2070</NumEndPre>
+			<ComplEndPre />
+			<BairroPre>Parque Residencial Nova Caçapava</BairroPre>
+			<MunPre>CAÇAPAVA</MunPre>
+			<SiglaUFPre>SP</SiglaUFPre>
+			<CepPre>12283020</CepPre>
+			<EmailPre>dantas@flexibus.com.br</EmailPre>
+			<TipoTribPre>SN</TipoTribPre>
+			<DtAdeSN>01/07/2007</DtAdeSN>
+			<AlqIssSN>4.35</AlqIssSN>
+			<SitNf>1</SitNf>
+			<DataCncNf />
+			<MotivoCncNf />
+			<TipoCpfCnpjTom>J</TipoCpfCnpjTom>
+			<CpfCnpjTom>02.009.402/0001-82</CpfCnpjTom>
+			<RazSocTom>D2L SOLUCOES METALICAS LTDA</RazSocTom>
+			<LogTom>Rodovia Doutor Edmir Viana Moura</LogTom>
+			<NumEndTom>5300</NumEndTom>
+			<ComplEndTom />
+			<BairroTom>Vila Paraíso</BairroTom>
+			<MunTom>CAÇAPAVA</MunTom>
+			<SiglaUFTom>SP</SiglaUFTom>
+			<CepTom>12286710</CepTom>
+			<EMailTom />
+			<LogLocPre>Rua Doutor Rosalvo de Almeida Telles</LogLocPre>
+			<NumEndLocPre>2070</NumEndLocPre>
+			<ComplEndLocPre />
+			<BairroLocPre>Parque Residencial Nova Caçapava</BairroLocPre>
+			<MunLocPre>CAÇAPAVA</MunLocPre>
+			<SiglaUFLocpre>SP</SiglaUFLocpre>
+			<CepLocPre>12283020</CepLocPre>
+			<CodSrv>14.01</CodSrv>
+			<DiscrSrv>COSTURA DE BOLSA EM LONA ENCERADA VERDE COM VELCROS DE FIXAÇÃO
+
+
+</DiscrSrv>
+			<VlNFS>500.00</VlNFS>
+			<VlDed>0.00</VlDed>
+			<DiscrDed>Serviço aprovado conforme Pedido: 0006-09-TER22
+
+**Tributado pelo ANEXO III Simples Nacional Conforme LC 123/2006</DiscrDed>
+			<VlBasCalc>500.00</VlBasCalc>
+			<AlqIss>4.35</AlqIss>
+			<VlIss>0.00</VlIss>
+			<VlIssRet>21.75</VlIssRet>
+			<Reg30 />
+		</Reg20Item>
+	</Reg20>
+	<Reg90>
+		<QtdRegNormal>1</QtdRegNormal>
+		<ValorNFS>500.00</ValorNFS>
+		<ValorISS>0.00</ValorISS>
+		<ValorDed>0.00</ValorDed>
+		<ValorIssRet>21.75</ValorIssRet>
+		<QtdReg30>0</QtdReg30>
+		<ValorTributos />
+	</Reg90>
+</SDTNotasExport>

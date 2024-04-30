@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style/reset.css">
+    <link rel="stylesheet" href="style/modal.css">
+    <link rel="icon" href="assets/icon.png">
+    <script src="sketchs/main.js"></script>
+    <script src="sketchs/validation.js"></script>   
+    
+    <!-- JS-PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.2.3/jspdf.plugin.autotable.min.js"></script>
+
+    <!-- Pictogrammers -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.2.96/css/materialdesignicons.min.css">
+
+    <script type="text/javascript" src="sketchs/barcode.js"></script> 
+    <script src="sketchs/js_pdf.js"></script>
+    
+    <title>Siflex ver.2.0</title>
+</head>
+<body>
+    <div id="main-screen"></div>
+    <!-- The Modal -->
+    <div id="myModal" class="modal"></div> 
+
+</body>
+<script>
+    
+    if(localStorage.getItem('hash') != null){
+        openHTML('dashboard.html','main-screen')
+    }else{
+        openHTML('login.html','main-screen')
+    }
+
+</script>
+</html>

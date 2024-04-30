@@ -1,0 +1,104 @@
+
+<template>
+    <style>
+        button{
+            width: 98%;
+        }
+
+        #scroll{
+            max-height: 200px;
+            overflow: hidden;
+            overflow-y: scroll;
+        }
+
+    </style>
+  
+    <div class="form-base">
+        <h1>Configurações</h1>
+        <fieldset>
+            <legend>Unidades</legend>
+            <div id="scroll">
+                <table id="tblUnd"></table>
+            </div>
+            <button id="btnUnd">Novo</button>
+        </fieldset>          
+        <fieldset>
+            <legend>Centro de Custo R$</legend>
+            <div class="inline">
+                <input type="text" id="edtCusto" onkeyup="return valFloat(this)">
+                <button id="btnCusto">Salvar</button>
+            </div>
+        </fieldset>
+        <fieldset>
+            <legend>Texto Padrão</legend>
+            <div class="inline">
+                <label for="edtCondPgto">Cond. Pgto</label>
+                <textarea id="edtCondPgto" cols="30" rows="10"></textarea>
+            </div>
+            <div class="inline">
+                <label for="edtAnaFrota">Analise de Frota</label>
+                <textarea id="edtAnaFrota" cols="30" rows="10"></textarea>
+            </div>            
+            <button id="btnTxtPadrao">Salvar</button>
+        </fieldset>
+ 
+        
+    </div>
+
+</template>
+<script>
+    
+    fillUnd()
+
+    getConfig('config').then((txt)=>{    
+        const json =  JSON.parse(txt)
+        document.querySelector('#edtCusto').value = parseFloat(json.centro_custo).toFixed(2)
+        document.querySelector('#edtCondPgto').value = json.cond_pgto
+        document.querySelector('#edtAnaFrota').value = json.ana_frota
+    })
+
+    function fillUnd(){
+        const tbl = document.getElementById('tblUnd')
+        tbl.innerHTML = ''
+        const params = new Object;
+            params.hash = localStorage.getItem('hash');
+
+        const myPromisse = queryDB(params,8);
+
+        myPromisse.then((resolve)=>{
+            if(resolve.trim() != ""){
+                const json = JSON.parse(resolve);
+                tbl.head('Nome,Sigla')
+                for(let i=0; i<json.length;i++){
+                    tbl.plot(json[i],'nome,sigla')
+                }                
+            } 
+        })
+    }
+
+    document.querySelector('#tblUnd').addEventListener('click',(e)=>{
+        data = e.target.parentNode.data
+        data.mode = 'edit'
+        openHTML('viewUnd.html','pop-up','Editar Unidades',data)
+    })
+
+    document.querySelector('#btnUnd').addEventListener('click',()=>{
+        const data = new Object
+        data.mode = 'new'
+        openHTML('viewUnd.html','pop-up','Nova Unidade',data)
+
+    })
+
+    document.querySelector('#btnCusto').addEventListener('click',()=>{
+        const custo = document.querySelector('#edtCusto')
+        getConfig('config','config.json','centro_custo',custo.value)
+    })
+
+    document.querySelector('#btnTxtPadrao').addEventListener('click',()=>{
+        const condPgto = document.querySelector('#edtCondPgto')
+        getConfig('config','config.json','cond_pgto',condPgto.value.trim())
+        const anaFrota = document.querySelector('#edtAnaFrota')
+        getConfig('config','config.json','ana_frota',anaFrota.value.trim())
+    })
+
+</script>

@@ -1,0 +1,95 @@
+
+<template>
+    <style>
+        #btnDel{
+            display: none;
+        }
+
+
+    </style>
+
+    <fieldset>
+        <legend>Contato Comercial</legend>
+        <div class="inline">
+            <label for="edtNome">Nome</label>
+            <input type="text" id="edtNome" maxlength="40">
+        </div>
+        <div class="inline">
+            <label for="cmbEmp">Empresa</label>
+            <select id="cmbEmp" ></select>
+        </div>
+        <div class="inline">
+            <label for="edtDepart">Departamento</label>
+            <input type="text" id="edtDepart" maxlength="15">
+        </div>
+        <div class="inline">
+            <label for="edtEmail">Email</label>
+            <input type="email" id="edtEmail" maxlength="70">
+        </div>
+        <div class="inline">
+            <label for="edtCel">Celular</label>
+            <input type="text" id="edtCel" onkeyup="phone(this)" maxlength="15">
+        </div>
+        <div class="inline">
+            <label for="edtTel">Telefone</label>
+            <input type="text" id="edtTel" onkeyup="phone(this)" maxlength="15">
+        </div>
+        <button id="btnSave">Salvar</button>
+        <button id="btnDel">Deletar</button>
+    </fieldset>
+
+
+
+</template>
+<script>
+    const params = new Object;
+        params.hash = localStorage.getItem('hash');
+        params.field = 'id'
+        params.signal = '>'
+        params.value = '0'     
+    fillCombo('cmbEmp',params,11,['id','cod_nome'],typeof main_data.viewAgenda.data === 'object' ? main_data.viewAgenda.data.id_emp :'' )
+
+    document.querySelector('#btnDel').style.display = main_data.viewAgenda.data == 'new' ? 'none' : 'block'
+
+    if(main_data.viewAgenda.data != 'new'){
+        document.querySelector('#edtNome').value = main_data.viewAgenda.data.nome
+        document.querySelector('#edtDepart').value = main_data.viewAgenda.data.depart
+        document.querySelector('#edtEmail').value = main_data.viewAgenda.data.email
+        document.querySelector('#edtCel').value = main_data.viewAgenda.data.cel1
+        document.querySelector('#edtTel').value = main_data.viewAgenda.data.cel2
+    }
+
+    document.querySelector('#btnSave').addEventListener('click',()=>{
+
+        const params = new Object;
+            params.id = typeof main_data.viewAgenda.data === 'object' ? main_data.viewAgenda.data.id : 'DEFAULT'
+            params.id_emp = document.querySelector('#cmbEmp').value
+            params.nome = document.querySelector('#edtNome').value.toUpperCase()
+            params.email = document.querySelector('#edtEmail').value.toLowerCase()
+            params.depart = document.querySelector('#edtDepart').value.toUpperCase()
+            params.cel1 = document.querySelector('#edtCel').value
+            params.cel2 = document.querySelector('#edtTel').value
+            
+        const myPromisse = queryDB(params,38);
+        myPromisse.then((resolve)=>{
+            main_data.viewAgenda.data != 'new' ?document.querySelector('#edtBuscaAgd').click() :0            
+            closeModal('viewAgenda')
+        })
+    })
+
+    document.querySelector('#btnDel').addEventListener('click',()=>{
+        if (confirm('Deseja realmente deletar este contato?')) {
+            const params = new Object;
+                params.id = main_data.viewAgenda.data.id
+                params.hash = localStorage.getItem('hash');
+
+            const myPromisse = queryDB(params,39);
+            myPromisse.then((resolve)=>{
+                document.querySelector('#edtBuscaAgd').click()
+                closeModal('viewAgenda')                
+            })
+        }
+    })
+
+
+</script>

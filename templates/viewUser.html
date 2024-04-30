@@ -1,0 +1,123 @@
+
+<template>
+    <style>
+
+        .frm{
+            display: flex;
+            flex-direction: column;
+        }
+
+        .inline label{
+            width:  120px;
+        }
+
+        .inline select{
+            width: 100%;
+            padding: 10px;
+            margin: 10px;
+        }
+
+
+    </style>
+  
+    <fieldset class="frm">
+        <legend>Usuario</legend>
+        <div class="inline">
+            <label for="edtUser">Usuario:*</label>
+            <input type="text" id="edtUser" placeholder="Usuario" maxlength="12">    
+        </div>
+        <div class="inline">
+            <label for="edtPass">Senha:</label>
+            <input type="password" id="edtPass" placeholder="Senha" value="">
+            <input type="password" id="edtRepass" placeholder="Repita a senha" value="" maxlength="12">
+        </div>
+        <div class="inline">
+            <label for="edtNome">Nome:</label>
+            <input type="text" id="edtNome" placeholder="Nome" maxlength="40">
+        </div>
+        <div class="inline">
+            <label for="edtEmail">Cel:</label>
+            <input type="text" id="edtCel" placeholder="Celular" onkeyup="phone(this)" maxlength="15">
+        </div>
+        <div class="inline">
+            <label for="edtEmail">Email:</label>
+            <input type="text" id="edtEmail" placeholder="Email" maxlength="70">
+        </div>
+        <div class="inline">
+            <label for="edtAccess">Tipo:</label>
+            <select id="cmbAccess">
+                <option value="1">Contador</option>
+                <option value="3" selected>Comercial</option>
+                <option value="4">Supervisão</option>
+                <option value="10">CEO</option>
+            </select>
+<!--            <input type="text" id="edtAccess" readonly>   -->
+        </div>
+        <button id="btnSave">Salvar</button>
+        <button id="btnDel">Deletar</button>
+    </fieldset>
+
+</template>
+<script>
+
+    if(main_data.viewUser.data.mode == 'edit' || main_data.viewUser.data.mode == 'user'){
+        document.querySelector('#edtUser').value = main_data.viewUser.data.user
+        document.querySelector('#edtNome').value = main_data.viewUser.data.nome
+        document.querySelector('#edtCel').value = main_data.viewUser.data.cel
+        document.querySelector('#edtEmail').value = main_data.viewUser.data.email
+        document.querySelector('#cmbAccess').value = main_data.viewUser.data.class
+        document.querySelector('#btnDel').style.display = main_data.viewUser.data.mode == 'user' ? 'none' : 'block'
+        document.querySelector('#cmbAccess').disabled = main_data.viewUser.data.mode == 'user' ? true : false
+    }else{
+        document.querySelector('#btnDel').style.display = 'none'
+    }
+    document.querySelector('#edtPass').value = ''
+    document.querySelector('#edtRepass').value = ''
+
+
+    document.querySelector('#btnSave').addEventListener('click',()=>{
+        if(checkField(['edtUser']) && checkRepass(['edtPass','edtRepass'])){
+
+            const pass = document.querySelector('#edtPass').value.trim()
+            const hash =  pass =='' ? main_data.viewUser.data.mode == 'user' ? localStorage.getItem('hash') : main_data.viewUser.data.hash : pass.getHash(30)
+            const params = new Object;
+                params.id = main_data.viewUser.data.mode == 'new' ? 'DEFAULT' : main_data.viewUser.data.id
+                params.user = document.querySelector('#edtUser').value.trim()
+                params.hash = hash
+                params.class = document.querySelector('#cmbAccess').value
+                params.nome = document.querySelector('#edtNome').value.trim()
+                params.email = document.querySelector('#edtEmail').value.trim()
+                params.cel = document.querySelector('#edtCel').value.trim()
+            
+            const myPromisse = queryDB(params,2);
+
+            myPromisse.then((resolve)=>{
+                closeModal('viewUser')
+                if(main_data.viewUser.data.mode != 'user'){
+                    openHTML('usuarios.html','pop-up','Cadastro de Usuários')
+                }else{
+                    localStorage.clear();
+                    window.location.reload(true);
+                }
+            })
+        }   
+             
+    })
+
+    document.querySelector('#btnDel').addEventListener('click',()=>{
+
+        if (confirm('Deseja realmente deletar este usuário?')) {
+            const params = new Object;
+                params.id = localData.id
+
+            const myPromisse = queryDB(params,3);
+
+            myPromisse.then((resolve)=>{
+                closeModal('viewUser')
+                openHTML('usuarios.html','pop-up','Cadastro de Usuários')
+            })
+        }
+    })
+
+
+</script>

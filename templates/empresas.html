@@ -1,0 +1,79 @@
+
+<template>
+    <style>
+        #btnRelat{
+            display: none;
+        }
+    </style>
+
+    <div class="form-base">
+        <h1>Pesquisa de Empresas</h1>
+
+        <fieldset>
+            <legend>Busca</legend>
+
+            <div class="inline">
+                <label for="edtBusca">por:</label>
+                <select id="cmbBusca">
+                    <option value="fantasia" signal="LIKE">Nome Fantasia</option>
+                    <option value="nome" signal="LIKE">Nome</option>
+                    <option value="tipo" signal="=" val="CLI">Clientes</option>
+                    <option value="tipo" signal="=" val="FOR">Fornecedores</option>
+                    <option value="cnpj" signal="=" >CNPJ</option>
+                    <option value="ie" signal="=">Insc. Estadual</option>
+                    <option value="id" signal="IN">Código</option>
+                </select>
+                <input type="text" id="edtBusca" onkeypress="return getEnter(event, 'btnBusca')">
+                <button id="btnBusca">Busca</button>
+
+            </div>
+
+            <table id="tblEmp"></table>
+        </fieldset>
+    
+    </div>
+
+
+</template>
+<script>
+  
+
+    document.querySelector('#btnBusca').addEventListener('click',()=>{
+
+
+        const sel = document.querySelector('#cmbBusca')
+        const field = sel.value
+        const signal = sel.options[sel.selectedIndex].getAttribute('signal')
+        let value = sel.options[sel.selectedIndex].hasAttribute('val') ? sel.options[sel.selectedIndex].getAttribute('val') : document.querySelector('#edtBusca').value.trim()
+        value = signal=='LIKE' ? `"%${value}%"` : signal=='IN' ? `(${value})` : sel.value=='true'? sel.value : `"${value}"`
+
+        const tbl = document.getElementById('tblEmp')
+        tbl.innerHTML = ''
+        const params = new Object;
+            params.field = field
+            params.signal = signal
+            params.value = value
+            params.hash = localStorage.getItem('hash');
+
+        const myPromisse = queryDB(params,24);
+
+        myPromisse.then((resolve)=>{
+            if(resolve.trim() != ""){
+                const json = JSON.parse(resolve);
+                tbl.head('Cod.|mobHide,Nome Fantasia,CNPJ|mobHide,Insc. Est.|mobHide,Telefone|mobHide,Tipo')            
+                for(let i=0; i<json.length;i++){
+                    tbl.plot(json[i],'id|mobHide,fantasia,cnpj|mobHide,ie|mobHide,tel|mobHide,tipo','int,Upp,func getCNPJ,func getIE,str,str')
+                }                
+            }        
+        });
+    })
+
+
+    document.querySelector('#tblEmp').addEventListener('click',(e)=>{
+        data = e.target.parentNode.data
+        data.mode = 'viewEmp'
+        openHTML('viewEmp.html','pop-up',data.id+"-"+data.nome,data)
+    })
+
+
+</script>

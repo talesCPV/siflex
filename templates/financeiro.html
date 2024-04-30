@@ -1,0 +1,139 @@
+
+<template>
+    <style>
+        #lbl{
+            font-weight: bolder;
+            font-size: 1em;
+            padding: 20px;
+            display: none;
+            width: 100%;
+        }
+        #lbl p{
+            text-align: right;
+        }
+
+        #btnRelat{
+            width: 98%;
+            display: none;
+        }
+
+    </style>
+
+    <div class="form-base">
+        <h1>Financeiro</h1>
+        <fieldset>
+            <legend>Fluxo de Caixa</legend>
+    
+            <div class="inline">
+                <label for="cmbBusca">Busca Por:</label>
+                <select id="cmbBusca">
+                    <optgroup label="Geral">
+                        <option value="true" signal="=" val="true">Todos</option>                        
+                        <option value="tipo" signal="=" val="ENTRADA">Entradas</option>
+                        <option value="tipo" signal="=" val="SAIDA">Saídas</option>
+                        <option value="emp" signal="LIKE">Cliente/Fornecedor</option>
+                        <option value="ref" signal="LIKE">Referência/NF</option>
+                        </optgroup>
+                    <optgroup label="Saídas">
+                        <option value="origem" signal="=" val="COM">Compras</option>
+                        <option value="origem" signal="=" val="IMP">Impostos</option>
+                        <option value="origem" signal="=" val="PGT">Pgto Funcionários</option>
+                        <option value="origem" signal="=" val="FIX">Custo Fixo</option>    
+                    </optgroup>
+                </select>
+                <input type="text" id="edtBusca" placeholder="Digite sua Busca">
+                <button id="btnBusca">Busca</button>
+            </div>
+            <div class="inline center-itens">
+                <div class="ckBOX">
+                    <label for="ckbData">Início/Final</label>
+                    <input type="checkbox" id="ckbData" checked>
+                </div>
+                <input type="date" id="edtIni">
+                <input type="date" id="edtFin">
+            </div>
+    
+        </fieldset>
+        <table id="tblFinan"></table>
+        <div class="inline" id="lbl">
+            <p id="lblTotal"></p>
+            <p id="lblOrc"></p>
+            <p id="lblSaldo"></p>
+        </div>
+
+        <button id="btnRelat">Reltório</button>
+          
+    </div>
+
+    
+
+</template>
+<script>
+
+    let centro_custo = 0
+    getConfig('config').then((txt)=>{
+        const json =  JSON.parse(txt)
+        centro_custo = parseFloat(json.centro_custo)
+    })
+
+    document.querySelector('#edtIni').value =  today.iniMonth()
+    document.querySelector('#edtFin').value =  today.finMonth()
+
+    document.querySelector('#btnBusca').addEventListener('click',()=>{
+        const sel = document.querySelector('#cmbBusca')
+        const field = sel.value
+        const signal = sel.options[sel.selectedIndex].getAttribute('signal')
+        const ckb = document.querySelector('#ckbData').checked
+        let value = sel.options[sel.selectedIndex].hasAttribute('val') ? sel.options[sel.selectedIndex].getAttribute('val') : document.querySelector('#edtBusca').value.trim()
+        value = signal=='LIKE' ? `"%${value}%"` : sel.value=='true'? sel.value : `"${value}"`
+
+        const tbl = document.getElementById('tblFinan')
+        const params = new Object;
+            params.field = field
+            params.signal = signal
+            params.value = value
+            params.ini = ckb ? document.querySelector('#edtIni').value : '2000-01-01';
+            params.fin = ckb ? document.querySelector('#edtFin').value : '2100-12-31';        
+
+        const myPromisse = queryDB(params,20);
+
+        myPromisse.then((resolve)=>{
+            if(resolve.trim() != ""){
+                const json = JSON.parse(resolve);
+                let total = 0
+                tbl.innerHTML=''
+                document.querySelector('#btnRelat').style.display = json.length > 0 ? 'block' : 'none'
+                document.querySelector('#lbl').style.display = json.length > 0 ? 'block' : 'none'
+                json.length > 0 ? tbl.head('Cod.|mobHide,Tipo|mobHide,Orig.|mobHide,Ref./NF,Sacado|mobHide,Vencimento, Pgto.|mobHide, Valor R$|mobHide') :0
+                for(let i=0; i<json.length;i++){
+                    total += json[i].tipo =='ENTRADA' ? parseFloat(json[i].preco) : -parseFloat(json[i].preco) 
+                    tbl.plot(json[i],'id|mobHide,tipo|mobHide,origem|mobHide,ref,emp|mobHide,data_pg,pgto|mobHide,preco|mobHide','int,str,str,Upp,Upp,date,change 15=SIS .=**,R$.')
+                }
+                
+    
+                if(value=='"COM"'){
+                    document.querySelector('#lblOrc').innerHTML = `Orçamento Mensal ${viewMoneyBR(centro_custo.toFixed(2))}`
+                    document.querySelector('#lblSaldo').innerHTML = `Saldo Atual ${(centro_custo+total) < 0 ? '-':'+'}  ${viewMoneyBR((centro_custo+total).toFixed(2))}`
+                }else{
+                    document.querySelector('#lblOrc').innerHTML = ''
+                    document.querySelector('#lblSaldo').innerHTML = ''
+                }
+                document.querySelector('#lblTotal').innerHTML =  'Total '+viewMoneyBR(total.toFixed(2))
+      
+            }        
+        })
+
+    })
+
+    document.querySelector('#tblFinan').addEventListener('click',(e)=>{
+        data = e.target.parentNode.data
+        data.mode = 'edit'
+        openHTML('viewFinan.html','pop-up','Editar Usuario',data)
+    })
+
+    document.querySelector('#btnRelat').addEventListener('click',()=>{
+        print_finan(document.getElementById('tblFinan'))
+    })
+
+
+</script>

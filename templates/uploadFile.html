@@ -1,0 +1,69 @@
+
+<template>
+    <style>
+
+    </style>
+  
+    <fieldset>
+        <legend>Selecione o arquivo</legend>
+        <input  name="up_file" id="up_file" type="file" accept=".jpg,.jpeg,.png">  
+        <button id="btnUpload">Salvar</button>
+    </fieldset>
+
+
+</template>
+<script>
+
+    function uploadFile(fileID,path,filename){
+        const up_data = new FormData();        
+            up_data.append("up_file",  document.getElementById(fileID).files[0]);
+            up_data.append("path", path);
+            up_data.append("filename", filename);
+
+        const myRequest = new Request("backend/upload.php",{
+            method : "POST",
+            body : up_data
+        });
+
+        const myPromisse = new Promise((resolve,reject) =>{
+            fetch(myRequest)
+            .then(function (response){
+                if (response.status === 200) { 
+                    resolve(response.text());             
+                } else { 
+                    reject(new Error("Houve algum erro na comunicação com o servidor"));                    
+                } 
+            });
+        }); 
+
+        return myPromisse
+    }
+
+    document.querySelector('#up_file').accept =  main_data.uploadFile.data.ext
+    
+    document.querySelector('#btnUpload').addEventListener('click',()=>{
+        const upload = uploadFile('up_file',main_data.uploadFile.data.path,main_data.uploadFile.data.filename)
+
+        upload.then(function (resolve){
+            if(resolve != '0'){
+                console.log(resolve) 
+                if(main_data.uploadFile.data.hasOwnProperty('func')){
+                    main_data.uploadFile.data.func(resolve)
+                }else{
+                    const myPromisse = queryDB(main_data.uploadFile.data.params,main_data.uploadFile.data.query);
+                    myPromisse.then((resolve)=>{
+                        document.querySelector('#btnBusca').click()
+                        data.path = '../../nf/servico/'
+                        listNF('../../nf/servico','pdf')
+
+                        closeModal('uploadFile')
+                    })
+                }
+            }
+        })
+    })
+
+
+
+
+</script>

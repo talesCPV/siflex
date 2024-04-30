@@ -1,0 +1,58 @@
+
+<template>
+    <style>
+
+        #fdsUser{
+            display: none;
+        }
+
+
+        #btnNovoUser{
+            width: 98%;
+        }
+
+    </style>
+
+    <fieldset id="fdsUser">
+        <legend>Usuários</legend>
+        <table id="tblUser"></table>
+    </fieldset>
+    <button id="btnNovoUser">Novo Usuário</button>
+
+</template>
+<script>
+  
+    viewUser()
+
+    function viewUser(){      
+        const tbl = document.getElementById('tblUser')
+        tbl.innerHTML = ''
+        const params = new Object;
+            params.hash = localStorage.getItem('hash');
+        const myPromisse = queryDB(params,1);
+        myPromisse.then((resolve)=>{
+            if(resolve.trim() != ""){
+                const json = JSON.parse(resolve);
+                document.querySelector('#fdsUser').style.display = json.length > 0 ? 'block' : 'none'
+                tbl.head('Usuário,Nome,Email|mobHide')
+                for(let i=0; i<json.length;i++){
+                    tbl.plot(json[i],'nome,user,email|mobHide','str,Upp,str')
+                }
+            }        
+        });
+    }
+
+    document.querySelector('#tblUser').addEventListener('click',(e)=>{
+        data = e.target.parentNode.data
+        data.mode = 'edit'
+        openHTML('viewUser.html','pop-up','Editar Usuario',data)
+    })
+
+
+    document.querySelector('#btnNovoUser').addEventListener('click',()=>{
+        const data = new Object
+        data.mode = 'new'
+        openHTML('viewUser.html','pop-up','Novo Usuario',data)
+    })
+
+</script>

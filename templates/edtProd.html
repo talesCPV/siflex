@@ -1,0 +1,49 @@
+
+<template>
+    <style>
+
+
+    </style>
+
+<fieldset>
+    <legend id="lgdItem"></legend>
+
+    <div class="inline">
+        <label for="edtQtd">Qtd</label>
+        <input type="text" id="edtQtd" onkeyup="return valFloat(this,0)">
+        <label for="edtPreco">Preço</label>
+        <input type="text" id="edtPreco" onkeyup="return valFloat(this)">
+    </div>
+    <div class="inline">
+        <button id="btnSaveItem">Salvar</button>
+        <button id="btnDelItem">Deletar</button>
+    </div>
+</fieldset>
+
+
+</template>
+<script>
+//    main_data.addProd= getModalData('edtProd')
+//  console.log(localData)
+    document.querySelector('#lgdItem').innerHTML = main_data.edtProd.data.descricao
+    document.querySelector('#edtQtd').value = main_data.edtProd.data.qtd
+    document.querySelector('#edtPreco').value = parseFloat(main_data.edtProd.data.preco).toFixed(2)
+
+
+    document.querySelector('#btnSaveItem').addEventListener('click',()=>{
+        main_data.edtProd.data.qtd = document.querySelector('#edtQtd').value
+        main_data.edtProd.data.preco = document.querySelector('#edtPreco').value
+        main_data.edtProd.data.edt(main_data.edtProd.data)
+
+    })
+
+    document.querySelector('#btnDelItem').addEventListener('click',()=>{
+
+        if (confirm('Deseja realmente deletar este ítem?')) {
+            main_data.edtProd.data.del(main_data.edtProd.data.id)
+        }    
+    
+    })
+
+
+</script>

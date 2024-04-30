@@ -1,0 +1,67 @@
+<template>
+    <style>
+
+        .frm{
+            display: flex;
+            flex-direction: column;
+        }
+     
+    </style>
+  
+    <fieldset class="frm">
+        <legend>Unidades</legend>
+        <div class="inline">
+            <label for="edtNome">Nome:*</label>
+            <input type="text" id="edtNome" placeholder="Nome" maxlength="20">
+            <label for="edtSigla">Sigla:*</label>
+            <input type="text" id="edtSigla" placeholder="Sigla" maxlength="5">
+        </div>
+        <div class="inline">
+            <button id="btnSave">Salvar</button>
+            <button id="btnDel">Deletar</button>    
+        </div>
+    </fieldset>
+
+</template>
+<script>
+
+    if(main_data.viewUnd.data.mode == 'edit'){
+        document.querySelector('#edtNome').value = main_data.viewUnd.data.nome
+        document.querySelector('#edtSigla').value = main_data.viewUnd.data.sigla
+    }else{
+        document.querySelector('#btnDel').style.display = 'none'
+    }
+
+    document.querySelector('#btnSave').addEventListener('click',()=>{
+        if(checkField(['edtNome','edtSigla']) ){
+
+            const params = new Object;
+                params.id = main_data.viewUnd.data.mode == 'new' ? 'DEFAULT' : main_data.viewUnd.data.id
+                params.nome = document.querySelector('#edtNome').value.trim()
+                params.sigla = document.querySelector('#edtSigla').value.trim().toUpperCase()
+
+            const myPromisse = queryDB(params,9);
+
+            myPromisse.then((resolve)=>{
+                closeModal('viewUnd')
+                openHTML('config.html','pop-up','Configuração de Sistema')
+            })
+        }        
+    })
+
+    document.querySelector('#btnDel').addEventListener('click',()=>{
+
+        if (confirm('Deseja realmente deletar este usuário?')) {
+            const params = new Object;
+                params.id = main_data.viewUnd.data.id
+
+            const myPromisse = queryDB(params,3);
+            myPromisse.then((resolve)=>{
+                closeModal('viewUnd')
+                openHTML('usuarios.html','pop-up','Cadastro de Usuários')
+            })
+        }
+    })
+
+
+</script>

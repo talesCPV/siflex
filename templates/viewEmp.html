@@ -1,0 +1,205 @@
+
+<template>
+    <style>
+        .frm{
+            padding: 10px;
+        }
+
+        .frm button{
+            display: none;
+        }
+
+        @media all and (max-width : 768px) {
+            .frm input, .frm select{
+                width: 98% !important;
+            }
+        }
+
+    </style>
+  
+    <fieldset class="frm" >
+        <legend>Empresa</legend>
+
+        <div class="inline">
+            <label for="edtNome">Nome *</label>
+            <input type="text" id="edtNome" maxlength="80" disabled>
+        </div>
+        <div class="inline">
+        <label for="edtFant">Fantasia</label>
+        <input type="text" id="edtFant" maxlength="40" disabled>
+            <label for="cmbTipo">Tipo</label>
+            <select id="cmbTipo" style="width: 150px;">
+                <option value="FOR">Fornecedor</option>
+                <option value="CLI">Cliente</option>
+            </select>
+        </div>
+        <div class="inline">
+            <label for="edtCNPJ">CNPJ</label>
+            <input type="text" id="edtCNPJ" maxlength="18" onkeyup="valCNPJ(this)" disabled>
+            <label for="edtIncEst">Insc.Est.</label>
+            <input type="text" id="edtIncEst" maxlength="16" onkeyup="valIE(this)" disabled>            
+            <label for="edtInscMun">Insc.Mun.</label>
+            <input type="text" id="edtInscMun" maxlength="14" disabled>     
+        </div>
+        <div class="inline">
+            <label for="edtEnd">Endereço</label>
+            <input type="text" id="edtEnd" maxlength="60" disabled>
+            <label for="edtNum">Num.</label>
+            <input type="text" id="edtNum" maxlength="5" style="width: 150px;" disabled>    
+        </div>
+        <div class="inline">
+            <label for="edtCidade">Cidade</label>
+            <input type="text" id="edtCidade" maxlength="30" disabled>
+            <label for="cmbEstado">Estado</label> 
+            <select id="cmbEstado" style="width: 200px;">
+                <option value="AC">Acre</option>
+                <option value="AL">Alagoas</option>
+                <option value="AP">Amapa</option>
+                <option value="AM">Amazonas</option>
+                <option value="BA">Bahia</option>
+                <option value="CE">Ceara</option>
+                <option value="ES">Espirito Santo</option>
+                <option value="DF">Distrito Federal</option>
+                <option value="MA">Maranhao</option>
+                <option value="MT">Mato Grosso</option>
+                <option value="MS">Mato Grosso do Sul</option>
+                <option value="MG">Minas Gerais</option>
+                <option value="PA">Para</option>
+                <option value="PB">Paraiba</option>
+                <option value="PR">Parana</option>
+                <option value="PE">Pernambuco</option>
+                <option value="PI">Piaui</option>
+                <option value="RJ">Rio de Janeiro</option>
+                <option value="RN">Rio Grande do Norte</option>
+                <option value="RS">Rio Grande do Sul</option>
+                <option value="RO">Rondonia</option>
+                <option value="RR">Roraima</option>
+                <option value="SC">Santa Catarina</option>
+                <option selected="selected" value="SP">Sao Paulo</option>
+                <option value="SE">Sergipe</option>
+                <option value="TO">Tocantins</option>                    
+            </select>   
+        </div>
+        <div class="inline">            
+            <label for="edtBairro">Bairro</label>
+            <input type="text" id="edtBairro" maxlength="60" disabled>
+            <label for="edtCEP">CEP</label>
+            <input type="text" id="edtCEP" maxlength="10" onkeyup="valCEP(this)" style="width: 200px;" disabled>
+            <label for="edtTel">Tel</label>
+            <input type="text" id="edtTel" onkeyup="phone(this)" maxlength="15" style="width: 200px;" disabled>            
+        </div>
+        <div class="inline">
+            <label for="edtMail">Email</label>
+            <input type="email" id="edtMail" maxlength="255" disabled>
+        </div>
+
+        <button id="btnSave">Salvar</button>
+        <button id="btnDel">Deletar</button>
+        <button id="btnEdit">Editar</button>
+        <button id="btnCNPJ">Cartão CNPJ</button>
+    </fieldset>
+
+
+</template>
+<script>
+    
+    pageBegin()
+
+    function pageBegin(){
+        if (main_data.viewEmp.data != 'new'){
+            document.querySelector('#edtNome').value = main_data.viewEmp.data.nome == null ? '' : main_data.viewEmp.data.nome.toUpperCase()
+            document.querySelector('#edtFant').value = main_data.viewEmp.data.fantasia == null ? '' : main_data.viewEmp.data.fantasia.toUpperCase() 
+            document.querySelector('#cmbTipo').value = main_data.viewEmp.data.tipo == null ? '' : main_data.viewEmp.data.tipo
+            document.querySelector('#edtCNPJ').value = getCNPJ(main_data.viewEmp.data.cnpj)
+            document.querySelector('#edtIncEst').value = getIE(main_data.viewEmp.data.ie)
+            document.querySelector('#edtInscMun').value = main_data.viewEmp.data.im == null ? '' : main_data.viewEmp.data.im
+            document.querySelector('#edtEnd').value = main_data.viewEmp.data.endereco == null ? '' : main_data.viewEmp.data.endereco.toUpperCase()
+            document.querySelector('#edtNum').value = main_data.viewEmp.data.num == null ? '' : main_data.viewEmp.data.num
+            document.querySelector('#edtCidade').value = main_data.viewEmp.data.cidade == null ? '' : main_data.viewEmp.data.cidade.toUpperCase()
+            document.querySelector('#cmbEstado').value = main_data.viewEmp.data.estado == null ? '' : main_data.viewEmp.data.estado
+            document.querySelector('#edtBairro').value = main_data.viewEmp.data.bairro == null ? '' : main_data.viewEmp.data.bairro.toUpperCase()
+            document.querySelector('#edtCEP').value = main_data.viewEmp.data.cep == null ? '' : main_data.viewEmp.data.cep
+            document.querySelector('#edtTel').value = main_data.viewEmp.data.tel == null ? '' : main_data.viewEmp.data.tel
+            document.querySelector('#edtMail').value = main_data.viewEmp.data.email == null ? '' : main_data.viewEmp.data.email
+        }
+        const params = new Object;
+            params.hash = localStorage.getItem('hash');
+
+        const myPromisse = queryDB(params,10);
+        myPromisse.then((resolve)=>{
+            const perm = JSON.parse(resolve)
+            if(perm[0].access == '1'){
+                if (main_data.viewEmp.data != 'new'){
+                    document.querySelector('#btnEdit').style.display = 'block'                
+                    document.querySelector('#btnCNPJ').style.display = 'block'
+                }else{
+                    document.querySelector('#btnEdit').click()
+                    document.querySelector('#btnDel').style.display = 'none'
+                }
+            }
+        })
+
+    }
+
+    document.querySelector('#btnEdit').addEventListener('click',()=>{
+        const inputs = document.querySelectorAll('.frm input,select')
+        for(let i=0; i<inputs.length; i++){
+            inputs[i].disabled = false
+        }
+   
+        document.querySelector('#btnEdit').style.display = 'none'
+        document.querySelector('#btnSave').style.display = 'block'
+        document.querySelector('#btnDel').style.display = 'block'
+    })
+
+    document.querySelector('#btnSave').addEventListener('click',()=>{
+        if(checkField(['edtNome'])){
+            const fant = document.querySelector('#edtFant').value.trim() == '' ? document.querySelector('#edtNome').value.trim() : document.querySelector('#edtFant').value.trim()
+            const params = new Object;
+            params.id = typeof main_data.viewEmp.data === 'object' ? main_data.viewEmp.data.id : 'DEFAULT'
+            params.nome = document.querySelector('#edtNome').value.trim().toUpperCase()
+            params.fantasia = fant.toUpperCase()
+            params.tipo = document.querySelector('#cmbTipo').value
+            params.cnpj = getNum(document.querySelector('#edtCNPJ').value)
+            params.ie = getNum(document.querySelector('#edtIncEst').value)
+            params.im = getNum(document.querySelector('#edtInscMun').value)
+            params.endereco = document.querySelector('#edtEnd').value.trim().toUpperCase()
+            params.num = document.querySelector('#edtNum').value.trim()
+            params.cidade = document.querySelector('#edtCidade').value.trim().toUpperCase()
+            params.estado = document.querySelector('#cmbEstado').value
+            params.bairro = document.querySelector('#edtBairro').value.trim().toUpperCase()
+            params.cep = document.querySelector('#edtCEP').value
+            params.tel = document.querySelector('#edtTel').value.trim().toUpperCase()
+            params.email = document.querySelector('#edtMail').value.trim().toLowerCase()
+            
+
+        const myPromisse = queryDB(params,25);
+        myPromisse.then((resolve)=>{
+            main_data.viewEmp.data != 'new' ? document.querySelector('#btnBusca').click() : 0            
+            closeModal('viewEmp')
+        })
+        }
+    })
+
+
+    document.querySelector('#btnDel').addEventListener('click',()=>{
+        if (confirm('Deseja realmente deletar esta empresa?')) {
+            const params = new Object;
+                params.id = main_data.viewEmp.data.id
+                params.hash = localStorage.getItem('hash');
+
+            const myPromisse = queryDB(params,26);
+            myPromisse.then((resolve)=>{
+                document.querySelector('#btnBusca').click()
+                closeModal('viewEmp')                
+            })
+        }
+    })
+
+    document.querySelector('#btnCNPJ').addEventListener('click',()=>{
+        window.open('https://servicos.receita.fazenda.gov.br/servicos/cnpjreva/Cnpjreva_Solicitacao.asp?cnpj='+main_data.viewEmp.data.cnpj,'_blank')
+    })
+
+
+
+</script>

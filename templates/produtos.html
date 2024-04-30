@@ -1,0 +1,89 @@
+
+<template>
+    <style>
+        #btnRelat{
+            display: none;
+        }
+    </style>
+
+    <div class="form-base">
+        <h1>Pesquisa de Produtos</h1>
+
+        <fieldset>
+            <legend>Busca</legend>
+
+            <div class="inline">
+                <label for="edtBusca">por:</label>
+                <select id="cmbBusca">
+                    <option value="p.descricao" signal="LIKE">Todos</option>
+                    <option value="p.cod" signal="IN">Código</option>
+                    <option value="e.nome" signal="LIKE">Fornecedor</option>
+                    <option value="p.tipo" signal="=" val="SERVICO">Serviços</option>
+                    <option value="p.tipo" signal="=" val="CONJ">Conjuntos</option>
+                    <option value="p.tipo" signal="=" val="TINTA">Tintas</option>
+                    <option value="p.tipo" signal="=" val="PIGMTO">Pigmentos</option>
+                    <option value="p.cod_bar" signal="=">Código do Produto</option>
+                    <option value="p.cod_cli" signal="LIKE">Código de Barras</option>
+                    <option value="p.estoque" signal="<=" val="p.etq_min">Estoque Baixo</option>
+                </select>
+                <input type="text" id="edtBusca" onkeypress="return getEnter(event, 'btnBusca')">
+                <button id="btnBusca">Busca</button>
+
+            </div>
+
+            <table id="tblProd"></table>
+            <button id="btnRelat">Imprimir</button>
+        </fieldset>
+    
+    </div>
+
+
+</template>
+<script>
+  
+
+    document.querySelector('#btnBusca').addEventListener('click',()=>{
+
+
+        const sel = document.querySelector('#cmbBusca')
+        const field = sel.value
+        const signal = sel.options[sel.selectedIndex].getAttribute('signal')
+        let value = sel.options[sel.selectedIndex].hasAttribute('val') ? sel.options[sel.selectedIndex].getAttribute('val') : document.querySelector('#edtBusca').value.trim()
+        value = signal=='LIKE' ? `"%${value}%"` : signal=='IN' ? `(${value})` : sel.value=='true'? sel.value : `"${value}"`
+
+        const tbl = document.getElementById('tblProd')
+        tbl.innerHTML = ''
+        const params = new Object;
+            params.field = field
+            params.signal = signal
+            params.value = value
+            params.hash = localStorage.getItem('hash');
+
+        const myPromisse = queryDB(params,7);
+
+        myPromisse.then((resolve)=>{
+            if(resolve.trim() != ""){
+                const json = JSON.parse(resolve);
+                document.querySelector("#btnRelat").style.display = json.length>0 ? 'block' : 'none'
+                tbl.head('Cod.|mobHide,Desc.,Und|mobHide,Estq.|mobHide,Cod. Prod.|mobHide,Forn.|mobHide,Preço')
+                for(let i=0; i<json.length;i++){
+                    tbl.plot(json[i],'cod|mobHide,descricao,unidade|mobHide,estoque|mobHide,cod_bar|mobHide,nome|mobHide,preco_venda','int,Upp,str,str,str,Upp,R$.')
+                }                
+            }        
+        });
+    })
+
+
+    document.querySelector('#tblProd').addEventListener('click',(e)=>{
+        const data = e.target.parentNode.data
+        data.mode = 'viewProd'
+        openHTML('viewProd.html','pop-up',data.descricao+"-"+data.cod,data)
+    })
+
+    document.querySelector('#btnRelat').addEventListener('click',()=>{
+        print_prod(document.querySelector('#tblProd'))
+    })
+
+
+
+</script>

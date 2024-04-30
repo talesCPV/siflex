@@ -1,0 +1,83 @@
+
+<template>
+    <style>
+        #btnDelAlq{
+            display: none;
+        }
+    </style>
+  
+  <fieldset>
+    <legend>Margens de Alíquotas</legend>
+    <div class="inline">
+        <label for="edtAcu">Acumulado(R$)</label>
+        <input type="text" id="edtAcu" onkeyup="return valFloat(this)">        
+        <label for="edtIni">Inicio(R$)</label>
+        <input type="text" id="edtIni" onkeyup="return valFloat(this)">
+        <label for="edtFin">Final(R$)</label>
+        <input type="text" id="edtFin" onkeyup="return valFloat(this)">
+    </div>
+    <div class="inline">
+        <label for="cmbTipo">Tipo</label>
+        <select id="cmbTipo">
+            <option value="PERC">Percentual(%)</option>
+            <option value="FIXO">Valor Fixo(R$)</option>
+        </select>
+        <label for="edtVal">Valor(R$)</label>
+        <input type="text" id="edtVal" onkeyup="return valFloat(this)">
+    </div>
+    <button id="btnSaveAlq">Salvar</button>
+    <button id="btnDelAlq">Deletar</button>
+  </fieldset>
+
+
+</template>
+<script>
+
+    const params = new Object;
+            params.hash = localStorage.getItem('hash')
+
+    if(main_data.viewAliq.data.callby == 'edit'){
+        document.querySelector('#cmbTipo').value = main_data.viewAliq.data.tipo
+        document.querySelector('#edtAcu').value = main_data.viewAliq.data.acumulado
+        document.querySelector('#edtIni').value = main_data.viewAliq.data.ini_range
+        document.querySelector('#edtFin').value = main_data.viewAliq.data.fin_range
+        document.querySelector('#edtVal').value = main_data.viewAliq.data.valor
+        document.querySelector('#btnDelAlq').style.display = 'block'
+    }else{
+        document.querySelector('#edtIni').focus()
+    }
+
+    document.querySelector('#btnSaveAlq').addEventListener('click',()=>{
+        if(checkField(['edtIni','edtFin','edtVal'])){
+            const params = new Object;
+                params.id = main_data.viewAliq.data.callby == 'edit' ? main_data.viewAliq.data.id :'DEFAULT'
+                params.id_imp = main_data.viewImp.data.id
+                params.tipo = document.querySelector('#cmbTipo').value
+                params.ini_range = document.querySelector('#edtIni').value
+                params.fin_range = document.querySelector('#edtFin').value
+                params.valor = document.querySelector('#edtVal').value
+                params.acumulado = document.querySelector('#edtAcu').value
+
+            const myPromisse = queryDB(params,68);
+            myPromisse.then((resolve)=>{
+                main_data.viewImp.query()
+                closeModal('viewAliq')
+            })
+        }
+    })
+
+    document.querySelector('#btnDelAlq').addEventListener('click',()=>{
+        if (confirm(`Deseja realmente deletar esta alíquota de ${main_data.viewAliq.data.nome}?`)) {            
+            const params = new Object;
+                params.id = main_data.viewAliq.data.id
+                params.hash = localStorage.getItem('hash')
+
+            const myPromisse = queryDB(params,69);
+            myPromisse.then((resolve)=>{
+                main_data.viewImp.query()
+                closeModal('viewAliq')             
+            })            
+        } 
+    })
+
+</script>

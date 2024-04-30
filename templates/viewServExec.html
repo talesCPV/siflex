@@ -1,0 +1,131 @@
+
+<template>
+    <style>
+
+        #btnDel{
+            display: none;
+        }
+
+    </style>
+  
+    <fieldset>
+        <legend>Carro</legend>
+        <div class="inline">
+            <label for="cmbCli">Cliente *</label>
+            <select id="cmbCli"></select>
+        </div>
+        <div class="inline">
+            <label for="edtNumCarro">Num. do Carro*</label>
+            <input type="text" id="edtNumCarro">           
+            <label for="edtData">Data *</label>
+            <input type="date" id="edtData">
+        </div>
+        <div class="inline">
+            <label for="edtDetal">Detalhamento *</label>
+            <textarea id="edtDetal" cols="30" rows="10"></textarea>
+        </div>
+        <div class="inline">
+            <label for="edtPed">Pedido</label>
+            <input type="text" id="edtPed">
+            <label for="edtNF">NF</label>
+            <input type="text" id="edtNF">
+            <label for="edtValor">Valor R$</label>
+            <input type="text" id="edtValor" value="0" onkeyup="return valFloat(this)">
+        </div>        
+        <div class="inline">
+            <label for="edtTecnico">Equipe *</label>
+            <input type="text" id="edtTecnico">  
+        </div>
+        <button id="btnCad">Cadastrar</button>
+        <button id="btnDel">Deletar</button>
+    </fieldset>
+
+
+</template>
+<script>
+
+    const data = main_data.viewServExec.data
+
+    document.querySelector('#edtData').value = today.getFormatDate()
+
+    const params = new Object;
+        params.hash = localStorage.getItem('hash');
+        params.field = 'tipo'
+        params.signal = '='
+        params.value = 'CLI'
+
+    fillCombo('cmbCli',params,11,['id','cod_nome'],typeof data === 'object' ? data.id_emp :'' )
+
+    if(typeof data === 'object'){
+        document.querySelector('#edtData').value = data.mode =='add' ? today.getFormatDate() : data.data_exec
+        document.querySelector('#edtNumCarro').value = data.num_carro
+        document.querySelector('#edtPed').value = data.mode =='add' ? '': data.pedido
+        document.querySelector('#edtNF').value = data.mode =='add' ? '': data.nf
+        document.querySelector('#edtValor').value = parseFloat(data.valor).toFixed(2)
+        document.querySelector('#edtDetal').value = data.obs
+        document.querySelector('#edtTecnico').value = data.func
+        document.querySelector('#btnDel').style.display = data.mode =='add' ? 'none' : 'block'
+        document.querySelector('#btnCad').innerHTML = data.mode =='add' ? 'Transformar Análise em Serviço' : 'Salvar'
+     
+    }
+
+    document.querySelector('#btnCad').addEventListener('click',()=>{
+
+        if(checkField(['edtData','edtNumCarro','edtDetal','edtTecnico'])){
+            const params = new Object;
+                params.id = typeof data === 'object' ? data.mode =='add' ? 'DEFAULT' : data.id :'DEFAULT' 
+                params.id_emp = document.querySelector('#cmbCli').value
+                params.data_exec = document.querySelector('#edtData').value.trim()
+                params.num_carro = document.querySelector('#edtNumCarro').value.trim()
+                params.func = document.querySelector('#edtTecnico').value.trim()
+                params.obs = document.querySelector('#edtDetal').value.trim()
+                params.nf = document.querySelector('#edtNF').value.trim()
+                params.pedido = document.querySelector('#edtPed').value.trim()
+                params.valor = document.querySelector('#edtValor').value.trim()
+                
+            const myPromisse = queryDB(params,50);
+            myPromisse.then((resolve)=>{                
+                document.querySelector('#edtNumCarro').value = ''
+                document.querySelector('#edtPed').value = ''
+                document.querySelector('#edtNF').value = ''
+                document.querySelector('#edtDetal').value = ''
+                document.querySelector('#edtValor').value = ''
+                document.querySelector('#edtNumCarro').focus()
+                if(data != 'new'){
+                    if(data.mode =='add'){
+                        const params_ = new Object;
+                            params_.has = localStorage.getItem('hash')
+                            params_.id_serv = data.analise
+                        const myPromisse_ = queryDB(params_,83);
+                        myPromisse_.then((resolve)=>{
+                        
+                        })
+                        
+                    }
+                    document.querySelector('#btnBusca').click()
+                    closeModal('viewServExec')
+                }else{
+                    alert('Cadastrado com sucesso!')
+                }
+                
+            })
+        }
+    })
+
+    document.querySelector('#btnDel').addEventListener('click',()=>{
+        if (confirm('Deseja realmente deletar este Registro?')) {
+            const params = new Object;
+                params.id = data.id
+                params.hash = localStorage.getItem('hash')
+
+            const myPromisse = queryDB(params,51);
+
+            myPromisse.then((resolve)=>{
+                document.querySelector('#btnBusca').click()
+                closeModal('viewServExec')                
+            })
+        }        
+    })
+
+
+</script>

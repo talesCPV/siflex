@@ -1,0 +1,74 @@
+
+<template>
+    <style>
+        #btnDel{
+            display: none;
+        }
+    </style>
+  
+  <fieldset>
+    <legend>Cadastro Cargos e Funções</legend>
+
+    <div class="inline">
+        <label for="edtCargo">Cargo *</label>
+        <input type="text" id="edtCargo" maxlength="30">
+        <label for="cmbTipo">Tipo</label>
+        <select id="cmbTipo">
+            <option value="HORA">Horista</option>
+            <option value="MENSAL">Mensalista</option>
+        </select>
+    </div>
+    <div class="inline">
+        <label for="edtSal">Salário *</label>
+        <input type="text" id="edtSal" onkeyup="return valFloat(this)">
+        <label for="edtCBO">CBO</label>
+        <input type="text" id="edtCBO" maxlength="8" onkeyup="return valInt(this)">
+    </div>
+    <button id="btnSalvar">Salvar</button>
+    <button id="btnDel">Deletar</button>
+  </fieldset>
+
+
+</template>
+<script>
+    if(main_data.viewCargo.data.callby == 'edit'){
+        document.querySelector('#edtCargo').value = main_data.viewCargo.data.cargo
+        document.querySelector('#cmbTipo').value = main_data.viewCargo.data.tipo
+        document.querySelector('#edtSal').value = parseFloat(main_data.viewCargo.data.salario).toFixed(2)
+        document.querySelector('#edtCBO').value = main_data.viewCargo.data.cbo
+        document.querySelector('#btnDel').style.display = 'block'
+    }else{
+        document.querySelector('#edtCargo').focus()
+    }
+
+    document.querySelector('#btnSalvar').addEventListener('click',()=>{
+        if(checkField(['edtCargo','edtSal'])){
+            const params = new Object;
+                params.id = main_data.viewCargo.data.callby == 'edit' ? main_data.viewCargo.data.id :'DEFAULT'
+                params.cargo = document.querySelector('#edtCargo').value
+                params.tipo = document.querySelector('#cmbTipo').value
+                params.cbo = document.querySelector('#edtCBO').value
+                params.salario = document.querySelector('#edtSal').value               
+            const myPromisse = queryDB(params,54);
+            myPromisse.then((resolve)=>{
+                main_data.cargos.data.query()
+                closeModal('viewCargo')
+            })
+        }
+    })
+
+    document.querySelector('#btnDel').addEventListener('click',()=>{
+        if (confirm('Deseja realmente deletar esta função?')) {
+            const params = new Object;
+                params.id = main_data.viewCargo.data.id
+                params.hash = localStorage.getItem('hash')
+
+            const myPromisse = queryDB(params,55);
+            myPromisse.then((resolve)=>{
+                main_data.cargos.data.query()
+                closeModal('viewCargo')               
+            })
+        } 
+    })
+
+</script>

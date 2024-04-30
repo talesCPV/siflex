@@ -1,0 +1,142 @@
+
+<template>
+    <style>
+
+        th{
+            text-align: center;
+        }
+
+        #btnPrint{
+            display: none;
+        }
+
+        .day-name{
+            font-size: 1.2em;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .week-end{
+            color: brown;
+        }
+
+
+        @media all and (max-width : 768px) {
+
+            td{
+                font-size: 0.6em;
+                max-width: 15vw ;
+                max-height: 300px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+
+        }        
+
+    </style>
+  
+    <div class="form-base">
+        <h1>Planejamento e Controle de Produção</h1>
+        <fieldset>
+            <legend id="lgdSem">Semana</legend>
+
+            <div class="inline">
+                <label for="edtSem">Semana</label>
+                <input type="date" id="edtSem">
+                <button id="btnBusca">Buscar</button>
+
+            </div>
+            <table id="tblPCP"></table>
+            <button id="btnPrint">Imprimir</button>
+        </fieldset>
+
+    </div>
+
+</template>
+<script>
+    const dia = ['Seg','Ter','Qua','Qui','Sex','Sab','Dom']
+    const tbl = document.getElementById('tblPCP')
+    document.querySelector('#edtSem').value = today.getFormatDate()
+
+    main_data.pcp.viewWeek = ()=>{
+        const week = new Date(document.querySelector('#edtSem').value)
+        tbl.innerHTML = ''
+        tbl.head('DIA,EQUIPE DE FRENTE,EQUIPE DE SUPORTE,COSTURA,MONTAGEM')
+        week.change(-week.getDay()+1)
+        document.querySelector('#lgdSem').innerHTML = `Semana de ${week.getFormatBR()}`
+
+        main_data.pcp.start = week.getFormatDate()
+        for(let i=0; i<7; i++){
+            const row = document.createElement('tr')            
+            row.classList = 'd-'+week.getFormatDate()
+            row.id = dia[i]
+            row.data = new Object
+            row.data.day = new Date(week.getFormatDate())
+            row.data.day.change()
+            for(let j=0; j<5; j++){
+                const td = document.createElement('td')
+                if(j==0){
+                    td.innerHTML =  dia[i] 
+                    td.classList = i<5 ? 'day-name' : 'day-name week-end'
+                }else{
+                    td.innerHTML =  ''
+                }
+                row.appendChild(td)
+            }
+            tbl.appendChild(row)
+            week.change()
+        }
+        week.change(-1)
+        main_data.pcp.end = week.getFormatDate()
+        document.querySelector('#lgdSem').innerHTML += ` a ${week.getFormatBR()}`
+
+        const params = new Object;
+            params.hash = localStorage.getItem('hash');
+            params.inicio = main_data.pcp.start
+            params.final = main_data.pcp.end
+
+        const myPromisse = queryDB(params,14);
+
+        myPromisse.then((resolve)=>{
+            document.querySelector('#btnPrint').style.display = 'none'
+            if(resolve.trim() != ""){
+                const json = JSON.parse(resolve);  
+                for(let i=0; i<json.length;i++){
+                    looking = document.querySelector('.d-'+json[i].data_serv)
+                    json[i].day = looking.data.day
+                    looking.data = json[i]
+                    if(looking != undefined ){
+                        looking.cells[1].innerHTML = json[i].frente
+                        looking.cells[2].innerHTML = json[i].suporte
+                        looking.cells[3].innerHTML = json[i].costura
+                        looking.cells[4].innerHTML = json[i].montagem
+                        document.querySelector('#btnPrint').style.display = 'block'
+                    }
+                }                
+            }        
+        })
+    }
+
+    document.querySelector('#btnBusca').addEventListener('click',()=>{
+        main_data.pcp.viewWeek()
+    })
+
+    document.querySelector('#edtSem').addEventListener('change',()=>{
+        main_data.pcp.viewWeek()       
+    })
+
+    tbl.addEventListener('click',(e)=>{
+        data = e.target.parentNode.data      
+        data.mode = 'viewPCP'
+        data.dayweek = e.target.parentNode.cells[0].innerHTML
+        openHTML('viewPCP.html','pop-up','Programação de Produção',data)
+    })
+
+    document.querySelector('#btnPrint').addEventListener('click',()=>{
+        print_pcp(document.getElementById('tblPCP').rows)
+    })
+
+
+</script>

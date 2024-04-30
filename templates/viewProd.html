@@ -1,0 +1,271 @@
+
+<template>
+    <style>
+        .frm{
+            padding: 10px;
+        }
+
+        .frm button{
+            display: none;
+        }
+
+        #frm-view{
+            font-size: 3em;
+            color: brown;
+            gap: 120px;
+            justify-content: center;
+        }
+
+        #frm-view label{
+            width: 100%;
+            text-align: center;
+        }
+
+        .overline{
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .overline button{
+            display: block;
+        }
+
+        #cnvImg{
+            border: solid 2px black;
+            border-radius: 10px;
+            width: 300px;
+            height: 300px;
+        }
+
+        @media all and (max-width : 768px) {
+
+            #frm-view label{
+                font-size: 0.6em;
+            }
+
+            #cnvImg{
+                width: 200px;
+                height: 200px;
+                margin: auto;
+            }
+
+
+        }
+
+
+    </style>
+  
+    <fieldset class="frm" >
+        <legend>Produto</legend>
+
+        <div class="inline" id="frm-view">
+            <canvas width="300" height="300" id="cnvImg"></canvas>          
+            <div class="overline">
+                <label for="btnEtq" id="edtPreço"></label>
+                <button id="btnEtq">Etiqueta</button>  
+                <button id="btnUpload">Upload</button>
+                <input  name="up_file" id="up_file" type="file" accept=".jpg,.jpeg,.png">  
+            </div> 
+        </div>
+        <div class="inline">
+            <label for="edtDesc">Descrição</label>
+            <input type="text" id="edtDesc" disabled>
+        </div>
+
+        <div class="inline">
+            <label for="cmbForn">Forn.</label>
+            <select id="cmbForn" disabled></select>
+        </div>
+        <div class="inline">
+            <label for="cmbTipo">Tipo</label>
+            <select id="cmbTipo" disabled>
+                <option value="VENDA">Produto</option>
+                <option value="SERVICO">Serviço</option>
+                <option value="CONJ">Conjunto</option>
+                <option value="TINTA">Tinta</option>
+                <option value="PIGMTO">Pigmento</option>
+            </select>
+        </div>
+        <div class="inline">
+            <label for="cmbUnd">Und.</label>
+            <select id="cmbUnd" disabled></select>
+            <label for="edtEtq">Estq.</label>
+            <input type="text" id="edtEtq" onkeyup="return valFloat(this)" disabled>
+            <label for="edtEtqMin">Estq. Min.</label>
+            <input type="text" id="edtEtqMin" onkeyup="return valFloat(this)" disabled>
+        </div>
+        <div  class="inline">
+            <label for="edtCodInt">Cod. Int.</label>
+            <input type="text" id="edtCodInt" disabled>    
+            <label for="edtCodFab">Cod. Fab.</label>
+            <input type="text" id="edtCodFab" disabled>
+            <label for="edtCodBar">Cod. Bar.</label>
+            <input type="text" id="edtCodBar" disabled>
+        </div>
+        <div class="inline" id="frm-edit">
+            <label for="edtComp">Compra R$</label>
+            <input type="text" id="edtComp" onkeyup="return valFloat(this)" disabled>
+            <label for="edtMargem">Margem %</label>
+            <input type="text" id="edtMargem"  onkeyup="return valFloat(this)" disabled>
+        </div>
+        <div class="inline">
+            <label for="edtNCM">NCM</label>
+            <input type="text" id="edtNCM"  onkeyup="return valFloat(this,0)" disabled>
+            <label for="edtCFOP">CFOP</label>
+            <input type="text" id="edtCFOP" disabled>
+        </div>
+        <button id="btnSave">Salvar</button>
+        <button id="btnDel">Deletar</button>
+        <button id="btnEdit">Editar</button>
+    </fieldset>
+
+
+</template>
+<script>
+
+    pageBegin()
+
+    function pageBegin(){
+        if (main_data.viewProd.data != 'new'){
+            const img = main_data.viewProd.data.img_path != null ? main_data.viewProd.data.img_path : 'noimage.png'
+            loadImg(`../prod_img/${img}`)
+            document.querySelector('#edtDesc').value = main_data.viewProd.data.descricao
+            document.querySelector('#edtEtq').value = main_data.viewProd.data.estoque
+            document.querySelector('#edtCodFab').value = main_data.viewProd.data.cod_bar
+            document.querySelector('#edtEtqMin').value = main_data.viewProd.data.etq_min
+            document.querySelector('#edtCodInt').value = main_data.viewProd.data.cod
+            document.querySelector('#edtCodBar').value = main_data.viewProd.data.cod_bar
+            document.querySelector('#edtCFOP').value = main_data.viewProd.data.CFOP
+            document.querySelector('#edtNCM').value = main_data.viewProd.data.ncm
+            document.querySelector('#edtComp').value = main_data.viewProd.data.preco_comp
+            document.querySelector('#edtMargem').value = main_data.viewProd.data.margem
+            document.querySelector('#cmbTipo').value = main_data.viewProd.data.tipo.toUpperCase()
+            document.querySelector('#edtCodFab').value = main_data.viewProd.data.cod_cli    
+            document.querySelector('#edtPreço').innerHTML = viewMoneyBR(parseFloat(main_data.viewProd.data.preco_venda).toFixed(2))
+        }
+        const params = new Object;
+            params.hash = localStorage.getItem('hash');
+
+        const myPromisse = queryDB(params,10);
+        myPromisse.then((resolve)=>{
+            const perm = JSON.parse(resolve)
+            if(perm[0].access == '1'){
+                if (main_data.viewProd.data != 'new'){
+                    document.querySelector('#btnEdit').style.display = 'block'                
+                }else{
+                    document.querySelector('#btnEdit').click()
+                    document.querySelector('#btnDel').style.display = 'none'
+                }
+            }
+        })
+
+        fillCombo('cmbUnd',params,8,['sigla','nome'],typeof main_data.viewProd.data === 'object' ? main_data.viewProd.data.unidade :'' )
+        params.field = 'tipo'
+        params.signal = '='
+        params.value = 'FOR'        
+        fillCombo('cmbForn',params,11,['id','cod_nome'],typeof main_data.viewProd.data === 'object' ? main_data.viewProd.data.id_emp :'' )
+    }
+
+    document.querySelector('#btnEdit').addEventListener('click',()=>{
+        const inputs = document.querySelectorAll('.frm input,select')
+        for(let i=0; i<inputs.length; i++){
+            inputs[i].disabled = false
+        }
+        if (main_data.viewProd.data == 'new'){
+            document.querySelector('#edtCodInt').disabled = true
+        }
+        document.querySelector('#btnEdit').style.display = 'none'
+        document.querySelector('#btnSave').style.display = 'block'
+        document.querySelector('#btnDel').style.display = 'block'
+        document.querySelector('#frm-view').style.display = 'none'
+    })
+
+    document.querySelector('#btnSave').addEventListener('click',()=>{
+        const params = new Object;
+            params.id = typeof main_data.viewProd.data === 'object' ? main_data.viewProd.data.id : 'DEFAULT'
+            params.descricao = document.querySelector('#edtDesc').value.toUpperCase()
+            params.estoque = document.querySelector('#edtEtq').value
+            params.etq_min = document.querySelector('#edtEtqMin').value
+            params.unidade = document.querySelector('#cmbUnd').value
+            params.cod = document.querySelector('#edtCodInt').value
+            params.cod_bar = document.querySelector('#edtCodBar').value
+            params.cfop = document.querySelector('#edtCFOP').value
+            params.id_emp = document.querySelector('#cmbForn').value
+            params.ncm = document.querySelector('#edtNCM').value
+            params.preco_comp = document.querySelector('#edtComp').value
+            params.margem = document.querySelector('#edtMargem').value
+            params.tipo = document.querySelector('#cmbTipo').value
+            params.cod_cli = document.querySelector('#edtCodFab').value
+
+        const myPromisse = queryDB(params,12);
+        myPromisse.then((resolve)=>{
+            if (main_data.viewProd.data != 'new'){
+                document.querySelector('#btnBusca').click()
+            }
+            closeModal('viewProd')
+        })
+
+    })
+
+
+    document.querySelector('#btnDel').addEventListener('click',()=>{
+        if (confirm('Deseja realmente deletar este produto?')) {
+            const params = new Object;
+                params.id = main_data.viewProd.data.id
+                params.hash = localStorage.getItem('hash');
+
+            const myPromisse = queryDB(params,13);
+            myPromisse.then((resolve)=>{
+                document.querySelector('#btnBusca').click()
+                closeModal('viewProd')                
+            })
+        }
+    })
+
+    document.querySelector('#btnEtq').addEventListener('click',()=>{
+        print_etq(main_data.viewProd.data)
+    })
+
+    document.querySelector('#up_file').addEventListener('change',()=>{
+
+        if (document.querySelector('#up_file').files && document.querySelector('#up_file').files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                var ctx = document.getElementById('cnvImg');
+                if (ctx.getContext) {
+                    ctx = ctx.getContext('2d');
+                    let preview = new Image();
+                    preview.onload = function () {
+                        ar = aspect_ratio(preview)
+                        ctx.drawImage(preview, 0, 0,preview.width,preview.height,ar[0],ar[1],ar[2],ar[3]);
+                    };
+                    preview.src = e.target.result            
+                }
+            }
+            reader.readAsDataURL(document.querySelector('#up_file').files[0]);
+        }
+
+    })
+
+    document.querySelector('#btnUpload').addEventListener('click',()=>{
+        const upload = uploadImage('up_file','../../prod_img/',`img_${main_data.viewProd.data.cod}`)
+
+        upload.then(function (resolve){
+            if(resolve != '0'){
+                const params = new Object;
+                    params.id = main_data.viewProd.data.id 
+                    params.filename = resolve
+ 
+                const myPromisse = queryDB(params,23);
+                myPromisse.then((resolve)=>{
+                    document.querySelector('#btnBusca').click()
+                    alert('Imagem salva com sucesso!')
+                })
+
+            }
+        })
+
+    })
+
+</script>

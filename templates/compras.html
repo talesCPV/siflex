@@ -1,0 +1,126 @@
+
+<template>
+    <style>
+        #lblTotal{
+            font-weight: bolder;
+            font-size: 1.4em;
+            padding: 20px;
+            display: none;
+            width: 100%;
+            text-align: right;
+        }
+
+        #btnRelat{
+            width: 98%;
+            display: none;
+        }
+
+        #btnNova{
+            width: 97%;
+        }
+
+
+    </style>
+
+    <div class="form-base">
+        <h1>NF de Compras</h1>
+        <fieldset>
+            <legend>Busca Por:</legend>
+    
+            <div class="inline">
+                <select id="cmbBusca">
+                    <optgroup label="Geral">
+                        <option value="true"       signal="=" val="true"   >Todos      </option>                        
+                        <option value="ENT.id"     signal="IN" >Código   </option>
+                        <option value="EMP.fantasia" signal="=">Fornecedor    </option>
+                        <option value="TRIM(ENT.nf)"     signal="IN" >Num. NF  </option>
+                        <option value="p.status"   signal="=">Nome do Produto</option>
+                        <option value="p.id"       signal="IN"   >Cód. do Produto</option>
+                        <option value="EMP.id"  signal="LIKE">Cód. do Fornecedor</option>
+                        <option value="ENT.status" signal="=" val="ABERTO" >Aberta</option>
+                        <option value="ENT.status" signal="=" val="FECHADO" >Fechado</option>
+                    </optgroup>
+                </select>
+                <input type="text" id="edtBusca" placeholder="Digite sua Busca" onkeypress="return getEnter(event, 'btnBusca')">
+                <button id="btnBusca">Busca</button>
+            </div>
+            <div class="inline center-itens">
+                <div class="ckBOX">
+                    <label for="ckbData">Início/Final</label>
+                    <input type="checkbox" id="ckbData" checked>
+                </div>
+                <input type="date" id="edtIni">
+                <input type="date" id="edtFin">
+            </div>            
+        </fieldset>
+        <div class="inline" >
+            <button id="btnNova">Nova NF</button>
+        </div>
+
+        <table id="tblComp"></table>
+        <p id="lblTotal"></p>
+          
+    </div>
+
+</template>
+<script>
+
+    document.querySelector('#edtIni').value =  today.iniMonth()
+    document.querySelector('#edtFin').value =  today.finMonth()
+
+    document.querySelector('#btnNova').addEventListener('click',()=>{
+//        openHTML('newCot.html','pop-up','Nova Cotação','new')
+        openHTML('newComp.html','pop-up','Entrada de Material','new')
+
+    })
+
+
+    document.querySelector('#btnBusca').addEventListener('click',()=>{
+
+        const sel = document.querySelector('#cmbBusca')
+        const field = sel.value
+        const signal = sel.options[sel.selectedIndex].getAttribute('signal')
+        const ckb = document.querySelector('#ckbData').checked
+        let value = document.querySelector('#edtBusca').value.trim()
+        const values_arr = value.split(',')
+        if(signal=='IN'){
+            value = ''
+            for(let i=0; i< values_arr.length; i++){
+                value += i==0 ? `"${values_arr[i]}"` : `,"${values_arr[i]}"`
+            }
+        }
+        value = sel.options[sel.selectedIndex].hasAttribute('val') ? sel.options[sel.selectedIndex].getAttribute('val') : value
+        value = signal=='LIKE' ? `"%${value}%"` : signal=='IN' ? `(${value})` : sel.value=='true'? sel.value : `"${value}"`
+        const tbl = document.getElementById('tblComp')
+        const params = new Object;
+            params.field = field
+            params.signal = signal
+            params.value = value
+            params.ini = ckb ? document.querySelector('#edtIni').value : '2000-01-01';
+            params.fin = ckb ? document.querySelector('#edtFin').value : '2100-12-31';        
+
+        const myPromisse = queryDB(params,41);
+
+        myPromisse.then((resolve)=>{
+            if(resolve.trim() != ""){
+                const json = JSON.parse(resolve);
+                let total = 0
+                tbl.innerHTML=''
+                document.querySelector('#lblTotal').style.display = json.length > 0 ? 'block' : 'none'
+                json.length > 0 ? tbl.head('Cod.|mobHide,NF.,Fornecedor.,Obs,Data|mobHide,Status|mobHide') : 0
+                for(let i=0; i<json.length;i++){                                       
+                    total +=  parseFloat(json[i].venda)
+                    tbl.plot(json[i],'id|mobHide,nf,fantasia,OBS,data_ent|mobHide,status|mobHide','int,Upp,Upp,Upp,date,Upp',true)                    
+                }                
+                document.querySelector('#lblTotal').innerHTML =  'Total '+ viewMoneyBR(total.toFixed(2))
+            }        
+        })
+    })
+
+    document.querySelector('#tblComp').addEventListener('click',(e)=>{
+        data = e.target.parentNode.data
+        data.mode = 'edit'      
+        openHTML('viewComp.html','pop-up','Entrada de Material',data)
+    })
+
+</script>

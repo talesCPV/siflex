@@ -1,0 +1,267 @@
+
+<template>
+    <style>
+
+        #tblPed{
+            font-size: 0.9em;
+        }
+
+        #fdsRelat{
+            display: none;
+        }
+
+        #btnVerNF{
+            display: none;
+        }
+
+    </style>
+    
+    <fieldset id="fdsPed">
+        <legend>Pedido</legend>
+        <table id="tblPed">
+            <tr>
+                <th>Empresa</th><th>Emissão</th><th class="mobHide">Vendedor</th><th  class="mobHide">Comprador</th><th>Entrega</th><th>Valor</th>
+            </tr>
+            <tr>
+                <td id="tdEmp"></td><td id="tdEmi"></td><td id="tdVend"  class="mobHide"></td><td id="tdComp"  class="mobHide"></td><td id="tdEnt"></td><td id="tdVal"></td>
+            </tr>
+        </table>
+        <div class="inline">
+            <button id="btnEdit" disabled>Editar</button>
+            <button id="btnDel" disabled>Deletar</button>
+            <button id="btnFecha" disabled>Encerrar</button>
+            <button id="btnVerNF">Ver NF</button>
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend>Ítens</legend>
+        <table id="tblItens"></table>
+        <button id="btnAdd" disabled>Adicionar Ítens</button>
+    </fieldset>
+    <fieldset id="fdsRelat">
+        <legend>Relatórios</legend>
+        <div class="inline">
+            <div class="ckBOX">
+                <label for="ckbValor">Mostrar Valor</label>
+                <input type="checkbox" id="ckbValor" checked>
+            </div>
+            <button id="btnCot">Cotação</button>
+            <button id="btnRecMat">Recibo de Material</button>
+        </div>
+    </fieldset>
+
+</template>
+<script>
+
+    main_data.viewCot.open = function open(){
+        document.querySelector('#tdEmp').innerHTML = main_data.viewCot.data.fantasia.toUpperCase()
+        document.querySelector('#tdEmi').innerHTML = main_data.viewCot.data.data_ped != null ? dataBR(main_data.viewCot.data.data_ped) : '*'
+        document.querySelector('#tdVend').innerHTML = main_data.viewCot.data.resp != null ? main_data.viewCot.data.resp.toUpperCase() : '*'
+        document.querySelector('#tdComp').innerHTML = main_data.viewCot.data.comp != null ? main_data.viewCot.data.comp.toUpperCase(): '*'
+        document.querySelector('#tdEnt').innerHTML = main_data.viewCot.data.data_ent != null ? dataBR(main_data.viewCot.data.data_ent): '*'
+
+        if(main_data.viewCot.data.status == 'ABERTO'){
+            document.querySelector('#btnEdit').disabled = false
+            document.querySelector('#btnDel').disabled = false
+            document.querySelector('#btnAdd').disabled = false
+            document.querySelector('#btnFecha').innerHTML = 'Encerrar'
+        }else{
+            document.querySelector('#btnFecha').innerHTML = 'Upload NF' 
+            document.querySelector('#btnEdit').disabled = true
+            document.querySelector('#btnDel').disabled = true
+            document.querySelector('#btnAdd').disabled = true
+            if(main_data.viewCot.data.status == 'PAGO'){
+                document.querySelector('#btnVerNF').style.display = 'block'
+            }
+        }
+    }
+    main_data.viewCot.btnEncerra = document.querySelector('#btnFecha')
+    main_data.viewCot.fdsRelat = document.querySelector('#fdsRelat')
+    main_data.viewCot.tblItens = document.querySelector('#tblItens')
+    main_data.viewCot.tdVal = document.querySelector('#tdVal')
+
+    main_data.viewCot.fillItens = function fillItens(){
+        const params = new Object;
+            params.ped_id = main_data.viewCot.data.id
+        const myPromisse = queryDB(params,30);
+        myPromisse.then((resolve)=>{
+            const json = JSON.parse(resolve)
+            main_data.viewCot.btnEncerra.disabled = json.length > 0 ? false : true
+            main_data.viewCot.fdsRelat.style.display = json.length > 0 ? 'block' : 'none'
+            const tbl = main_data.viewCot.tblItens
+            let tot = 0
+            tbl.head('Cod.|mobHide,Descrição,Und.|mobHide,Qtd.,Preço Unit.,Sub Total')            
+            for(let i=0; i<json.length;i++){
+                tbl.plot(json[i],'cod_prod|mobHide,descricao,und|mobHide,qtd,preco,total','str,Upp,Upp,str,R$.,R$.')
+                tot += parseFloat(json[i].total)
+            }
+            main_data.viewCot.tdVal.innerHTML = viewMoneyBR(tot.toFixed(2))
+        })
+    }
+
+    main_data.viewCot.open()
+    main_data.viewCot.fillItens()
+
+    document.querySelector('#btnEdit').addEventListener('click',()=>{        
+        openHTML('newCot.html','pop-up',(main_data.viewCot.data.status=='ABERTO'?'Cotação-':'Pedido-') + main_data.viewCot.num_ped, main_data.viewCot.data)
+    })
+
+    document.querySelector('#btnDel').addEventListener('click',()=>{
+        
+        if (confirm('Deseja realmente deletar esta Cotação?')) {            
+            const params_itens = new Object;
+                params_itens.id_ped = main_data.viewCot.data.id
+                params_itens.hash = localStorage.getItem('hash')
+
+            const myPromisse_item = queryDB(params_itens,33);
+
+            myPromisse_item.then((resolve)=>{
+                const params_ped = new Object;
+                    params_ped.id = main_data.viewCot.data.id
+                    params_ped.hash = localStorage.getItem('hash')
+
+                const myPromisse_ped = queryDB(params_ped,31);
+                myPromisse_ped.then((resolve)=>{
+                    if(main_data.viewCot.data.mode == 'edit'){
+                        document.querySelector('#btnBusca').click()
+                    }
+                    closeModal('viewCot')                 
+                })               
+            })            
+        }                
+    })
+
+    document.querySelector('#btnAdd').addEventListener('click',()=>{
+
+        main_data.viewCot.data.addItem = function(data){
+            if(data.qtd > data.estoque){
+                alert('Estoque insuficiente!')
+                data.qtd = 0
+            }else if(data.qtd > 0){
+                const params = new Object;
+                    params.id = 'DEFAULT' 
+                    params.id_prod = data.id
+                    params.id_ped = main_data.viewCot.data.id
+                    params.qtd = data.qtd
+                    params.preco = data.preco_venda 
+                    params.und = data.unidade
+                    params.serv = data.tipo == 'SERV' ? data.tipo : null
+
+                const myPromisse = queryDB(params,32);
+
+                myPromisse.then((resolve)=>{
+                    if(resolve.trim() != ""){
+                        main_data.viewCot.fillItens()
+                        closeModal('addProd')
+                    }  
+                })                
+            }else{
+                alert('Quantidade não pode ser zero!')
+            }
+        }
+        main_data.viewCot.data.callby = 'viewCot'
+        openHTML('addProd.html','pop-up','Adicione um Produto ou Serviço',main_data.viewCot.data,[100,30])
+    })
+
+    document.querySelector('#btnFecha').addEventListener('click',()=>{
+        if(main_data.viewCot.data.status == 'ABERTO'){
+            if (confirm('Deseja realmente encerrar esta cotação?')) { 
+                const params = new Object;
+                    params.id = main_data.viewCot.data.id 
+                    params.hash = localStorage.getItem('hash')
+                    params.status = 'FECHADO'
+                    
+                const myPromisse = queryDB(params,35);
+                myPromisse.then((resolve)=>{
+                    const myPromisse_delProd = queryDB(params,36)
+                    myPromisse_delProd.then((resolve)=>{
+                        main_data.viewCot.data.status = 'FECHADO'
+                        main_data.viewCot.open()
+                    })
+                })
+            }
+        }else{
+            const params = new Object;
+                    params.id = main_data.viewCot.data.id
+                    params.status = 'PAGO'
+                    params.path =  '../nf/venda/FB_'+main_data.viewCot.data.id+'.pdf'
+
+            const obj = new Object
+                obj.id = main_data.viewCot.data.id
+                obj.path = '../../nf/venda/'
+                obj.filename = 'FB_'+main_data.viewCot.data.id
+                obj.ext = '.pdf'
+                obj.params = params
+                obj.query = 40
+            openHTML('uploadFile.html','pop-up','Upload de NF',obj,[20,150])
+        }
+        
+    })
+
+    document.querySelector('#tblItens').addEventListener('click',(e)=>{
+        if(main_data.viewCot.data.status == 'ABERTO'){
+            const data = e.target.parentNode.data
+            data.mode = 'edit'
+            data.edt = function(data){
+                const params = new Object;
+                    params.id = data.id 
+                    params.id_prod = data.id_prod
+                    params.id_ped = data.id_ped
+                    params.qtd = data.qtd
+                    params.preco = data.preco
+                    params.und = data.und
+                    params.serv = data.serv                
+                const myPromisse = queryDB(params,32);
+                myPromisse.then((resolve)=>{
+                    if(resolve.trim() != ""){
+                        main_data.viewCot.fillItens()
+                        closeModal('edtProd')
+                    }  
+                })
+            }
+            data.del = function(id){
+                const params = new Object;
+                    params.id = id
+                    params.hash = localStorage.getItem('hash')
+                const myPromisse = queryDB(params,33);
+                myPromisse.then((resolve)=>{
+                    if(resolve.trim() != ""){
+                        main_data.viewCot.fillItens()
+                        closeModal('edtProd')
+                    }  
+                })                
+            }
+
+
+            openHTML('edtProd.html','pop-up','Alteração de Ítem',data)
+        }
+    })
+
+    function cot_pdf(tipo='cot'){
+        const params = new Object;
+            params.field = 'id'
+            params.signal = '='
+            params.value = main_data.viewCot.data.id_emp            
+        
+            const myPromisse = queryDB(params,24);
+
+            myPromisse.then((resolve)=>{            
+                print_cotacao(main_data.viewCot.data,document.querySelector('#tblItens'),JSON.parse(resolve)[0],tipo)       
+            })
+    }
+
+
+    document.querySelector('#btnCot').addEventListener('click',()=>{
+        cot_pdf('cot')
+    })
+
+    document.querySelector('#btnRecMat').addEventListener('click',()=>{
+        cot_pdf('rec')
+    })
+
+    document.querySelector('#btnVerNF').addEventListener('click',()=>{
+        window.open('../'+main_data.viewCot.data.path, '_blank');
+    })
+
+
+</script>

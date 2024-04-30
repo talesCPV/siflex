@@ -1,0 +1,101 @@
+
+<template>
+    <style>
+        #btnDel, #fdsAlq{
+            display: none;
+        }
+    </style>
+  
+  <fieldset>
+    <legend>Imposto</legend>
+    <div class="inline">
+        <label for="edtNome">Nome *</label>
+        <input type="text" id="edtNome" maxlength="15">
+    </div>
+    <button id="btnSalvar">Salvar</button>
+    <button id="btnDel">Deletar</button>
+  </fieldset>
+  <fieldset id="fdsAlq">
+    <legend>Alíquotas</legend> 
+    <table id="tblAliq"></table>
+    <button id="btnNovaAlq">Nova</button>
+ </fieldset>
+
+
+</template>
+<script>
+
+    main_data.viewImp.query = function(){
+        const tbl = document.querySelector('#tblAliq')
+        const params = new Object; 
+            params.id = main_data.viewImp.data.id
+            params.hash = localStorage.getItem('hash')
+
+        const myPromisse = queryDB(params,66);
+        myPromisse.then((resolve)=>{
+            const json = JSON.parse(resolve)
+            tbl.head('Início,Final,Tipo,Valor')
+            for(let i=0; i<json.length;i++){
+                tbl.plot(json[i],'ini_range,fin_range,tipo,valor','R$.,R$.,change PERC=% FIXO=R$,str')
+            }          
+        })
+    }
+
+
+
+    if(main_data.viewImp.data.callby == 'edit'){
+        document.querySelector('#edtNome').value = main_data.viewImp.data.nome
+        document.querySelector('#btnDel').style.display = 'block'
+        document.querySelector('#fdsAlq').style.display = 'block'
+        main_data.viewImp.query()
+
+    }else{
+        document.querySelector('#edtNome').focus()
+    }
+
+    document.querySelector('#btnSalvar').addEventListener('click',()=>{
+        if(checkField(['edtNome'])){
+            const params = new Object;
+                params.id = main_data.viewImp.data.callby == 'edit' ? main_data.viewImp.data.id :'DEFAULT'
+                params.nome = document.querySelector('#edtNome').value.toUpperCase()
+
+            const myPromisse = queryDB(params,67);
+            myPromisse.then((resolve)=>{
+                main_data.impostos.query()
+                closeModal('viewImp')
+            })
+        }
+    })
+
+    document.querySelector('#btnNovaAlq').addEventListener('click',()=>{
+        const data = new Object
+        data.callby = 'new'
+        openHTML('viewAliq.html','pop-up','Alíquotas de '+main_data.viewImp.data.nome,data)
+    })
+
+
+    document.querySelector('#tblAliq').addEventListener('click',(e)=>{
+        data = e.target.parentNode.data
+        data.callby = 'edit'
+        openHTML('viewAliq.html','pop-up','Alíquotas de '+main_data.viewImp.data.nome,data)
+    })
+
+    document.querySelector('#btnDel').addEventListener('click',()=>{
+        if (confirm('Deseja realmente deletar este Imposto?')) {
+            const params = new Object;
+                params.id_imp = main_data.viewImp.data.id
+                params.hash = localStorage.getItem('hash')
+                params.id = main_data.viewImp.data.id
+
+            const myPromisse = queryDB(params,69)
+            myPromisse.then((resolve)=>{
+                const myPromisse_2 = queryDB(params,70)
+                myPromisse.then((resolve)=>{
+                    main_data.impostos.query()
+                    closeModal('viewImp')                         
+                })
+            })         
+        } 
+    })
+
+</script>

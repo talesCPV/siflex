@@ -1,0 +1,52 @@
+
+<template>
+    <style>
+        #btnNovo{
+            width: 98%;
+        }
+    </style>
+
+    <div class="form-base">
+        <h1>Feriados</h1>
+        <button id="btnNovo">Novo</button>
+        <table id="tblFeriados"></table>
+    </div>
+
+</template>
+<script>
+   
+
+     main_data.feriados.data = new Object    
+     main_data.feriados.data.query = function(){
+        const tbl = document.querySelector('#tblFeriados')
+        const params = new Object;
+            params.a = 0
+            params.b = 0
+            params.c = 0
+            params.hash = localStorage.getItem('hash')
+
+        const myPromisse = queryDB(params,60);
+        myPromisse.then((resolve)=>{
+            const json = JSON.parse(resolve)
+            tbl.head('Data,Descrição')                                             
+            for(let i=0; i<json.length;i++){
+                tbl.plot(json[i],'dia mes#/,nome','concat,Upp')
+            }          
+        })
+    }
+
+    main_data.feriados.data.query()
+
+    document.querySelector('#tblFeriados').addEventListener('click',(e)=>{
+        data = e.target.parentNode.data
+        data.callby = 'edit'
+        openHTML('viewFeriado.html','pop-up','Feriados',data)
+    })
+
+    document.querySelector('#btnNovo').addEventListener('click',()=>{
+        const data = new Object
+        data.callby = 'new'
+        openHTML('viewFeriado.html','pop-up','Cargos e Funções',data)
+    })
+
+</script>

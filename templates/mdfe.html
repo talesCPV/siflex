@@ -1,0 +1,402 @@
+
+<template>
+    <style>
+
+    #fiscal > *{
+        display: flex;
+        flex-direction: column;
+        width: 98%;
+        margin-left: 10px;  
+        margin-top: 10px;      
+    }
+
+    #fiscal > label{
+        margin-left: 20px;
+    }
+
+    button{
+        width: 98%;
+    }
+
+    </style>
+  
+    <div class="form-base">
+        <h1>MDFe</h1>
+            
+        <div class="tab-bar">
+            <div class="tab-item" id="tab-emitente" onclick="pictab(this)"> Emitente</div>
+            <div class="tab-item" id="tab-produtos" onclick="pictab(this)">Produtos</div>
+            <div class="tab-item" id="tab-cliente" onclick="pictab(this)">Cliente</div>            
+            <div class="tab-item" id="tab-gerar" onclick="pictab(this)">Gerar</div>
+            <div class="tab-item" id="tab-export" onclick="pictab(this)">Arquivos</div>
+        </div>
+        
+        <div class="tab-screen">        
+            <div id="emitente" class="tab">
+                <div class="inline">
+                    <label> Razão Social *</label>
+                    <input type="text" id="xNome" maxlength="60" />
+                </div>
+                <div class="inline">
+                    <label> Nome Fantasia </label>
+                    <input type="text" id="xFant" maxlength="60" />
+                </div>    
+
+                <div class="inline">
+                    <label> Insc. Estadual </label>
+                    <input type="text" id="IE" maxlength="15" onkeyup="valIE(this)"/>
+                    <input type="hidden" id="IEST" >                
+                    <label> Insc. Municipal </label>
+                    <input type="text" id="IM" maxlength="15" onkeyup="valInt(this)"/>
+                </div> 
+                <div class="inline">
+                    <label> Regime Trib. </label>
+                    <select id="CRT" >
+                        <option value="1" selected>Simples Nacional</option>
+                        <option value="2" >Simples Nacional - excesso de sublimite de receita bruta</option>
+                        <option value="3" >Regime Normal.</option>
+                    </select>
+                    <label> CNAE </label>
+                    <input type="text" id="CNAE" maxlength="7" onkeyup="valInt(this)"/>                        
+                </div>                                                       
+                <div id="C02" class="inline">                    
+                    <label> CNPJ </label>
+                    <input type="text" id="CNPJ" maxlength="18" onkeyup="valCNPJ(this)"/>
+                </div>
+                <div class="inline">
+                    <label> Endereço </label>
+                    <input type="text" id="xLgr" maxlength="60" />
+                    <label> Número: </label>
+                    <input type="text" id="nro" maxlength="5" style="max-width: 100px;" />
+                </div>
+                <div class="inline">
+                    <label> Bairro </label>
+                    <input type="text" id="bairro" maxlength="60" />
+                    <label> Complemento </label>
+                    <input type="text" id="cpl" maxlength="60" style="max-width: 200px;" />
+                </div>
+                <div class="inline">
+                    <label> Municipio</label>
+                    <input type="text" id="xMun" maxlength="60" />
+                    <label> Código</label>
+                    <input type="text" id="cMun" maxlength="7" style="max-width: 150px;" onkeyup="valInt(this)" />
+                    <label> Sigla da UF </label>
+                    <input type="text" id="UF" maxlength="2" style="max-width: 50px;" />
+                </div>
+                <div class="inline">
+                    <label> Nome do País </label>
+                    <input type="text" id="xPais" maxlength="60" />
+                    <label> Código </label>
+                    <input type="text" id="cPais" maxlength="4" onkeyup="valInt(this)"/>
+                </div>
+                <div class="inline">
+                    <label> CEP </label>
+                    <input type="text" id="CEP" maxlength="10" onkeyup="valCEP(this)"/>
+                    <label> Telefone </label>
+                    <input type="text" id="fone" maxlength="14" onkeyup="phone(this)"/>
+                </div>
+                <button id="btnSaveEmit">Salvar</button>
+                                
+            </div>            
+            <div id="produtos" class="tab">
+                <button id="btnAddItem">Add Item</button>                
+                <select id="lbxItens" size="25"></select>                
+            </div>            
+            <div id="cliente" class="tab">
+                <button id="btnAddCli">Add Cliente</button>
+                <div class="inline">
+                    <label> Razão Social *</label>
+                    <input type="text" id="xNome" maxlength="60"/>
+                </div>
+                <div class="inline">
+                    <label> Insc. Estadual </label>
+                    <input type="text" id="IE" maxlength="15" onkeyup="valIE(this)"/>
+                    <input type="hidden" id="ISUF">
+                    <label> Insc. Municipal </label>
+                    <input type="text" id="IM" maxlength="15" onkeyup="valInt(this)"/>                 
+                </div>
+                <div class="inline">
+                    <label> Email </label>
+                    <input type="text" id="email"/>
+                </div>                           
+                <div class="inline">
+                    <label> CNPJ </label>
+                    <input type="text" id="CNPJ" maxlength="18" onkeyup="valCNPJ(this)"/>
+                </div>
+                <div class="inline">
+                    <label> Endereço </label>
+                    <input type="text" id="xLgr" maxlength="60"/>
+                    <label> Número: </label>
+                    <input type="text" id="nro" maxlength="5" style="width: 100px;" />    
+                </div>
+                <div class="inline">
+                    <label> Bairro </label>
+                    <input type="text" id="bairro" maxlength="60"/>
+                    <label> Complemento </label>
+                    <input type="text" id="cpl" maxlength="60"/>
+                </div>
+                <div class="inline">
+                    <label>  Municipio</label>
+                    <input type="text" id="xMun" maxlength="60"/>
+                    <label> Cod.</label>
+                    <input type="text" id="cMun" maxlength="7" onkeyup="valInt(this)" style="width: 200px ;"/>
+                    <label> Sigla da UF </label>
+                    <input type="text" id="UF" maxlength="2" style="width: 70px ;"/>                        
+                </div>
+                <button id="btnBuscaIBGE"> Buscar no IBGE</button>
+                <div class="inline">
+                    <label> País </label>
+                    <input type="text" id="xPais" maxlength="15"/>                        
+                    <label> Cod.</label>
+                    <input type="text" id="cPais" maxlength="4"/>
+                </div>
+                <div class="inline">
+                    <label> CEP </label>
+                    <input type="text" id="CEP" maxlength="10" onkeyup="valCEP(this)"/>
+                    <label> Telefone </label>
+                    <input type="text" id="fone" maxlength="14" onkeyup="phone(this)"/>    
+                </div>
+                <button id="btnSaveCli">Salvar</button>
+            </div>        
+            <div id="gerar" class="tab">
+
+                
+                <table id="tblItens"></table>
+
+            </div>            
+            <div id="export" class="tab">
+
+                    <fieldset>
+                        <legend>XML</legend>
+                        <select id="xmlFiles" size="20"></select>
+                    </fieldset>
+                    <button id="btnAssina">Assina XML</button>
+            </div>                
+        </div>   
+    </div>
+
+</template>
+<script>
+
+/* CHAMADA DE FUNÇÕES INICIAL */    
+    listNF('MDFe/xml','xml')
+    importData()
+    document.querySelector('#tab-emitente').click()
+//    document.querySelector('#edtIni').value =  today.iniMonth()
+//    document.querySelector('#edtFin').value =  today.finMonth()
+
+/* FUNÇÔES */    
+
+    function importData(){
+        NFeConf('','MDFe.json').then((txt)=>{
+            main_data.MDFe = JSON.parse(txt)
+
+            const emitente = document.querySelector('#emitente')
+            emitente.querySelector('#xNome').value = main_data.MDFe.emit.xNome
+            emitente.querySelector('#xFant').value = main_data.MDFe.emit.xFant
+            emitente.querySelector('#IE').value = getIE(main_data.MDFe.emit.IE)
+            emitente.querySelector('#IM').value = main_data.MDFe.emit.IM
+            emitente.querySelector('#CNPJ').value = getCNPJ(main_data.MDFe.emit.CNPJ)
+            emitente.querySelector('#CNAE').value = main_data.MDFe.emit.CNAE
+            emitente.querySelector('#CRT').value = main_data.MDFe.emit.CRT
+            emitente.querySelector('#xLgr').value = main_data.MDFe.emit.xLgr
+            emitente.querySelector('#nro').value = main_data.MDFe.emit.nro
+            emitente.querySelector('#bairro').value = main_data.MDFe.emit.bairro
+            emitente.querySelector('#cpl').value = main_data.MDFe.emit.cpl
+            emitente.querySelector('#xMun').value = main_data.MDFe.emit.xMun
+            emitente.querySelector('#cMun').value = main_data.MDFe.emit.cMun
+            emitente.querySelector('#UF').value = main_data.MDFe.emit.UF
+            emitente.querySelector('#xPais').value = main_data.MDFe.emit.xPais
+            emitente.querySelector('#cPais').value = main_data.MDFe.emit.cPais
+            emitente.querySelector('#CEP').value = getCEP(main_data.MDFe.emit.CEP)
+            emitente.querySelector('#fone').value = getFone(main_data.MDFe.emit.fone)
+
+            const cliente = document.querySelector('#cliente')
+            cliente.querySelector('#xNome').value = main_data.MDFe.cli.xNome
+            cliente.querySelector('#IE').value = getIE(main_data.MDFe.cli.IE)
+            cliente.querySelector('#IM').value = main_data.MDFe.cli.IM
+            cliente.querySelector('#CNPJ').value = getCNPJ(main_data.MDFe.cli.CNPJ)
+            cliente.querySelector('#xLgr').value = main_data.MDFe.cli.xLgr
+            cliente.querySelector('#nro').value = main_data.MDFe.cli.nro
+            cliente.querySelector('#bairro').value = main_data.MDFe.cli.bairro
+            cliente.querySelector('#cpl').value = main_data.MDFe.cli.cpl
+            cliente.querySelector('#xMun').value = main_data.MDFe.cli.xMun
+            cliente.querySelector('#cMun').value = main_data.MDFe.cli.cMun
+            cliente.querySelector('#UF').value = main_data.MDFe.cli.UF
+            cliente.querySelector('#xPais').value = main_data.MDFe.cli.xPais
+            cliente.querySelector('#cPais').value = main_data.MDFe.cli.cPais
+            cliente.querySelector('#CEP').value = getCEP(main_data.MDFe.cli.CEP)
+            cliente.querySelector('#fone').value = getFone(main_data.MDFe.cli.fone)
+            document.querySelector('#btnBuscaIBGE').click()
+        })
+
+    }
+    
+    function IBGE_cMun(C,E){
+        C = C.trim().toLowerCase()
+        E = E.trim().toUpperCase()
+        if(C != '' && E != ''){
+            const UF_cod = new Promise((resolve,reject) =>{
+                fetch("https://servicodados.ibge.gov.br/api/v1/localidades/estados")
+                .then(function (response){
+                    if (response.status === 200) { 
+                        resolve(response.text());
+                    } else { 
+                        reject(new Error("Houve algum erro na comunicação com o servidor"));
+                    } 
+                })                    
+            });   
+
+            UF_cod.then((resolve)=>{
+                const json = JSON.parse(resolve);
+                for(let i=0; i<json.length; i++){
+                    if(json[i].sigla == E){
+                        const Mun_cod = new Promise((resolve,reject) =>{
+                            fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${json[i].id}/municipios`)
+                            .then(function (response){
+                                if (response.status === 200) { 
+                                    resolve(response.text());
+                                } else { 
+                                    reject(new Error("Houve algum erro na comunicação com o servidor"));
+                                } 
+                            })                    
+                        }); 
+
+                        Mun_cod.then((resolve)=>{
+                            const json = JSON.parse(resolve);
+                            for(let j=0; j<json.length; j++){
+                                if(json[j].nome.trim().toLowerCase() == C){
+                                    document.querySelector('#cliente').querySelector('#cMun').value =  json[j].id;
+                                    document.getElementById('btnSaveCli').click()
+                                    break;
+                                }
+                            }
+                        })                
+                    }
+                }
+            })
+        }else{
+            alert('Favor preencher Nome do Município e Sigla da UF.')
+        }
+    }
+
+/* CHAMADA DE FUNÇÕES DO DOM */    
+
+    document.querySelector('#lbxItens').addEventListener('dblclick',(e)=>{
+
+        data = e.target.data
+        data.mode = 'edtItens'
+
+//        main_data.mdfe.row_item = e.target.parentNode
+//        openHTML('viewNFeItens.html','pop-up','Edição de Ítem de NFe',data)
+
+    })
+
+    document.querySelector('#xmlFiles').addEventListener('dblclick',()=>{
+
+        const file = document.getElementById('xmlFiles').value
+        const path = 'assets/MDFe/xml/' + file;
+        var link = document.createElement("a");
+            link.download = file;
+            link.href = path;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            delete link; 
+    })
+
+    document.getElementById('btnSaveEmit').addEventListener('click',(event)=>{
+        const emitente = document.querySelector('#emitente')
+        main_data.MDFe.emit.xNome = emitente.querySelector('#xNome').value.trim().toUpperCase()
+        main_data.MDFe.emit.xFant = emitente.querySelector('#xFant').value.trim().toUpperCase()
+        main_data.MDFe.emit.IE = getNum(emitente.querySelector('#IE').value)
+        main_data.MDFe.emit.IEST = emitente.querySelector('#IEST').value.trim().toUpperCase()
+        main_data.MDFe.emit.IM = getNum(emitente.querySelector('#IM').value)
+        main_data.MDFe.emit.CNAE = getNum(emitente.querySelector('#CNAE').value)
+        main_data.MDFe.emit.CRT = emitente.querySelector('#CRT').value.trim().toUpperCase()
+        main_data.MDFe.emit.CNPJ = getNum(emitente.querySelector('#CNPJ').value)
+        main_data.MDFe.emit.xLgr = emitente.querySelector('#xLgr').value.trim().toUpperCase()
+        main_data.MDFe.emit.nro = emitente.querySelector('#nro').value.trim().toUpperCase()
+        main_data.MDFe.emit.cpl = emitente.querySelector('#cpl').value.trim().toUpperCase()
+        main_data.MDFe.emit.bairro = emitente.querySelector('#bairro').value.trim().toUpperCase()
+        main_data.MDFe.emit.cMun = getNum(emitente.querySelector('#cMun').value)
+        main_data.MDFe.emit.xMun = emitente.querySelector('#xMun').value.trim().toUpperCase()
+        main_data.MDFe.emit.UF = emitente.querySelector('#UF').value.trim().toUpperCase()
+        main_data.MDFe.emit.CEP = getNum(emitente.querySelector('#CEP').value)
+        main_data.MDFe.emit.cPais = getNum(emitente.querySelector('#cPais').value)
+        main_data.MDFe.emit.xPais = emitente.querySelector('#xPais').value.trim().toUpperCase()
+        main_data.MDFe.emit.fone = getNum(emitente.querySelector('#fone').value)
+        NFeConf(main_data.MDFe,'MDFe.json')
+    })
+
+    document.getElementById('btnAddItem').addEventListener('click',(event)=>{
+        main_data.mdfe.data = new Object
+        main_data.mdfe.data.addItem = function(data){
+
+            const opt = document.createElement('option')
+                opt.setAttribute('cod',data.cod) 
+                opt.setAttribute('qtd',data.qtd) 
+                opt.setAttribute('id_prod',data.id) 
+                opt.data = data
+                opt.innerHTML =  `${Math.abs(data.qtd)} - ${data.descricao}` 
+
+            document.querySelector('#lbxItens').appendChild(opt)
+            closeModal('addProd')
+        }
+
+        openHTML('addProd.html','pop-up','Adicione um Produto ou Serviço',main_data.mdfe.data,[100,30])
+    })
+
+    document.getElementById('btnAddCli').addEventListener('click',(event)=>{
+        main_data.mdfe.data = new Object
+        main_data.mdfe.data.addEmp = function(data){
+            const cliente = document.querySelector('#cliente')
+            cliente.querySelector('#xNome').value = data.nome
+            cliente.querySelector('#IE').value = data.ie != null ? getIE(data.ie) : ''
+            cliente.querySelector('#IM').value = data.im != null ? data.im : ''
+            cliente.querySelector('#CNPJ').value = data.cnpj != null ? getCNPJ(data.cnpj) : ''
+            cliente.querySelector('#xLgr').value = data.endereco != null ? data.endereco : ''
+            cliente.querySelector('#nro').value = data.num != null ? data.num : ''
+            cliente.querySelector('#bairro').value = data.bairro != null ? data.bairro : ''
+            cliente.querySelector('#cpl').value = ''
+            cliente.querySelector('#xMun').value = data.cidade != null ? data.cidade : ''
+            cliente.querySelector('#cMun').value = ''
+            cliente.querySelector('#UF').value = data.estado != null ? data.estado : ''
+            cliente.querySelector('#xPais').value = 'BRASIL'
+            cliente.querySelector('#cPais').value = '1058'
+            cliente.querySelector('#CEP').value = data.cep != null ? getCEP(data.cep) : ''
+            cliente.querySelector('#fone').value = data.tel != null ? getFone(data.tel) : ''
+            document.getElementById('btnSaveCli').click()
+            closeModal('addEmp')
+        }
+
+        openHTML('addEmp.html','pop-up','Selecione um Cliente',main_data.mdfe.data,[100,30])
+    })
+    
+    document.getElementById('btnSaveCli').addEventListener('click',()=>{
+        const cliente = document.querySelector('#cliente')
+        main_data.MDFe.cli.xNome = cliente.querySelector('#xNome').value.trim().toUpperCase()
+        main_data.MDFe.cli.IE = getNum(cliente.querySelector('#IE').value)
+        main_data.MDFe.cli.IM = getNum(cliente.querySelector('#IM').value)
+        main_data.MDFe.cli.email = cliente.querySelector('#email').value.trim().toLowerCase()
+        main_data.MDFe.cli.CNPJ = getNum(cliente.querySelector('#CNPJ').value)
+        main_data.MDFe.cli.xLgr = cliente.querySelector('#xLgr').value.trim().toUpperCase()
+        main_data.MDFe.cli.nro = cliente.querySelector('#nro').value
+        main_data.MDFe.cli.cpl = cliente.querySelector('#cpl').value.trim().toUpperCase()
+        main_data.MDFe.cli.bairro = cliente.querySelector('#bairro').value.trim().toUpperCase()
+        main_data.MDFe.cli.cMun = getNum(cliente.querySelector('#cMun').value)
+        main_data.MDFe.cli.xMun = cliente.querySelector('#xMun').value.trim().toUpperCase()
+        main_data.MDFe.cli.UF = cliente.querySelector('#UF').value.trim().toUpperCase()
+        main_data.MDFe.cli.CEP = getNum(cliente.querySelector('#CEP').value)
+        main_data.MDFe.cli.cPais = cliente.querySelector('#cPais').value.trim().toUpperCase()
+        main_data.MDFe.cli.xPais = cliente.querySelector('#xPais').value.trim().toUpperCase()
+        main_data.MDFe.cli.fone = getNum(cliente.querySelector('#fone').value)
+        NFeConf(main_data.MDFe,'MDFe.json')
+    })
+
+    document.querySelector('#btnBuscaIBGE').addEventListener('click',()=>{
+        IBGE_cMun(document.querySelector('#cliente').querySelector('#xMun').value,document.querySelector('#cliente').querySelector('#UF').value)
+    })
+
+
+</script>

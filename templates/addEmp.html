@@ -1,0 +1,73 @@
+
+<template>
+    <style>
+
+
+    </style>
+
+<fieldset>
+    <legend>Busca</legend>
+
+    <div class="inline">
+        <label for="edtAddEmp">por:</label>
+        <select id="cmbAddProd">
+            <option value="nome" signal="LIKE">Todos</option>
+            <option value="id" signal="=">Código</option>
+            <option value="nome" signal="LIKE">Razão Social</option>
+            <option value="fantasia" signal="LIKE" selected>Nome Fantasia</option>
+        </select>
+        <input type="text" id="edtAddEmp" onkeypress="return getEnter(event, 'btnAddEmp')">
+        <button id="btnAddEmp">Busca</button>
+
+    </div>
+
+    <table id="tblAddEmp"></table>
+</fieldset>
+
+
+</template>
+<script>
+
+//    const localData = getModalData('addProd')
+
+    document.querySelector('#btnAddEmp').addEventListener('click',()=>{
+
+        const sel = document.querySelector('#cmbAddProd')
+        const field = sel.value
+        const signal = sel.options[sel.selectedIndex].getAttribute('signal')        
+        let value = sel.selectedIndex == 0 ? '' : document.querySelector('#edtAddEmp').value.trim()
+        value = signal=='LIKE' ? `%${value}%` : value
+
+        const tbl = document.getElementById('tblAddEmp')
+        tbl.innerHTML = ''
+        const params = new Object;
+            params.hash = localStorage.getItem('hash');
+            params.field = field
+            params.signal = signal
+            params.value = value
+
+        const myPromisse = queryDB(params,11);
+
+        myPromisse.then((resolve)=>{
+            if(resolve.trim() != ""){
+                const json = JSON.parse(resolve);
+                console.log(json)
+
+                tbl.head('Cod.|mobHide,Nome')
+                for(let i=0; i<json.length;i++){
+                        tbl.plot(json[i],'id|mobHide,nome','int,Upp')
+                }                
+            }        
+        });
+    })
+
+    document.querySelector('#tblAddEmp').addEventListener('click',(e)=>{
+        const data = e.target.parentNode.data
+        if(confirm(`Carregar a empresa ${data.nome}?`)){
+            main_data.addEmp.data.addEmp(data)
+        }
+        
+    })
+
+
+</script>

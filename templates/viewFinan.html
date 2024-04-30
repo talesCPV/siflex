@@ -1,0 +1,131 @@
+
+<template>
+    <style>
+        #btnDel{
+            display: none;
+        }
+
+    </style>
+
+        <fieldset>
+            <legend>Lançamentos</legend>
+            <div class="inline">
+                <label for="edtRef">Ref./NF *</label>
+                <input type="text" id="edtRef">
+                <label for="cmbEntSai">Ent/Sai</label>
+                <select id="cmbEntSai" onchange="hideOrig()">
+                    <option value="ENTRADA" selected>A Receber</option>
+                    <option value="SAIDA">A Pagar</option>
+                </select>
+                <select id="cmbOrigem" disabled>
+                    <option value="COM">Compras</option>
+                    <option value="IMP">Impostos</option>
+                    <option value="FIX">Fixo</option>
+                    <option value="PGT">Pgto. Funcionário</option>
+                </select>
+            </div>
+            <div class="inline">
+                <label for="edtSac">Sacado *</label>
+                <input type="text" id="edtSac">
+            </div>
+            <div class="inline">
+                <label for="edtValor">Valor R$ *</label>
+                <input type="text" id="edtValor" onkeyup="valFloat(this)">
+                <label for="edtVenc">Data Venc.</label>
+                <input type="date" id="edtVenc">
+                <label for="cmbTipoPgto">Tipo Pgto.</label>
+                <select id="cmbTipoPgto">
+                    <option value="BOL" selected>Boleto</option>
+                    <option value="CRD">Cartão de Crédito</option>
+                    <option value="DEB">Cartão de Débto</option>
+                    <option value="CHQ">Cheque</option>
+                    <option value="DIN">Dinheiro</option>
+                    <option value="DEP">Depósito</option>
+                    <option value="PIX">Pix</option>
+                    <option value="TED">TED/DOC</option>
+                    <option value="AUT">Deb. Automático</option>
+                </select>
+
+            </div>
+            <div class="inline">
+                <label for="edtFunc">Cad. por</label>
+                <input type="text" id="edtFunc" readonly>
+                <label for="edtDataCad">em</label>
+                <input type="date" id="edtDataCad" readonly>
+            </div>
+
+            <button id="btnCad">Salvar</button>
+            <button id="btnDel">Deletar</button>
+        </fieldset>
+
+
+</template>
+<script>
+
+    hideOrig()
+
+    if(main_data.viewFinan.data.mode == 'edit'){
+        document.querySelector('#edtRef').value = main_data.viewFinan.data.ref
+        document.querySelector('#cmbEntSai').value = main_data.viewFinan.data.tipo.substring(0,2) == 'SA' ? 'SAIDA' : main_data.viewFinan.data.tipo 
+        document.querySelector('#edtSac').value = main_data.viewFinan.data.emp.toUpperCase()
+        document.querySelector('#edtValor').value = parseFloat(main_data.viewFinan.data.preco).toFixed(2)
+        document.querySelector('#edtVenc').value = main_data.viewFinan.data.data_pg
+        document.querySelector('#cmbTipoPgto').value = main_data.viewFinan.data.pgto
+        document.querySelector('#cmbOrigem').value = main_data.viewFinan.data.origem
+        document.querySelector('#edtFunc').value = main_data.viewFinan.data.resp
+        document.querySelector('#edtDataCad').value = main_data.viewFinan.data.data_ini
+        document.querySelector('#btnDel').style.display = 'block'
+    }else{
+        document.querySelector('#btnDel').style.display = 'none'
+//        document.querySelector('#edtVenc').value = today.getFormatDate(7)
+        document.querySelector('#edtDataCad').value = today.getFormatDate()
+        document.querySelector('#edtFunc').value = localStorage.getItem('nome')
+    }
+
+    document.querySelector('#btnCad').addEventListener('click',()=>{
+        if(checkField(['edtRef','edtSac','edtValor','edtVenc'])){
+            const params = new Object;
+                params.id = main_data.viewFinan.data.mode == 'edit' ? main_data.viewFinan.data.id : 'DEFAULT'
+                params.tipo = document.querySelector('#cmbEntSai').value
+                params.data_ini = document.querySelector('#edtDataCad').value 
+                params.data_pg = document.querySelector('#edtVenc').value
+                params.preco = document.querySelector('#edtValor').value
+                params.ref = document.querySelector('#edtRef').value.toUpperCase()
+                params.resp = document.querySelector('#edtFunc').value.toUpperCase()
+                params.emp = document.querySelector('#edtSac').value.toUpperCase()
+                params.origem = document.querySelector('#cmbEntSai').value == 'ENTRADA' ? 'SAN' : document.querySelector('#cmbOrigem').value
+                params.pgto = document.querySelector('#cmbTipoPgto').value
+
+            const myPromisse = queryDB(params,21);
+
+            myPromisse.then((resolve)=>{
+                alert('Lançamento cadastrado com sucesso!')
+                document.querySelector('#edtRef').value = ''
+                document.querySelector('#edtSac').value = ''
+                document.querySelector('#edtValor').value = ''
+                document.querySelector('#edtVenc').value = ''
+                document.querySelector('#edtRef').focus()
+
+//                document.querySelector('#btnBusca').click()
+//                closeModal('viewFinan')                
+            })
+        }
+    })
+
+    document.querySelector('#btnDel').addEventListener('click',()=>{
+        if (confirm('Deseja realmente deletar este Registro?')) {
+            const params = new Object;
+                params.id = main_data.viewFinan.data.id
+                params.hash = localStorage.getItem('hash')
+
+            const myPromisse = queryDB(params,22);
+
+            myPromisse.then((resolve)=>{
+                document.querySelector('#btnBusca').click()
+                closeModal('viewFinan')                
+            })
+        }        
+    })
+  
+
+</script>
