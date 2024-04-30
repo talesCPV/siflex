@@ -21,7 +21,7 @@ then
     git commit -m "by_script"
 
     git branch -M master
-    git remote add origin git@github.com:talesCPV/siflex.git
+#    git remote add origin git@github.com:talesCPV/siflex.git
     git remote set-url origin git@github.com:talesCPV/siflex.git
 
     git push -u -f origin main
