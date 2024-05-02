@@ -60,7 +60,7 @@
         document.querySelector('#tdComp').innerHTML = main_data.viewCot.data.comp != null ? main_data.viewCot.data.comp.toUpperCase(): '*'
         document.querySelector('#tdEnt').innerHTML = main_data.viewCot.data.data_ent != null ? dataBR(main_data.viewCot.data.data_ent): '*'
 
-        if(main_data.viewCot.data.status == 'ABERTO'){
+        if(main_data.viewCot.data.status == 'COT'){
             document.querySelector('#btnEdit').disabled = false
             document.querySelector('#btnDel').disabled = false
             document.querySelector('#btnAdd').disabled = false
@@ -70,7 +70,7 @@
             document.querySelector('#btnEdit').disabled = true
             document.querySelector('#btnDel').disabled = true
             document.querySelector('#btnAdd').disabled = true
-            if(main_data.viewCot.data.status == 'PAGO'){
+            if(main_data.viewCot.data.status == 'FAT'){
                 document.querySelector('#btnVerNF').style.display = 'block'
             }
         }
@@ -103,7 +103,7 @@
     main_data.viewCot.fillItens()
 
     document.querySelector('#btnEdit').addEventListener('click',()=>{        
-        openHTML('newCot.html','pop-up',(main_data.viewCot.data.status=='ABERTO'?'Cotação-':'Pedido-') + main_data.viewCot.num_ped, main_data.viewCot.data)
+        openHTML('newCot.html','pop-up',(main_data.viewCot.data.status=='COT'?'Cotação-':'Pedido-') + main_data.viewCot.num_ped, main_data.viewCot.data)
     })
 
     document.querySelector('#btnDel').addEventListener('click',()=>{
@@ -164,18 +164,18 @@
     })
 
     document.querySelector('#btnFecha').addEventListener('click',()=>{
-        if(main_data.viewCot.data.status == 'ABERTO'){
+        if(main_data.viewCot.data.status == 'COT'){
             if (confirm('Deseja realmente encerrar esta cotação?')) { 
                 const params = new Object;
                     params.id = main_data.viewCot.data.id 
                     params.hash = localStorage.getItem('hash')
-                    params.status = 'FECHADO'
+                    params.status = 'PED'
                     
                 const myPromisse = queryDB(params,35);
                 myPromisse.then((resolve)=>{
                     const myPromisse_delProd = queryDB(params,36)
                     myPromisse_delProd.then((resolve)=>{
-                        main_data.viewCot.data.status = 'FECHADO'
+                        main_data.viewCot.data.status = 'PED'
                         main_data.viewCot.open()
                     })
                 })
@@ -183,7 +183,7 @@
         }else{
             const params = new Object;
                     params.id = main_data.viewCot.data.id
-                    params.status = 'PAGO'
+                    params.status = 'FAT'
                     params.path =  '../nf/venda/FB_'+main_data.viewCot.data.id+'.pdf'
 
             const obj = new Object
@@ -199,7 +199,7 @@
     })
 
     document.querySelector('#tblItens').addEventListener('click',(e)=>{
-        if(main_data.viewCot.data.status == 'ABERTO'){
+        if(main_data.viewCot.data.status == 'COT'){
             const data = e.target.parentNode.data
             data.mode = 'edit'
             data.edt = function(data){
