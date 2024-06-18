@@ -450,7 +450,7 @@
     }
 
     function importData(){
-        NFeConf().then((txt)=>{
+        NFeConf('','../../NF/NFe/json/NFe.json').then((txt)=>{
             main_data.NFe = JSON.parse(txt)
 
             const emitente = document.querySelector('#emitente')            
@@ -700,7 +700,7 @@
         main_data.NFe.Z.infAdFisco = ''
         main_data.NFe.Z.infCpl = document.querySelector('#txaTextoCompl').value
     
-        NFeConf(main_data.NFe)
+        NFeConf(main_data.NFe,'../../NF/NFe/json/NFe.json')
     }
 
     function addBoleto(obj){
@@ -1008,7 +1008,7 @@
         main_data.NFe.C05.cPais = getNum(emitente.querySelector('#cPais').value)
         main_data.NFe.C05.xPais = emitente.querySelector('#xPais').value.trim().toUpperCase()
         main_data.NFe.C05.fone = getNum(emitente.querySelector('#fone').value)
-        NFeConf(main_data.NFe)        
+        NFeConf(main_data.NFe,'../../NF/NFe/json/NFe.json')        
     })
                 
     document.getElementById('btnSaveFiscal').addEventListener('click',(event)=>{
@@ -1047,7 +1047,7 @@
         main_data.NFe.B.dhCont = fiscal.querySelector('#dhCont').value
         main_data.NFe.B.xJust = fiscal.querySelector('#xJust').value
         main_data.NFe.A.id = geraChave(main_data.NFe.B.nNF,main_data.NFe.B.cNF,main_data.NFe.C02.CNPJ)
-        NFeConf(main_data.NFe)
+        NFeConf(main_data.NFe,'../../NF/NFe/json/NFe.json')
     })
                 
     document.getElementById('btnSaveCli').addEventListener('click',()=>{
@@ -1070,7 +1070,7 @@
         main_data.NFe.E05.cPais = cliente.querySelector('#cPais').value.trim().toUpperCase()
         main_data.NFe.E05.xPais = cliente.querySelector('#xPais').value.trim().toUpperCase()
         main_data.NFe.E05.fone = getNum(cliente.querySelector('#fone').value)
-        NFeConf(main_data.NFe)
+        NFeConf(main_data.NFe,'../../NF/NFe/json/NFe.json')
     })
 
     document.querySelector('#btnGeraNFe').addEventListener('click',()=>{

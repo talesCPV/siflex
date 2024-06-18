@@ -286,7 +286,7 @@
         main_data.NFs['CONF'].numNFS = document.querySelector('#edtNfsNum').value.trim().padStart(9,'0')
         main_data.NFs['CONF'].DtHrGerNf = now.getFullDate()
 
-        NFeConf(main_data.NFs,'NFs.json')
+        NFeConf(main_data.NFs,'../../NF/NFs/json/NFs.json')
         console.log(main_data.NFs)
     }
 
@@ -353,7 +353,7 @@
     }
 
     function importData(){
-        NFeConf('','NFs.json').then((txt)=>{
+        NFeConf('','../../NF/NFs/json/NFs.json').then((txt)=>{
             main_data.NFs = JSON.parse(txt)
             const emitente = document.querySelector('#emitente')
             emitente.querySelector('#xNome').value = main_data.NFs.CONF.RazSocPre
@@ -398,7 +398,7 @@
         main_data.NFs.CONF.SiglaUFPre = emitente.querySelector('#UF').value.trim().toUpperCase()
         main_data.NFs.CONF.CepPre = getNum(emitente.querySelector('#CEP').value)
         main_data.NFs['20'].EMail_1 = emitente.querySelector('#email').value.trim().toLowerCase()
-        NFeConf(main_data.NFs,'NFs.json')
+        NFeConf(main_data.NFs,'../../NF/NFs/json/NFs.json')
     })
 
     document.querySelector('#btnSaveCli').addEventListener('click',()=>{
@@ -415,7 +415,7 @@
         main_data.NFs['20'].CepTom = getNum(cliente.querySelector('#CEP').value)
         main_data.NFs['20'].Telefone = ''
         main_data.NFs['20'].EMail_2 = cliente.querySelector('#email').value.trim().toLowerCase()
-        NFeConf(main_data.NFs,'NFs.json')
+        NFeConf(main_data.NFs,'../../NF/NFs/json/NFs.json')
     })
 
     document.querySelector('#txtFiles').addEventListener('dblclick',()=>{

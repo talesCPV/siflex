@@ -349,7 +349,7 @@ function queryDB(params,cod){
     });      
 }
 
-function NFeConf(dados='',file='NFe.json'){
+function NFeConf(dados='',file='../../NF/NFe/json/NFe.json'){
     const data = new URLSearchParams();
     if(dados == ''){
         data.append("data", dados);
